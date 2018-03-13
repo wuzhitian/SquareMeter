@@ -22,6 +22,7 @@ class HttpApiServer
         'name' => 'HttpApiServer',
         'listen_ip' => '127.0.0.1',
         'listen_port' => 9527,
+        'is_ssl' => false,
     ]; //默认配置
 
     private $_server; //swoole_http_server对象
@@ -37,8 +38,17 @@ class HttpApiServer
     public function __construct( $config = NULL )
     {
         $this->_config = $config ?? self::DEFAULT_CONFIG;
-        $this->_server = new \swoole_http_server( $this->_config[ 'listen_ip' ], $this->_config[ 'listen_port' ], SWOOLE_BASE, SWOOLE_SOCK_TCP );
         $this->bindCallback();
+    }
+
+    /**
+     * 初始化服务器
+     */
+    public function initial()
+    {
+        if ( $this->getConfig() )
+            $this->_server = new \swoole_http_server( $this->_config[ 'listen_ip' ], $this->_config[ 'listen_port' ], SWOOLE_BASE, SWOOLE_SOCK_TCP );
+
     }
 
     /**
@@ -48,6 +58,15 @@ class HttpApiServer
     private function getServer()
     {
         return $this->_server;
+    }
+
+    /**
+     * 获取config
+     * @return array|null
+     */
+    private function getConfig()
+    {
+        return $this->_config;
     }
 
     /**
@@ -68,11 +87,18 @@ class HttpApiServer
         $this->extra_data = $extra_data;
     }
 
+    /**
+     * http2
+     */
     public function setHttp2()
     {
         $this->set[ 'open_http2_protocol' ] = true;
     }
 
+    /**
+     * @param $cert_file_path
+     * @param $key_file_path
+     */
     public function setSSLFile( $cert_file_path, $key_file_path )
     {
         $this->set[ 'ssl_cert_file' ] = $cert_file_path;
