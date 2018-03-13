@@ -18,6 +18,6 @@ use UmbServer\SwooleFramework\LIBRARY\CORE\INSTANCE\Instance;
  */
 class Estate extends Instance
 {
-    private $id;
-
+    private $name;
+    private $token_symbol;
 }

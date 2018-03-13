@@ -10,34 +10,88 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\CORE\INSTANCE;
 
+use UmbServer\SwooleFramework\LIBRARY\TOOL\Generator;
+use UmbServer\SwooleLibrary\FRAMEWORK\CORE\ENUM\_DataBase;
+
 /**
+ * 实例基础类
  * Class Instance
  * @package UmbServer\SwooleFramework\LIBRARY\CORE\INSTANCE
  */
 class Instance
 {
-    /**
-     * 默认的IRM后缀
-     */
-    const POSTFIX = '_data';
+    public $id = NULL; //所有实例都必须有id，可以是指定的、序号或是uuid
+
+    const LOCAL_INSTANCE = false; //是否需要挂载到本地实例池
+    const CACHE = _DataBase::Redis; //缓存方式，目前只可以选用null或redis
+    const PERSISTENCE = _DataBase::MySQL; //持久化方式，目前只可以选用null或mysql
 
     /**
-     * 数据库名
-     * @var
+     * 创建实例
+     * 处理好id问题
+     * 判断LOCAL_INSTANCE，如果是，就在本地实例池创建，如果不是就在DataService创建
+     * 根据CACHE和PERSISTENCE决定缓存和持久化方式，通过DataService实现
      */
-    private $DB_name;
+    public function create()
+    {
+        //如果有id就用传入的id
+        if ( !isset( $this->id ) ) {
+            if ( get_class( $this )::TYPE_MAP[ 'id' ] == INT_TYPE ) {
+                $this->id = $this->getDB()->getNextIntId( $this->table_name );
+            } else {
+                $this->id = $this->generateId();
+            }
+        }
+        $this->registerToInstancePool();
+    }
+
+    private function createByLocalInstancePool()
+    {
+
+    }
+
+    private function createByDataService()
+    {
+
+    }
 
     /**
-     * 表名
-     * @var
+     * 读取实例
+     *
+     * 从DataService读取数据
      */
-    private $table_name;
+    public function read()
+    {
+
+    }
 
     /**
-     * 被管理的实例名
-     * @var
+     * 更新实例
+     * 向DataService更新数据
      */
-    private $instance_name;
+    public function update()
+    {
+
+    }
+
+    /**
+     * 删除实例
+     * 向DataService删除实例
+     * 实际上是软删除
+     */
+    public function delete()
+    {
+
+    }
+
+    /**
+     * 恢复实例
+     * 向DataService申请回复实例，有可能已经被清除了，只能尝试
+     */
+    public function recover()
+    {
+
+    }
 
     /**
      * 根据类型转换数值

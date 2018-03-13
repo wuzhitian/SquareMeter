@@ -4,8 +4,9 @@ Entrustment Operation Standardized Solution for Ethereum
 ## NodePlugin
 A dispatcher client run on the block chain node.
 
-## DispatchTier
+## Dispatcher
 Dispatching an Ethernet operation as an async task.
-Providing load balancing for several nodes.
+Providing random load balancing for several nodes.
     
-## 
+## EOFramework
+Entrustment Operation Framework
