@@ -12,7 +12,7 @@ namespace UmbServer\SwooleFramework\LIBRARY\TOOL;
 
 /**
  * Class Curl
- * @package UmbServer\SwooleFramework\LIBRARY\TOOL
+ * @package UmbServer\SwooleFramework\LIBRARY\UTIL
  */
 abstract class Curl
 {

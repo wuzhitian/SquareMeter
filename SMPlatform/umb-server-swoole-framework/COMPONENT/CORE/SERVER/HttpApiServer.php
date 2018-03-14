@@ -1,4 +1,4 @@
-<?php
+<?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
  * File: HttpApiServer.php
@@ -8,13 +8,13 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\COMPONENT\SERVER;
+namespace UmbServer\SwooleFramework\COMPONENT\CORE\SERVER;
 
 use UmbServer\SwooleFramework\CORE\BASE\AOP;
 
 /**
  * Class HttpApiServer
- * @package UmbServer\SwooleFramework\COMPONENT\SERVER
+ * @package UmbServer\SwooleFramework\COMPONENT\CORE\SERVER
  */
 class HttpApiServer
 {

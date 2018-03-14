@@ -12,7 +12,7 @@ namespace UmbServer\SwooleFramework\LIBRARY\TOOL;
 
 /**
  * Class Generator
- * @package UmbServer\SwooleFramework\LIBRARY\TOOL
+ * @package UmbServer\SwooleFramework\LIBRARY\UTIL
  */
 abstract class Generator
 {

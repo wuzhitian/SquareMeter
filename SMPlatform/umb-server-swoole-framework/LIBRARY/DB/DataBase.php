@@ -1,4 +1,4 @@
-<?php
+<?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
  * File: _DataBase.php
@@ -12,7 +12,7 @@ namespace UmbServer\SwooleLibrary\FRAMEWORK\CORE\DATABASE;
 
 /**
  * Interface DataBase
- * @package UmbServer\SwooleLibrary\LIBRARY\CORE\DATABASE
+ * @package UmbServer\SwooleLibrary\LIBRARY\CORE\DB
  */
 interface DataBase
 {
