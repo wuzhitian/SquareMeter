@@ -1,6 +1,6 @@
 <?php declare( strict_types = 1 );
 /**
- * Project: Limicity
+ * Project: SMPlatform
  * File: PrivateKeySafe.php
  * Create: 2018/3/15
  * Author: Hugh.Lee
@@ -8,14 +8,14 @@
  * Copyright: SMBC Inc.
  */
 
-namespace Limicity\BUSINESS\MODEL\CoreModel;
+namespace SMPlatform\BUSINESS\MODEL\CoreModel;
 
 use UmbServer\SwooleFramework\LIBRARY\CORE\INSTANCE\Instance;
 
 /**
  * 用户私钥保险柜
  * Class PrivateKeySafe
- * @package Limicity\BUSINESS\MODEL\CoreModel
+ * @package SMPlatform\BUSINESS\MODEL\CoreModel
  */
 class PrivateKeySafe extends Instance
 {
