@@ -11,7 +11,7 @@
 namespace UmbServer\SwooleFramework\LIBRARY\CORE\INSTANCE;
 
 use UmbServer\SwooleFramework\LIBRARY\TOOL\Generator;
-use UmbServer\SwooleLibrary\FRAMEWORK\CORE\ENUM\_DataBase;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
 
 /**
  * 实例基础类
@@ -23,8 +23,8 @@ class Instance
     public $id = NULL; //所有实例都必须有id，可以是指定的、序号或是uuid
 
     const LOCAL_INSTANCE = false; //是否需要挂载到本地实例池
-    const CACHE = _DataBase::Redis; //缓存方式，目前只可以选用null或redis
-    const PERSISTENCE = _DataBase::MySQL; //持久化方式，目前只可以选用null或mysql
+    const CACHE = _DB::Redis; //缓存方式，目前只可以选用null或redis
+    const PERSISTENCE = _DB::MySQL; //持久化方式，目前只可以选用null或mysql
 
     /**
      * 创建实例
