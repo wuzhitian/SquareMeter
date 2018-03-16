@@ -11,6 +11,7 @@
 namespace UmbServer\SwooleFramework\LIBRARY\DATA;
 
 /**
+ * 数据类接口
  * Interface Data
  * @package UmbServer\SwooleFramework\MODEL\DATA
  */

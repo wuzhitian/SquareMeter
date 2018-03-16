@@ -1,6 +1,6 @@
 <?php
 /**
- * Project: Limicity
+ * Project: SMPlatform
  * File: MySQL.php
  * Create: 2018/3/9
  * Author: Hugh.Lee

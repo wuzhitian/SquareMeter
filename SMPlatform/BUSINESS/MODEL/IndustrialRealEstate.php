@@ -1,6 +1,6 @@
 <?php
 /**
- * Project: Limicity
+ * Project: SMPlatform
  * File: IndustrialRealEstate.php
  * Create: 2018/3/10
  * Author: Hugh.Lee
@@ -8,14 +8,14 @@
  * Copyright: SMBC Inc.
  */
 
-namespace Limicity\BUSINESS\MODEL;
+namespace SMPlatform\BUSINESS\MODEL;
 
-use Limicity\BUSINESS\MODEL\CoreModel\Estate;
+use SMPlatform\BUSINESS\MODEL\CoreModel\Estate;
 
 /**
  * 产业地产资产类
  * Class IndustrialRealEstate
- * @package Limicity\BUSINESS\MODEL\CoreModel
+ * @package SMPlatform\BUSINESS\MODEL\CoreModel
  */
 class IndustrialRealEstate extends Estate
 {

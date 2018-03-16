@@ -1,6 +1,6 @@
 <?php
 /**
- * Project: Limicity
+ * Project: SMPlatform
  * File: Estate.php
  * Create: 2018/3/8
  * Author: Hugh.Lee
@@ -8,14 +8,14 @@
  * Copyright: SMBC Inc.
  */
 
-namespace Limicity\BUSINESS\MODEL\CoreModel;
+namespace SMPlatform\BUSINESS\MODEL\CoreModel;
 
 use UmbServer\SwooleFramework\LIBRARY\CORE\INSTANCE\Instance;
 
 /**
  * 资产基类
  * Class Estate
- * @package Limicity\BUSINESS\MODEL\CoreModel
+ * @package SMPlatform\BUSINESS\MODEL\CoreModel
  */
 class Estate extends Instance
 {

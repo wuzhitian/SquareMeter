@@ -1,6 +1,6 @@
 <?php declare( strict_types = 1 );
 /**
- * Project: Limicity
+ * Project: SMPlatform
  * File: User.php
  * Create: 2018/3/8
  * Author: Hugh.Lee
@@ -8,12 +8,12 @@
  * Copyright: SMBC Inc.
  */
 
-namespace Limicity\BUSINESS\MODEL\CoreModel;
+namespace SMPlatform\BUSINESS\MODEL\CoreModel;
 
 /**
  * 用户基类
  * Class User
- * @package Limicity\BUSINESS\MODEL\CoreModel
+ * @package SMPlatform\BUSINESS\MODEL\CoreModel
  */
 class User
 {

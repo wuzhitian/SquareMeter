@@ -1,6 +1,6 @@
 <?php
 /**
- * Project: Limicity
+ * Project: SMPlatform
  * File: RPCClient.php
  * Create: 2018/3/12
  * Author: Hugh.Lee

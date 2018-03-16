@@ -1,6 +1,6 @@
 <?php
 /**
- * Project: Limicity
+ * Project: SMPlatform
  * File: Investor.php
  * Create: 2018/3/15
  * Author: Hugh.Lee
@@ -8,14 +8,14 @@
  * Copyright: SMBC Inc.
  */
 
-namespace Limicity\BUSINESS\MODEL;
+namespace SMPlatform\BUSINESS\MODEL;
 
-use Limicity\BUSINESS\MODEL\CoreModel\User;
+use SMPlatform\BUSINESS\MODEL\CoreModel\User;
 
 /**
  * 投资者用户类
  * Class Investor
- * @package Limicity\BUSINESS\MODEL
+ * @package SMPlatform\BUSINESS\MODEL
  */
 class Investor extends User
 {

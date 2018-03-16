@@ -1,6 +1,6 @@
 <?php
 /**
- * Project: Limicity
+ * Project: SMPlatform
  * File: RealNameSafe.php
  * Create: 2018/3/15
  * Author: Hugh.Lee
@@ -8,7 +8,7 @@
  * Copyright: SMBC Inc.
  */
 
-namespace Limicity\BUSINESS\MODEL\CoreModel;
+namespace SMPlatform\BUSINESS\MODEL\CoreModel;
 
 
 class RealNameSafe

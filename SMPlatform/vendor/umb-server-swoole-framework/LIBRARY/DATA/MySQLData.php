@@ -1,7 +1,7 @@
 <?php
 /**
- * Project: Limicity
- * File: RedisData.php
+ * Project: SMPlatform
+ * File: MySQLData.php
  * Create: 2018/3/9
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
@@ -11,10 +11,10 @@
 namespace UmbServer\SwooleLibrary\FRAMEWORK\CORE\DATA;
 
 /**
- * Class RedisData
+ * Class MySQLData
  * @package UmbServer\SwooleLibrary\MODEL\CORE\DATA
  */
-class RedisData implements Data
+class MySQLData implements Data
 {
 
 }

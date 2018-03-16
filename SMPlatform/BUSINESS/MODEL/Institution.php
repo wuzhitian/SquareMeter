@@ -1,6 +1,6 @@
 <?php
 /**
- * Project: Limicity
+ * Project: SMPlatform
  * File: Institution.php
  * Create: 2018/3/8
  * Author: Hugh.Lee
@@ -8,14 +8,14 @@
  * Copyright: SMBC Inc.
  */
 
-namespace Limicity\BUSINESS\MODEL;
+namespace SMPlatform\BUSINESS\MODEL;
 
-use Limicity\BUSINESS\MODEL\CoreModel\User;
+use SMPlatform\BUSINESS\MODEL\CoreModel\User;
 
 /**
  * 机构用户类
  * Class Institution
- * @package Limicity\BUSINESS\MODEL\CoreModel
+ * @package SMPlatform\BUSINESS\MODEL\CoreModel
  */
 class Institution extends User
 {
