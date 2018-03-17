@@ -12,7 +12,7 @@ namespace UmbServer\SwooleLibrary\FRAMEWORK\CORE\DATABASE;
 
 /**
  * Class Redis
- * @package UmbServer\SwooleLibrary\MODEL\CORE\DB
+ * @package UmbServer\SwooleLibrary\MODEL\BASE\DB
  */
 class Redis implements DB
 {

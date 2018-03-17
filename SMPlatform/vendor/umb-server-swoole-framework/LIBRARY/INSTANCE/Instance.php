@@ -16,7 +16,7 @@ use UmbServer\SwooleLibrary\FRAMEWORK\CORE\ENUM\_DataBase;
 /**
  * 实例基础类
  * Class Instance
- * @package UmbServer\SwooleFramework\MODEL\CORE\INSTANCE
+ * @package UmbServer\SwooleFramework\MODEL\BASE\INSTANCE
  */
 class Instance
 {

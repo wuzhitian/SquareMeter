@@ -12,7 +12,7 @@ namespace UmbServer\SwooleFramework\CORE\BASE;
 
 /**
  * Interface AOPObject
- * @package UmbServer\SwooleFramework\CORE\BASE
+ * @package UmbServer\SwooleFramework\BASE\BASE
  */
 interface AOPObject
 {

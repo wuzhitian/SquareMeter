@@ -1,7 +1,7 @@
 <?php
 /**
  * Project: UmbServerSwooleLibrary
- * File: ServiceManager.php
+ * File: Manager.php
  * Create: 2018/3/9
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
@@ -11,8 +11,8 @@
 namespace UmbServer\SwooleLibrary\FRAMEWORK\CORE\MANAGER;
 
 /**
- * Class ServiceManager
- * @package UmbServer\SwooleLibrary\MODEL\CORE\MANAGER
+ * Class Manager
+ * @package UmbServer\SwooleLibrary\MODEL\BASE\MANAGER
  */
 class ServiceManager
 {

@@ -12,7 +12,7 @@ namespace UmbServer\SwooleLibrary\FRAMEWORK\CORE\DATA;
 
 /**
  * Class MySQLData
- * @package UmbServer\SwooleLibrary\MODEL\CORE\DATA
+ * @package UmbServer\SwooleLibrary\MODEL\BASE\DATA
  */
 class MySQLData implements Data
 {

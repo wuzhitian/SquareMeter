@@ -17,7 +17,7 @@ use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
 /**
  * http(s)的api服务器
  * Class HttpApiServer
- * @package UmbServer\SwooleFramework\COMPONENT\CORE\SERVER
+ * @package UmbServer\SwooleFramework\COMPONENT\BASE\SERVER
  */
 class HttpApiServer
 {

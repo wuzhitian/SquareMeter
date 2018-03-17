@@ -11,7 +11,7 @@ namespace UmbServer\SwooleLibrary\FRAMEWORK\CORE\DATABASE;
 
 /**
  * Interface DB
- * @package UmbServer\SwooleLibrary\LIBRARY\CORE\DB
+ * @package UmbServer\SwooleLibrary\LIBRARY\BASE\DB
  */
 interface DB
 {

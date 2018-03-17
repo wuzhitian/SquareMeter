@@ -13,7 +13,7 @@ namespace UmbServer\SwooleFramework\CORE\BASE;
 /**
  * 切面对象访问控制类
  * Class AOP
- * @package UmbServer\SwooleFramework\CORE\BASE
+ * @package UmbServer\SwooleFramework\BASE\BASE
  */
 class AOP
 {

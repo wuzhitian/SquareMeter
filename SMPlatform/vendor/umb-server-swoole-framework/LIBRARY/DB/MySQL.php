@@ -12,7 +12,7 @@ namespace UmbServer\SwooleLibrary\FRAMEWORK\CORE\DATABASE;
 
 /**
  * Class MySQL
- * @package UmbServer\SwooleLibrary\MODEL\CORE\DB
+ * @package UmbServer\SwooleLibrary\MODEL\BASE\DB
  */
 class MySQL implements DB
 {
