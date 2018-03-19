@@ -11,8 +11,9 @@
 namespace UmbServer\SwooleFramework\LIBRARY\DB;
 
 /**
+ * 数据库接口类
  * Interface DB
- * @package UmbServer\SwooleLibrary\LIBRARY\DB
+ * @package UmbServer\SwooleFramework\LIBRARY\DB
  */
 interface DB
 {

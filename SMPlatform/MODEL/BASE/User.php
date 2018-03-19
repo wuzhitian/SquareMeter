@@ -10,7 +10,8 @@
 
 namespace SMPlatform\MODEL\BASE;
 
-use UmbServer\SwooleFramework\LIBRARY\CORE\INSTANCE\Instance;
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
+
 
 /**
  * 用户基类

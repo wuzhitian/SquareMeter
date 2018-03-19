@@ -1,4 +1,4 @@
-<?php
+<?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
  * File: Instance.php
@@ -10,6 +10,9 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\INSTANCE;
 
+use UmbServer\SwooleFramework\LIBRARY\DATA\Data;
+use UmbServer\SwooleFramework\LIBRARY\DATA\DBData;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Generator;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
 
@@ -20,24 +23,78 @@ use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
  */
 class Instance
 {
+
     public $id = NULL; //所有实例都必须有id，可以是指定的、序号或是uuid
 
-    const SCHEMA = []; //数据图表
-    const LOCAL_INSTANCE = false; //是否为本地实例，本地实例将由本地进程管理持久化并在本进程内存中管理实例池
-    const CACHE = _DB::Redis; //缓存方式，目前只可以选用null或redis
-    const PERSISTENCE = _DB::MySQL; //持久化方式，目前只可以选用null或mysql
+    private $_local_data; //本地数据对象，LOCAL_INSTANCE为true时用于操作数据库
 
-    public function getData()
+    const SCHEMA         = []; //数据图谱
+    const LOCAL_INSTANCE = false; //是否为本地实例，本地实例将由本地进程管理持久化并在本进程内存中管理实例池
+    const CACHE          = _DB::Redis; //缓存方式，目前只可以选用null或redis
+    const PERSISTENCE    = _DB::MySQL; //持久化方式，目前只可以选用null或mysql
+
+    /**
+     * 根据schema获取数据对象
+     * @return object
+     */
+    public
+    function getDataObjectBySchema(): object
+    {
+        $data_array = [];
+        foreach ( self::SCHEMA as $key => $type ) {
+            $value              = $this->$key;
+            $data_array[ $key ] = DataHandler::typeConversion( $type, $value );
+        }
+        $res = (object)$data_array;
+        return $res;
+    }
+
+    /**
+     * 将数据转化为数据库存储的数据
+     * @return DBData
+     */
+    public
+    function transformDataToDBData(): DBData
+    {
+        $data          = $this->getDataObjectBySchema();
+        $db_data_array = [];
+        foreach ( self::SCHEMA as $key => $type ) {
+            $value              = $this->$key;
+            $data_array[ $key ] = DataHandler::typeConversion( $type, $value );
+        }
+    }
+
+    /**
+     * 设置值
+     * @param $key
+     * @param $value
+     */
+    public
+    function setData( $key, $value )
     {
 
     }
 
-    private function getDataBySchema()
+    /**
+     * 获取值
+     * @param $key
+     */
+    public
+    function getData( $key )
     {
-        $data_array = [];
-        foreach ( self::SCHEMA as $key => $type ) {
-            $data_array['key']
-        }
+
+    }
+
+    /**
+     * 根据key获取schema中的type
+     * @param $key
+     * @return mixed
+     */
+    private
+    function getTypeByKey( $key )
+    {
+        $res = self::SCHEMA[ $key ];
+        return $res;
     }
 
     /**
@@ -46,7 +103,8 @@ class Instance
      * 判断LOCAL_INSTANCE，如果是，就在本地实例池创建，如果不是就在DataService创建
      * 根据CACHE和PERSISTENCE决定缓存和持久化方式，通过DataService实现
      */
-    public function create()
+    public
+    function create()
     {
         //如果有id就用传入的id
         if ( !isset( $this->id ) ) {
@@ -59,18 +117,21 @@ class Instance
         $this->registerToInstancePool();
     }
 
-    private function createByLocalInstancePool()
+    private
+    function createByLocalInstancePool()
     {
 
     }
 
-    public function deleteIdFromIdArray( $id, $id_array )
+    public
+    function deleteIdFromIdArray( $id, $id_array )
     {
         $key = array_search( $id, $id_array );
         array_splice( $id_array, $key, 1 );
     }
 
-    private function createByDataService()
+    private
+    function createByDataService()
     {
 
     }
@@ -80,7 +141,8 @@ class Instance
      *
      * 从DataService读取数据
      */
-    public function read()
+    public
+    function read()
     {
 
     }
@@ -89,7 +151,8 @@ class Instance
      * 更新实例
      * 向DataService更新数据
      */
-    public function update()
+    public
+    function update()
     {
 
     }
@@ -99,7 +162,8 @@ class Instance
      * 向DataService删除实例
      * 实际上是软删除
      */
-    public function delete()
+    public
+    function delete()
     {
 
     }
@@ -108,7 +172,8 @@ class Instance
      * 恢复实例
      * 向DataService申请回复实例，有可能已经被清除了，只能尝试
      */
-    public function recover()
+    public
+    function recover()
     {
 
     }
@@ -121,7 +186,9 @@ class Instance
      *
      * @return bool|float|int|string
      */
-    public static function dataTypeStrict( $type, $value )
+    public
+    static
+    function dataTypeStrict( $type, $value )
     {
         if ( !isset( $type ) || is_null( $value ) ) {
             return $value;
@@ -146,10 +213,11 @@ class Instance
      * @param null $table_name
      * @param null $DB_name
      */
-    public function setDBInfo( $table_name = NULL, $DB_name = NULL )
+    public
+    function setDBInfo( $table_name = NULL, $DB_name = NULL )
     {
-        $this->table_name = $table_name ?? self::_getTableName( get_class( $this ) );
-        $this->DB_name = $DB_name ?? $this->getDB()->DB_name;
+        $this->table_name    = $table_name ?? self::_getTableName( get_class( $this ) );
+        $this->DB_name       = $DB_name ?? $this->getDB()->DB_name;
         $this->instance_name = $this->table_name . self::POSTFIX;
     }
 
@@ -157,10 +225,11 @@ class Instance
      * 保存到数据库
      * @return bool
      */
-    public function save()
+    public
+    function save()
     {
         $data_array = $this->getDataArray();
-        $res = $this->getDB()->updateById( $this->table_name, $data_array, $this->id );
+        $res        = $this->getDB()->updateById( $this->table_name, $data_array, $this->id );
         return $res;
     }
 
@@ -168,11 +237,12 @@ class Instance
      * 获取对象数据
      * @return array
      */
-    public function getDataArray(): array
+    public
+    function getDataArray(): array
     {
         $reflect_object = new \ReflectionObject( $this );
-        $params = $reflect_object->getProperties();
-        $data_array = [];
+        $params         = $reflect_object->getProperties();
+        $data_array     = [];
         foreach ( $params as $param ) {
             $param->setAccessible( true );
             $data_array[ $param->getName() ] = $param->getValue( $this );
@@ -188,7 +258,8 @@ class Instance
      * 从DBM中获取本Data的数据库对象
      * @return \LIBRARY\TOOL\DB
      */
-    public function getDB(): DB
+    public
+    function getDB(): DB
     {
         $DBM = DBManager::getInstance();
         return $DBM->getDB( $this->DB_name );
@@ -198,7 +269,8 @@ class Instance
      * 插入记录
      * @return mixed
      */
-    public function insert()
+    public
+    function insert()
     {
         $sql = 'INSERT INTO ' . $this->table_name . ' (id) VALUES (' . StringFormat::quotation( $this->id ) . ')';
         $res = $this->getDB()->insert( $sql );
@@ -213,7 +285,8 @@ class Instance
      *
      * @return bool
      */
-    public function setAttribute( $key, $value )
+    public
+    function setAttribute( $key, $value )
     {
         $this->setVal( $key, $value );
         $res = $this->save();
@@ -227,7 +300,8 @@ class Instance
      *
      * @return mixed
      */
-    public function getAttribute( $key )
+    public
+    function getAttribute( $key )
     {
         $res = $this->$key;
         return $res;
@@ -240,7 +314,8 @@ class Instance
      *
      * @return bool
      */
-    public function setAttributeByArray( array $array )
+    public
+    function setAttributeByArray( array $array )
     {
         foreach ( $array as $key => $value ) {
             if ( !isset( $value ) ) {
@@ -258,7 +333,8 @@ class Instance
      * @param $key
      * @param $value
      */
-    public function setVal( $key, $value )
+    public
+    function setVal( $key, $value )
     {
         $type = get_class( $this )::TYPE_MAP[ $key ] ?? NULL;
         if ( isset( $type ) ) {
@@ -272,7 +348,8 @@ class Instance
      *
      * @param null $id
      */
-    public function create( $id = NULL )
+    public
+    function create( $id = NULL )
     {
         if ( isset( $id ) ) {
             $this->setVal( 'id', $id );
@@ -292,7 +369,8 @@ class Instance
      *
      * @param null $id
      */
-    public function createWithoutIRM( $id = NULL )
+    public
+    function createWithoutIRM( $id = NULL )
     {
         if ( isset( $id ) ) {
             $this->setVal( 'id', $id );
@@ -310,7 +388,8 @@ class Instance
      * 向IRM中注册，如果对应的InstanceManager没有创建，就先创建再注册
      * @return bool
      */
-    public function registerToIRM()
+    public
+    function registerToIRM()
     {
         $IRM = IRManager::getInstance();
         if ( $IRM->isExistInstanceManagerArray( $this->instance_name ) ) {
@@ -332,7 +411,8 @@ class Instance
      * 在IRM中注销
      * @return bool
      */
-    public function logoutFromIRM()
+    public
+    function logoutFromIRM()
     {
         $IRM = IRManager::getInstance();
         if ( $IRM->isExistInstanceManagerArray( $this->instance_name ) ) {
@@ -352,7 +432,8 @@ class Instance
      * 判断是否在IRM中存在
      * @return bool
      */
-    public function isRegister()
+    public
+    function isRegister()
     {
         $IRM = IRManager::getInstance();
         if ( $IRM->isExistInstanceManagerArray( $this->instance_name ) ) {
@@ -370,7 +451,8 @@ class Instance
     /**
      * 删除记录，并在IRM中去掉对象
      */
-    public function delete()
+    public
+    function delete()
     {
         $this->logoutFromIRM();
         $this->getDB()->deleteById( $this->table_name, $this->id );
@@ -383,7 +465,8 @@ class Instance
      * @param null $table_name
      * @param null $DB_name
      */
-    public function setDataById( $id, $table_name = NULL, $DB_name = NULL )
+    public
+    function setDataById( $id, $table_name = NULL, $DB_name = NULL )
     {
         $this->setDBInfo( $table_name, $DB_name );
         $res_array = $this->getDB()->fetchById( $this->table_name, $id );
@@ -395,7 +478,8 @@ class Instance
     /**
      * 从数据库更新数据
      */
-    public function update()
+    public
+    function update()
     {
         $this->setDataById( $this->id );
     }
@@ -405,7 +489,8 @@ class Instance
      *
      * @param \LIBRARY\TOOL\Data $object
      */
-    public function setDataByIRM( Data $object )
+    public
+    function setDataByIRM( Data $object )
     {
         $res_array = $object->getDataArray();
         foreach ( $res_array as $key => $value ) {
@@ -420,11 +505,13 @@ class Instance
      *
      * @return string
      */
-    public static function _getTableName( $class_path )
+    public
+    static
+    function _getTableName( $class_path )
     {
         $class_path_array = explode( '\\', $class_path );
-        $class_name = array_reverse( $class_path_array )[ 0 ];
-        $table_name = strtolower( substr( $class_name, 0, -4 ) );
+        $class_name       = array_reverse( $class_path_array )[ 0 ];
+        $table_name       = strtolower( substr( $class_name, 0, -4 ) );
         return $table_name;
     }
 
@@ -435,12 +522,14 @@ class Instance
      *
      * @return array
      */
-    public static function _getDataObjectArray( $class_path ): array
+    public
+    static
+    function _getDataObjectArray( $class_path ): array
     {
-        $IRM = IRManager::getInstance();
-        $instance_name = self::_getTableName( $class_path ) . '_data';
+        $IRM              = IRManager::getInstance();
+        $instance_name    = self::_getTableName( $class_path ) . '_data';
         $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
-        $res = $instance_manager->getObjectArray();
+        $res              = $instance_manager->getObjectArray();
         return $res;
     }
 
@@ -453,14 +542,17 @@ class Instance
      * @return null
      * @throws \LIBRARY\TOOL\Error
      */
-    public static function _getDataObjectById( $class_path, $id )
+    public
+    static
+    function _getDataObjectById( $class_path, $id )
     {
         try {
-            $IRM = IRManager::getInstance();
-            $instance_name = self::_getTableName( $class_path ) . '_data';
+            $IRM              = IRManager::getInstance();
+            $instance_name    = self::_getTableName( $class_path ) . '_data';
             $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
-            $res = $instance_manager->getById( $id );
-        } catch ( \Exception $e ) {
+            $res              = $instance_manager->getById( $id );
+        }
+        catch ( \Exception $e ) {
             throw new Error( Error::DATA_NOT_FOUND );
         }
         return $res;
@@ -474,12 +566,14 @@ class Instance
      *
      * @return bool
      */
-    public static function _isExistDataObjectById( $class_path, $id )
+    public
+    static
+    function _isExistDataObjectById( $class_path, $id )
     {
-        $IRM = IRManager::getInstance();
-        $instance_name = self::_getTableName( $class_path ) . '_data';
+        $IRM              = IRManager::getInstance();
+        $instance_name    = self::_getTableName( $class_path ) . '_data';
         $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
-        $res = $instance_manager->isExistById( $id );
+        $res              = $instance_manager->isExistById( $id );
         return $res;
     }
 
@@ -491,12 +585,14 @@ class Instance
      *
      * @return null
      */
-    public static function _getDataObjectByApiKey( $class_path, $api_key )
+    public
+    static
+    function _getDataObjectByApiKey( $class_path, $api_key )
     {
-        $IRM = IRManager::getInstance();
-        $instance_name = self::_getTableName( $class_path ) . '_data';
+        $IRM              = IRManager::getInstance();
+        $instance_name    = self::_getTableName( $class_path ) . '_data';
         $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
-        $res = $instance_manager->getByApiKey( $api_key );
+        $res              = $instance_manager->getByApiKey( $api_key );
         return $res;
     }
 
@@ -508,12 +604,14 @@ class Instance
      *
      * @return bool
      */
-    public static function _isExistDataObjectByApiKey( $class_path, $api_key )
+    public
+    static
+    function _isExistDataObjectByApiKey( $class_path, $api_key )
     {
-        $IRM = IRManager::getInstance();
-        $instance_name = self::_getTableName( $class_path ) . '_data';
+        $IRM              = IRManager::getInstance();
+        $instance_name    = self::_getTableName( $class_path ) . '_data';
         $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
-        $res = $instance_manager->isExistByApiKey( $api_key );
+        $res              = $instance_manager->isExistByApiKey( $api_key );
         return $res;
     }
 }

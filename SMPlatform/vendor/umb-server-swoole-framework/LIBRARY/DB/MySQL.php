@@ -1,6 +1,6 @@
-<?php
+<?php declare( strict_types = 1 );
 /**
- * Project: SMPlatform
+ * Project: UmbServerSwooleFramework
  * File: MySQL.php
  * Create: 2018/3/9
  * Author: Hugh.Lee
