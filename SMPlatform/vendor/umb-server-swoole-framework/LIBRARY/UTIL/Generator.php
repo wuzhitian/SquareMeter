@@ -8,15 +8,17 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\LIBRARY\TOOL;
+namespace UmbServer\SwooleFramework\LIBRARY\UTIL;
 
 /**
+ * 生成器工具类
  * Class Generator
- * @package UmbServer\SwooleFramework\MODEL\UTIL
+ * @package UmbServer\SwooleFramework\LIBRARY\UTIL
  */
 abstract class Generator
 {
     /**
+     * 生成uuid
      * @return string
      */
     public static function uuid()
@@ -28,6 +30,7 @@ abstract class Generator
     }
 
     /**
+     * 生成定长随机数
      * @param $length
      * @return string
      */
@@ -39,5 +42,51 @@ abstract class Generator
             $random_number .= (string)$bit;
         }
         return $random_number;
+    }
+
+    /**
+     * 生成随机的文件名
+     * @param int $bit_count
+     * @return bool|string
+     */
+    public static function randomFileName( $bit_count = 16 )
+    {
+        $char = md5( uniqid( mt_rand(), true ) );
+        $res = substr( $char, 0, $bit_count );
+        return $res;
+    }
+
+
+    /**
+     * token生成器，token为16位字符串
+     * @return string
+     */
+    public static function token()
+    {
+        $char = md5( uniqid( mt_rand(), true ) );
+        $res = substr( $char, 0, 16 );
+        return $res;
+    }
+
+    /**
+     * apiSecret生成器，36位字符串
+     * @return string
+     */
+    public static function apiSecret()
+    {
+        $char = md5( uniqid( mt_rand(), true ) );
+        $res = substr( $char, 0, 32 );
+        return $res;
+    }
+
+    /**
+     * 生成验证码，默认为6位数字
+     * @param int $bit_count
+     * @return string
+     */
+    public static function validateCode( $bit_count = 6 )
+    {
+        $res = self::randomNumber( $bit_count );
+        return $res;
     }
 }

@@ -13,7 +13,7 @@ namespace UmbServer\SwooleFramework\LIBRARY\ENUM;
 /**
  * Config类型的枚举类
  * Class _Config
- * @package UmbServer\SwooleFramework\MODEL\ENUM
+ * @package UmbServer\SwooleFramework\LIBRARY\ENUM
  */
 abstract
 class _Config extends \SplEnum

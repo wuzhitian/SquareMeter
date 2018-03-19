@@ -8,10 +8,11 @@
  * Copyright: Umbrella Inc.
  */
 
-const INT_TYPE    = 'int';
-const BOOL_TYPE   = 'bool';
+const INT_TYPE = 'int';
+const BOOL_TYPE = 'bool';
 const STRING_TYPE = 'string';
-const TEXT_TYPE   = 'text';
-const FLOAT_TYPE  = 'float';
+const TEXT_TYPE = 'text';
+const FLOAT_TYPE = 'float';
 const DOUBLE_TYPE = 'double';
-const JSON_TYPE   = 'json';
+const JSON_TYPE = 'json';
+const ARRAY_TYPE = 'array';

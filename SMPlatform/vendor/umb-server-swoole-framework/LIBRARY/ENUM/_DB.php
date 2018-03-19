@@ -8,12 +8,12 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleLibrary\FRAMEWORK\LIBRARY\ENUM;
+namespace UmbServer\SwooleFramework\LIBRARY\ENUM;
 
 /**
  * DB类型的枚举类
  * Class _DataBase
- * @package UmbServer\SwooleLibrary\FRAMEWORK\LIBRARY\ENUM
+ * @package UmbServer\SwooleFramework\LIBRARY\ENUM
  */
 abstract class _DB extends \SplEnum
 {

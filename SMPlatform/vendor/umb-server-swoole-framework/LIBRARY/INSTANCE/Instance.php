@@ -8,23 +8,37 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\LIBRARY\CORE\INSTANCE;
+namespace UmbServer\SwooleFramework\LIBRARY\INSTANCE;
 
-use UmbServer\SwooleFramework\LIBRARY\TOOL\Generator;
-use UmbServer\SwooleLibrary\FRAMEWORK\CORE\ENUM\_DataBase;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\Generator;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
 
 /**
  * 实例基础类
  * Class Instance
- * @package UmbServer\SwooleFramework\MODEL\BASE\INSTANCE
+ * @package UmbServer\SwooleFramework\MODEL\INSTANCE
  */
 class Instance
 {
     public $id = NULL; //所有实例都必须有id，可以是指定的、序号或是uuid
 
-    const LOCAL_INSTANCE = false; //是否需要挂载到本地实例池
-    const CACHE = _DataBase::Redis; //缓存方式，目前只可以选用null或redis
-    const PERSISTENCE = _DataBase::MySQL; //持久化方式，目前只可以选用null或mysql
+    const SCHEMA = []; //数据图表
+    const LOCAL_INSTANCE = false; //是否为本地实例，本地实例将由本地进程管理持久化并在本进程内存中管理实例池
+    const CACHE = _DB::Redis; //缓存方式，目前只可以选用null或redis
+    const PERSISTENCE = _DB::MySQL; //持久化方式，目前只可以选用null或mysql
+
+    public function getData()
+    {
+
+    }
+
+    private function getDataBySchema()
+    {
+        $data_array = [];
+        foreach ( self::SCHEMA as $key => $type ) {
+            $data_array['key']
+        }
+    }
 
     /**
      * 创建实例
@@ -48,6 +62,12 @@ class Instance
     private function createByLocalInstancePool()
     {
 
+    }
+
+    public function deleteIdFromIdArray( $id, $id_array )
+    {
+        $key = array_search( $id, $id_array );
+        array_splice( $id_array, $key, 1 );
     }
 
     private function createByDataService()

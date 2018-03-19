@@ -8,11 +8,11 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleLibrary\FRAMEWORK\CORE\DATABASE;
+namespace UmbServer\SwooleFramework\LIBRARY\DB;
 
 /**
  * Class MySQL
- * @package UmbServer\SwooleLibrary\MODEL\BASE\DB
+ * @package UmbServer\SwooleFramework\LIBRARY\DB
  */
 class MySQL implements DB
 {
