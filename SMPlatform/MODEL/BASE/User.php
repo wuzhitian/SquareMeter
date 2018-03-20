@@ -20,9 +20,7 @@ use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
  */
 class User extends Instance
 {
-
     public $id; //用户id
     public $type; //用户类型
     public $role_array = []; //用户角色
-
 }

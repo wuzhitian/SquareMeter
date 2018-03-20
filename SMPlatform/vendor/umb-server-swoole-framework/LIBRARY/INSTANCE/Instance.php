@@ -11,7 +11,6 @@
 namespace UmbServer\SwooleFramework\LIBRARY\INSTANCE;
 
 use UmbServer\SwooleFramework\LIBRARY\DATA\Data;
-use UmbServer\SwooleFramework\LIBRARY\DATA\DBData;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Generator;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
@@ -23,15 +22,11 @@ use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
  */
 class Instance
 {
-
     public $id = NULL; //所有实例都必须有id，可以是指定的、序号或是uuid
 
-    private $_local_data; //本地数据对象，LOCAL_INSTANCE为true时用于操作数据库
-
-    const SCHEMA         = []; //数据图谱
-    const LOCAL_INSTANCE = false; //是否为本地实例，本地实例将由本地进程管理持久化并在本进程内存中管理实例池
-    const CACHE          = _DB::Redis; //缓存方式，目前只可以选用null或redis
-    const PERSISTENCE    = _DB::MySQL; //持久化方式，目前只可以选用null或mysql
+    const SCHEMA      = []; //数据图谱
+    const CACHE       = _DB::Redis; //缓存方式，目前只可以选用null或redis或swoole_table
+    const PERSISTENCE = _DB::MySQL; //持久化方式，目前只可以选用null或mysql
 
     /**
      * 根据schema获取数据对象
@@ -50,39 +45,27 @@ class Instance
     }
 
     /**
-     * 将数据转化为数据库存储的数据
-     * @return DBData
+     * 保存实例，如果是本地数据，则需要自己操作缓存和持久层，如果是远程数据服务则不管
      */
     public
-    function transformDataToDBData(): DBData
+    function save()
     {
-        $data          = $this->getDataObjectBySchema();
-        $db_data_array = [];
-        foreach ( self::SCHEMA as $key => $type ) {
-            $value              = $this->$key;
-            $data_array[ $key ] = DataHandler::typeConversion( $type, $value );
-        }
     }
 
     /**
-     * 设置值
-     * @param $key
-     * @param $value
+     * 获取缓存数据
      */
     public
-    function setData( $key, $value )
+    function getCacheData()
     {
-
     }
 
     /**
-     * 获取值
-     * @param $key
+     * 获取持久层数据
      */
     public
-    function getData( $key )
+    function getPersistenceData()
     {
-
     }
 
     /**
@@ -179,35 +162,6 @@ class Instance
     }
 
     /**
-     * 根据类型转换数值
-     *
-     * @param $type
-     * @param $value
-     *
-     * @return bool|float|int|string
-     */
-    public
-    static
-    function dataTypeStrict( $type, $value )
-    {
-        if ( !isset( $type ) || is_null( $value ) ) {
-            return $value;
-        }
-        if ( $type == INT_TYPE ) {
-            $res = (int)$value;
-        } elseif ( $type == BOOL_TYPE ) {
-            $res = (bool)$value;
-        } elseif ( $type == FLOAT_TYPE ) {
-            $res = (float)$value;
-        } elseif ( $type == STRING_TYPE ) {
-            $res = (string)$value;
-        } else {
-            $res = $value;
-        }
-        return $res;
-    }
-
-    /**
      * 为数据库映射对象设置数据库名和表名
      *
      * @param null $table_name
@@ -256,7 +210,7 @@ class Instance
 
     /**
      * 从DBM中获取本Data的数据库对象
-     * @return \LIBRARY\TOOL\DB
+     * @return DB
      */
     public
     function getDB(): DB

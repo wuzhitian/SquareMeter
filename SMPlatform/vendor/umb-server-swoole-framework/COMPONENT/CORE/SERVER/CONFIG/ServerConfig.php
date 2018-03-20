@@ -17,5 +17,11 @@ namespace UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG;
  */
 class ServerConfig
 {
-
+    public $name;
+    public $type;
+    public $root;
+    public $path;
+    public $listen_ip;
+    public $listen_port;
+    public $set;
 }

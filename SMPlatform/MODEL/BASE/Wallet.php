@@ -11,6 +11,7 @@
 namespace SMPlatform\MODEL\BASE;
 
 /**
+ * 钱包类
  * Class Wallet
  * @package SMPlatform\MODEL\BASE
  */

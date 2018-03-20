@@ -10,23 +10,30 @@
 
 namespace UmbServer\SwooleFramework\COMPONENT\CORE\SERVER;
 
+use UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG\HttpApiServerConfig;
+use UmbServer\SwooleFramework\COMPONENT\SERVER\Server;
 use UmbServer\SwooleFramework\CORE\BASE\AOP;
-use UmbServer\SwooleFramework\LIBRARY\TOOL\ConfigLoader;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\ConfigLoader;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
 
+use swoole_http_server;
+use swoole_http_request;
+use swoole_http_response;
+
 /**
- * http(s)的api服务器
+ * http(s)api服务器基础类
  * Class HttpApiServer
  * @package UmbServer\SwooleFramework\COMPONENT\BASE\SERVER
  */
-class HttpApiServer
+class HttpApiServer implements Server
 {
     const DEFAULT_CONFIG
         = [
             'name'        => 'HttpApiServer',
-            'listen_ip'   => '127.0.0.1',
+            'listen_ip'   => '0.0.0.0',
             'listen_port' => 9527,
             'is_ssl'      => false,
+            'is_http2'    => false,
         ]; //默认配置
 
     private $_server; //swoole_http_server对象
@@ -49,15 +56,25 @@ class HttpApiServer
     }
 
     /**
+     * 获取config
+     * @return HttpApiServerConfig
+     */
+    private
+    function getConfig(): HttpApiServerConfig
+    {
+        return $this->_config;
+    }
+
+    /**
      * 初始化服务器
      */
     public
     function initial()
     {
-        $this->bindCallback();
-        if ( $this->getConfig() )
-            $this->_server = new \swoole_http_server( $this->_config[ 'listen_ip' ], $this->_config[ 'listen_port' ], SWOOLE_BASE, SWOOLE_SOCK_TCP );
-
+        $this->setServer(); //生成server对象
+        $this->setHttps(); //根据is_ssl和is_http2来设置相关的set
+        $this->set(); //根据config中的set来完成set事务
+        $this->bindCallback(); //绑定回调事件
     }
 
     /**
@@ -65,7 +82,7 @@ class HttpApiServer
      * @return mixed
      */
     private
-    function getThisRequest()
+    function getThisRequest(): swoole_http_request
     {
         return $this->_this_request;
     }
@@ -75,27 +92,27 @@ class HttpApiServer
      * @return mixed
      */
     private
-    function getThisResponse()
+    function getThisResponse(): swoole_http_response
     {
         return $this->_this_response;
     }
 
     /**
      * 设置当次请求
-     * @param $this_request
+     * @param swoole_http_request $this_request
      */
     private
-    function setThisRequest( $this_request )
+    function setThisRequest( swoole_http_request $this_request )
     {
         $this->_this_request = $this_request;
     }
 
     /**
      * 设置当次响应
-     * @param $this_response
+     * @param swoole_http_response $this_response
      */
     private
-    function setThisResponse( $this_response )
+    function setThisResponse( swoole_http_response $this_response )
     {
         $this->_this_response = $this_response;
     }
@@ -105,19 +122,9 @@ class HttpApiServer
      * @return \swoole_http_server
      */
     private
-    function getServer()
+    function getServer(): swoole_http_server
     {
         return $this->_server;
-    }
-
-    /**
-     * 获取config
-     * @return object
-     */
-    private
-    function getConfig(): object
-    {
-        return $this->_config;
     }
 
     /**
@@ -141,35 +148,82 @@ class HttpApiServer
     }
 
     /**
-     * http2
+     * 根据配置中is_ssl设置服务器对象
      */
-    public
+    private
+    function setServer()
+    {
+        if ( $this->getConfig()->is_ssl === true ) {
+            $this->setHttpsServer();
+        } else {
+            $this->setHttpServer();
+        }
+    }
+
+    /**
+     * 生成http服务器对象
+     */
+    private
+    function setHttpServer()
+    {
+        $this->_server = new swoole_http_server( $this->getConfig()->listen_ip, $this->getConfig()->listen_port, SWOOLE_BASE, SWOOLE_SOCK_TCP );
+    }
+
+    /**
+     * 生成https服务器对象
+     */
+    private
+    function setHttpsServer()
+    {
+        $this->_server = new swoole_http_server( $this->getConfig()->listen_ip, $this->getConfig()->listen_port, SWOOLE_BASE, SWOOLE_SOCK_TCP | SWOOLE_SSL );
+    }
+
+    /**
+     * 设置https
+     */
+    private
+    function setHttps()
+    {
+        if ( $this->getConfig()->is_ssl === true ) {
+            $this->setSSLFile();
+            $this->setHttp2();
+        }
+    }
+
+    /**
+     * 设置ssl文件
+     */
+    private
+    function setSSLFile()
+    {
+        $this->getConfig()->set[ 'ssl_cert_file' ] = $this->getConfig()->ssl_cert_file;
+        $this->getConfig()->set[ 'ssl_key_file' ]  = $this->getConfig()->ssl_key_file;
+    }
+
+    /**
+     * 设置http2
+     */
+    private
     function setHttp2()
     {
-        $this->set[ 'open_http2_protocol' ] = true;
+        if ( $this->getConfig()->is_http2 === true ) {
+            $this->getConfig()->set[ 'open_http2_protocol' ] = true;
+        }
     }
 
     /**
-     * @param $cert_file_path
-     * @param $key_file_path
+     * 执行设置
      */
-    public
-    function setSSLFile( $cert_file_path, $key_file_path )
-    {
-        $this->set[ 'ssl_cert_file' ] = $cert_file_path;
-        $this->set[ 'ssl_key_file' ]  = $key_file_path;
-    }
-
-    public
+    private
     function set()
     {
-        $this->getServer()->set( $this->set );
+        $this->getServer()->set( $this->getConfig()->set );
     }
 
     /**
-     * 绑定回调
+     * 绑定回调事件
      */
-    public
+    private
     function bindCallback()
     {
         $this->getServer()->on( 'Start', [ $this, 'onStart' ] );
@@ -181,7 +235,7 @@ class HttpApiServer
     /**
      * worker进程启动后的回调
      */
-    public
+    private
     function onWorkerStart()
     {
 
@@ -190,44 +244,47 @@ class HttpApiServer
     /**
      * server主进程启动后的回调
      */
-    public
+    private
     function onStart()
     {
-        echo "onStart:: $this->_config[ 'name' ] Server started successfully.\n";
+        echo "onStart:: " . $this->getConfig()->name . " Server started successfully.\n";
     }
 
     /**
      * server主进程关闭后的回调
      */
-    public
+    private
     function onShutdown()
     {
-        echo "onShutdown:: $this->_config[ 'name' ] Server stopped successfully.\n";
+        echo "onShutdown:: " . $this->getConfig()->name . " Server stopped successfully.\n";
     }
 
     /**
      * 收到请求后的回调
-     * @param $request
-     * @param $response
+     * @param swoole_http_request $request
+     * @param swoole_http_response $response
      * @return bool
      */
-    public
-    function onRequest( $request, $response )
+    private
+    function onRequest( swoole_http_request $request, swoole_http_response $response )
     {
+        //设定当次请求
         $this->setThisRequest( $request );
+
+        //设定当次响应
         $this->setThisResponse( $response );
 
         //拒绝不允许的请求
         $this->refuseNotAllowedRequest();
 
-        // 把请求的path字符串拆分为数组，用array_filter去空
+        //把请求的path字符串拆分为数组，用array_filter去空
         $path_array = explode( '/', $request->server[ 'request_uri' ] );
 
-        // 如果没有写控制器名称，默认为index
+        //如果没有写控制器名称，默认为index
         $controller_name = $path_array[ sizeof( $path_array ) - 2 ] ?? 'index';
         $function_name   = $path_array[ sizeof( $path_array ) - 1 ];
 
-        // 遍历controller和function的路径深度，组成$path
+        //遍历controller和function的路径深度，组成$path
         $path = '';
         foreach ( $path_array as $key => $dir ) {
             if ( $key > sizeof( $path_array ) - 3 ) {
@@ -236,32 +293,24 @@ class HttpApiServer
             $path .= ( $dir . '/' );
         }
 
-        $file_path = $this->config[ 'root' ] . $path . $controller_name . '.php';
+        //获取文件路径
+        $file_path = $this->getConfig()->root . $path . $controller_name . '.php';
 
-        var_dump( $file_path );
-        // 控制器不存在
+        //控制器不存在
         if ( !file_exists( $file_path ) ) {
             $this->notFound();
             return false;
         }
 
-        // 加载控制器类controller
+        //加载控制器类controller
         include_once( $file_path );
-        // var_dump($file_path);
+
+        //var_dump($file_path);
         $controller = new AOP( new $controller_name, $request );
         $res        = $controller->$function_name();
         $response->header( 'Access-Control-Allow-Origin', '*' );
         $response->end( $res );
         return true;
-    }
-
-    /**
-     * 启动server
-     */
-    public
-    function start()
-    {
-        $this->getServer()->start();
     }
 
     /**
@@ -307,4 +356,12 @@ class HttpApiServer
         $this->getThisResponse()->end();
     }
 
+    /**
+     * 启动server
+     */
+    public
+    function start()
+    {
+        $this->getServer()->start();
+    }
 }

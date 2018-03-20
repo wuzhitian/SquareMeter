@@ -10,8 +10,12 @@
 
 namespace UmbServer\SwooleFramework\COMPONENT\SERVER;
 
-
-class TCPServer
+/**
+ * tcp服务器基础类
+ * Class TCPServer
+ * @package UmbServer\SwooleFramework\COMPONENT\SERVER
+ */
+class TCPServer implements Server
 {
 
 }

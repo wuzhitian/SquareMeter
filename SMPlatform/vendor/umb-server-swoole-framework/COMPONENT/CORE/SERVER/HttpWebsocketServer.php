@@ -1,8 +1,8 @@
 <?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
- * File: HttpWebServer.php
- * Create: 2018/3/15
+ * File: HttpWebsocketServer.php
+ * Create: 2018/3/20
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
  * Copyright: Umbrella Inc.
@@ -11,11 +11,11 @@
 namespace UmbServer\SwooleFramework\COMPONENT\SERVER;
 
 /**
- * http(s)web服务器基础类
- * Class HttpWebServer
+ * http(s)websocket服务器基础类
+ * Class HttpWebsocketServer
  * @package UmbServer\SwooleFramework\COMPONENT\SERVER
  */
-class HttpWebServer implements Server
+class HttpWebsocketServer implements Server
 {
 
 }

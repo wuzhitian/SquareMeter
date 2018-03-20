@@ -1,8 +1,8 @@
-<?php declare( strict_types = 1 );
+<?php
 /**
  * Project: UmbServerSwooleFramework
- * File: HttpWebServer.php
- * Create: 2018/3/15
+ * File: Server.php
+ * Create: 2018/3/20
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
  * Copyright: Umbrella Inc.
@@ -11,11 +11,11 @@
 namespace UmbServer\SwooleFramework\COMPONENT\SERVER;
 
 /**
- * http(s)web服务器基础类
- * Class HttpWebServer
+ * 服务器接口类
+ * Interface Server
  * @package UmbServer\SwooleFramework\COMPONENT\SERVER
  */
-class HttpWebServer implements Server
+interface Server
 {
 
 }

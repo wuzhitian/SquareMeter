@@ -19,5 +19,24 @@ use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\MODEL\Service;
  */
 class ApiTestService extends Service
 {
+    private static $_instance;
 
+    private
+    function __construct()
+    {
+    }
+
+    private
+    function __clone()
+    {
+    }
+
+    public static
+    function getInstance(): self
+    {
+        if ( !( self::$_instance instanceof self ) ) {
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
 }

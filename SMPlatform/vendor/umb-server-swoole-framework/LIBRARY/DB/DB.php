@@ -17,11 +17,21 @@ namespace UmbServer\SwooleFramework\LIBRARY\DB;
  */
 interface DB
 {
-    function constructor();
+    public function constructor();
 
-    function connect();
+    public function connect();
 
-    function disconnect();
+    public function disconnect();
 
-    function isConnected(): bool;
+    public function isConnected(): bool;
+
+    public function query();
+
+    public function insert();
+
+    public function updateById();
+
+    public function deleteById();
+
+    public function softDeleteById();
 }

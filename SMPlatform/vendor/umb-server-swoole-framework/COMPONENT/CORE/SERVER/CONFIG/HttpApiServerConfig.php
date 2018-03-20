@@ -1,7 +1,7 @@
 <?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
- * File: HttpServerConfig.php
+ * File: HttpApiServerConfig.php
  * Create: 2018/3/15
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
@@ -11,11 +11,14 @@
 namespace UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG;
 
 /**
- * http(s)服务器的配置类
- * Class HttpServerConfig
+ * http(s)api服务器配置类
+ * Class HttpApiServerConfig
  * @package UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG
  */
-class HttpServerConfig extends ServerConfig
+class HttpApiServerConfig extends ServerConfig
 {
-
+    public $is_ssl        = false;
+    public $is_http2      = false;
+    public $ssl_cert_file;
+    public $ssl_key_file;
 }

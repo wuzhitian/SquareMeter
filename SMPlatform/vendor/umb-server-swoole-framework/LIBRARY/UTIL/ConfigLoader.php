@@ -8,7 +8,7 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\LIBRARY\TOOL;
+namespace UmbServer\SwooleFramework\LIBRARY\UTIL;
 
 use UmbServer\SwooleFramework\LIBRARY\FILESYSTEM\FORMAT\{
     XMLFile,
