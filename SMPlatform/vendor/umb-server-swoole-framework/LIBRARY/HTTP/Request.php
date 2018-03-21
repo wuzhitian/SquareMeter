@@ -18,4 +18,8 @@ namespace UmbServer\SwooleFramework\LIBRARY\HTTP;
 class Request
 {
     private $_swoole_http_request;
+
+    public $server;
+    public $request_uri;
+    public $params;
 }
