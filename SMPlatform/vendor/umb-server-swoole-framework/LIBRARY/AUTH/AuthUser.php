@@ -1,37 +1,32 @@
 <?php
 /**
- * Project: SMPlatform
- * File: IndustrialRealEstateAsset.php
- * Create: 2018/3/10
+ * Project: UmbServerSwooleFramework
+ * File: AuthUser.php
+ * Create: 2018/3/20
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
- * Copyright: SMBC Inc.
+ * Copyright: Umbrella Inc.
  */
 
-namespace draft\ApiTestService\MODEL;
+namespace UmbServer\SwooleFramework\LIBRARY\AUTH;
 
-use UmbServer\SwooleFramework\LIBRARY\AUTH\AuthUser;
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Generator;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Time;
 
-class User extends AuthUser
+/**
+ * 授权接口访问用户基础类
+ * Class AuthUser
+ * @package UmbServer\SwooleFramework\LIBRARY\AUTH
+ */
+class AuthUser extends Instance
 {
-    const LOCAL_INSTANCE = true;
-
-    const DATA_SCHEMA = [
-        'id' => STRING_TYPE,
-        'username' => STRING_TYPE,
-        'password' => STRING_TYPE,
-        'api_key' => STRING_TYPE,
-        'api_secret' => TEXT_TYPE,
-    ];
-
-    public $username;
-    public $password;
     public $api_key;
     public $api_secret;
+    public $is_login;
+    public $last_login_timestamp;
 
-    public static function login( $username, $password )
+    public static function login()
     {
 
     }
@@ -41,10 +36,13 @@ class User extends AuthUser
 
     }
 
-    /**
-     *
-     * @return mixed
-     */
+    private function generateApiKey()
+    {
+        $api_key = Generator::token();
+        $this->api_key = $api_key;
+        $this->save();
+    }
+
     private function updateLoginInfo()
     {
         $last_login_timestamp = Time::getNow();

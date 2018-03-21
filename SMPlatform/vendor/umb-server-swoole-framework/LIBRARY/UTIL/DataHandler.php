@@ -56,4 +56,50 @@ class DataHandler
         }
         return $res;
     }
+
+    /**
+     * 为string类型的字符串前后添加符号，默认为双引号
+     * @param $string
+     * @param string $quotation
+     * @return int|string
+     */
+    public static function quotation( $string, $quotation = '"' )
+    {
+        $string_format = $string;
+        if ( isset( $string ) && is_string( $string ) ) {
+            $string = str_replace( '"', '\"', $string );
+            $string_format = $quotation . $string . $quotation;
+        }
+        if ( is_bool( $string ) ) {
+            $string_format = $string ? 1 : 0;
+        }
+        return $string_format;
+    }
+
+    /**
+     * 返回格式化，默认格式化为json
+     * @param $success
+     * @param $response
+     * @param string $format
+     * @return string
+     */
+    public static function return( $success, $response, $format = 'json' )
+    {
+        //对数组进行键名排序
+        if ( is_array( $response ) ) {
+            ksort( $response );
+        }
+        $return[ 'success' ] = $success;
+        $return[ 'data' ] = $response;
+        switch ( $format ) {
+            case 'json':
+                //JSON_UNESCAPED_UNICODE用于处理中文问题
+                $res = json_encode( $return, JSON_UNESCAPED_UNICODE );
+
+                break;
+            default:
+                $res = $return;
+        }
+        return $res;
+    }
 }

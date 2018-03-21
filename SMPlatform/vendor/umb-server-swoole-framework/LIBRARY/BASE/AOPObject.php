@@ -8,44 +8,43 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\CORE\BASE;
+namespace UmbServer\SwooleFramework\LIBRARY\BASE;
+
+use UmbServer\SwooleFramework\LIBRARY\HTTP\Response;
 
 /**
+ * AOP对象接口类
  * Interface AOPObject
- * @package UmbServer\SwooleFramework\BASE\BASE
+ * @package UmbServer\SwooleFramework\LIBRARY\BASE
  */
 interface AOPObject
 {
     /**
      * 前置方法
-     * @return mixed
+     * @return bool
      */
-    public function _before();
+    public function _before(): bool;
 
     /**
      * 执行中方法
-     *
      * @param $function_name
      * @param $arguments
-     *
      * @return mixed
      */
     public function _run( $function_name, $arguments );
 
     /**
      * 后置方法
-     * @return mixed
+     * @return bool
      */
-    public function _after();
+    public function _after(): bool;
 
     /**
      * 设置结果
-     *
      * @param $response
-     *
      * @return mixed
      */
-    public function setResponse( $response );
+    public function setResponse( Response $response );
 
     /**
      * 获取最终结果
