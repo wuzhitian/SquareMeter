@@ -15,7 +15,7 @@ namespace UmbServer\SwooleFramework\LIBRARY\ENUM;
  * Class _Serialize
  * @package UmbServer\SwooleFramework\LIBRARY\ENUM
  */
-class _Serialize extends \SplEnum
+class _Serialize
 {
     const JSON = 'json';
     const UMB  = 'umb';

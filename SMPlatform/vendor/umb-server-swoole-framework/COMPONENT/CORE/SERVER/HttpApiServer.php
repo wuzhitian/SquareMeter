@@ -12,8 +12,7 @@ namespace UmbServer\SwooleFramework\COMPONENT\CORE\SERVER;
 
 use UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG\HttpApiServerConfig;
 use UmbServer\SwooleFramework\COMPONENT\SERVER\Server;
-use UmbServer\SwooleFramework\CORE\BASE\AOP;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\ConfigLoader;
+use UmbServer\SwooleFramework\LIBRARY\BASE\AOP;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
 
 use swoole_http_server;
@@ -29,11 +28,11 @@ class HttpApiServer implements Server
 {
     const DEFAULT_CONFIG
         = [
-            'name'        => 'HttpApiServer',
-            'listen_ip'   => '0.0.0.0',
+            'name' => 'HttpApiServer',
+            'listen_ip' => '0.0.0.0',
             'listen_port' => 9527,
-            'is_ssl'      => false,
-            'is_http2'    => false,
+            'is_ssl' => false,
+            'is_http2' => false,
         ]; //默认配置
 
     private $_server; //swoole_http_server对象
@@ -52,7 +51,8 @@ class HttpApiServer implements Server
     public
     function setConfig( $config = self::DEFAULT_CONFIG, $config_file_type = _Config::ARRAY )
     {
-        $this->_config = ConfigLoader::parse( $config, $config_file_type );
+        $this->_config = new HttpApiServerConfig();
+        $this->getConfig()->setByConfig( $config, $config_file_type );
     }
 
     /**
@@ -197,7 +197,7 @@ class HttpApiServer implements Server
     function setSSLFile()
     {
         $this->getConfig()->set[ 'ssl_cert_file' ] = $this->getConfig()->ssl_cert_file;
-        $this->getConfig()->set[ 'ssl_key_file' ]  = $this->getConfig()->ssl_key_file;
+        $this->getConfig()->set[ 'ssl_key_file' ] = $this->getConfig()->ssl_key_file;
     }
 
     /**
@@ -235,7 +235,7 @@ class HttpApiServer implements Server
     /**
      * worker进程启动后的回调
      */
-    private
+    public
     function onWorkerStart()
     {
 
@@ -244,7 +244,7 @@ class HttpApiServer implements Server
     /**
      * server主进程启动后的回调
      */
-    private
+    public
     function onStart()
     {
         echo "onStart:: " . $this->getConfig()->name . " Server started successfully.\n";
@@ -253,7 +253,7 @@ class HttpApiServer implements Server
     /**
      * server主进程关闭后的回调
      */
-    private
+    public
     function onShutdown()
     {
         echo "onShutdown:: " . $this->getConfig()->name . " Server stopped successfully.\n";
@@ -265,9 +265,10 @@ class HttpApiServer implements Server
      * @param swoole_http_response $response
      * @return bool
      */
-    private
+    public
     function onRequest( swoole_http_request $request, swoole_http_response $response )
     {
+        var_dump( $request );
         //设定当次请求
         $this->setThisRequest( $request );
 
@@ -282,7 +283,7 @@ class HttpApiServer implements Server
 
         //如果没有写控制器名称，默认为index
         $controller_name = $path_array[ sizeof( $path_array ) - 2 ] ?? 'index';
-        $function_name   = $path_array[ sizeof( $path_array ) - 1 ];
+        $function_name = $path_array[ sizeof( $path_array ) - 1 ];
 
         //遍历controller和function的路径深度，组成$path
         $path = '';
@@ -307,7 +308,7 @@ class HttpApiServer implements Server
 
         //var_dump($file_path);
         $controller = new AOP( new $controller_name, $request );
-        $res        = $controller->$function_name();
+        $res = $controller->$function_name();
         $response->header( 'Access-Control-Allow-Origin', '*' );
         $response->end( $res );
         return true;

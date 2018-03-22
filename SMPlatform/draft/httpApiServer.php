@@ -9,18 +9,19 @@
  * Copyright: Umbrella Inc.
  */
 
+require_once( __DIR__ . '/../vendor/umb-server-swoole-framework/autoload.php' );
+
 use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpApiServer;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\ConfigLoader;
-use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
 
 $server = new HttpApiServer();
 $config = [
-    'name'        => 'HttpApiServer',
-    'root'        => '/SquareMeter',
-    'path'        => '/SMPlatform/draft/',
-    'listen_ip'   => '0.0.0.0',
+    'name' => 'HttpApiServer',
+    'root' => '/SquareMeter',
+    'path' => '/SMPlatform/draft/',
+    'listen_ip' => '0.0.0.0',
     'listen_port' => 9527,
 ];
 
-$server->setConfig( ConfigLoader::parse( $config, _Config::ARRAY ) );
+$server->setConfig( $config );
+$server->initial();
 $server->start();

@@ -8,12 +8,12 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\CORE\BASE;
+namespace UmbServer\SwooleFramework\LIBRARY\BASE;
 
 /**
  * 切面对象访问控制类
  * Class AOP
- * @package UmbServer\SwooleFramework\BASE\BASE
+ * @package UmbServer\SwooleFramework\LIBRARY\BASE
  */
 class AOP
 {

@@ -16,7 +16,7 @@ namespace UmbServer\SwooleFramework\LIBRARY\ENUM;
  * @package UmbServer\SwooleFramework\LIBRARY\ENUM
  */
 abstract
-class _DB extends \SplEnum
+class _DB
 {
     const MySQL       = 'mysql';
     const Redis       = 'redis';

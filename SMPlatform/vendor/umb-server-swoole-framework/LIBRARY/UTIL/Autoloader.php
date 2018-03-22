@@ -10,6 +10,8 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\UTIL;
 
+use UmbServer\SwooleFramework\LIBRARY\FILESYSTEM\Folder;
+
 /**
  * 自动加载工具类
  * Class Autoloader

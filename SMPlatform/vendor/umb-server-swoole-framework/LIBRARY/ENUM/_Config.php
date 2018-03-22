@@ -16,7 +16,7 @@ namespace UmbServer\SwooleFramework\LIBRARY\ENUM;
  * @package UmbServer\SwooleFramework\LIBRARY\ENUM
  */
 abstract
-class _Config extends \SplEnum
+class _Config
 {
     const JSON     = 'json';
     const ARRAY    = 'array';
