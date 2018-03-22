@@ -73,7 +73,7 @@ class MySQL implements DB
     private
     function setPdoObject()
     {
-        $this->_pdo_object =
+        $this->_pdo_object = new \PDO();
     }
 
     public
