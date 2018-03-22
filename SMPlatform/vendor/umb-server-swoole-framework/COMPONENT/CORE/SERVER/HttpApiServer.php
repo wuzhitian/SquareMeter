@@ -14,6 +14,8 @@ use UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG\HttpApiServerConfig;
 use UmbServer\SwooleFramework\COMPONENT\SERVER\Server;
 use UmbServer\SwooleFramework\LIBRARY\BASE\AOP;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\Request;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\Response;
 
 use swoole_http_server;
 use swoole_http_request;
@@ -28,11 +30,11 @@ class HttpApiServer implements Server
 {
     const DEFAULT_CONFIG
         = [
-            'name' => 'HttpApiServer',
-            'listen_ip' => '0.0.0.0',
+            'name'        => 'HttpApiServer',
+            'listen_ip'   => '0.0.0.0',
             'listen_port' => 9527,
-            'is_ssl' => false,
-            'is_http2' => false,
+            'is_ssl'      => false,
+            'is_http2'    => false,
         ]; //默认配置
 
     private $_server; //swoole_http_server对象
@@ -40,8 +42,8 @@ class HttpApiServer implements Server
 
     private $extra_data; //附加数据
 
-    private $_this_request; //当次请求的对象暂存
-    private $_this_response; //当次响应的对象暂存
+    private $_request; //当次请求的对象暂存
+    private $_response; //当次响应的对象暂存
 
     /**
      * 设置配置
@@ -79,42 +81,42 @@ class HttpApiServer implements Server
 
     /**
      * 获取当次请求
-     * @return mixed
+     * @return Request
      */
     private
-    function getThisRequest(): swoole_http_request
+    function getRequest(): Request
     {
-        return $this->_this_request;
+        return $this->_request;
     }
 
     /**
      * 获取当次响应
-     * @return mixed
+     * @return Response
      */
     private
-    function getThisResponse(): swoole_http_response
+    function getResponse(): Response
     {
-        return $this->_this_response;
+        return $this->_response;
     }
 
     /**
      * 设置当次请求
-     * @param swoole_http_request $this_request
+     * @param swoole_http_request $request
      */
     private
-    function setThisRequest( swoole_http_request $this_request )
+    function setRequest( swoole_http_request $request )
     {
-        $this->_this_request = $this_request;
+        $this->_request = new Request( $request );
     }
 
     /**
      * 设置当次响应
-     * @param swoole_http_response $this_response
+     * @param swoole_http_response $response
      */
     private
-    function setThisResponse( swoole_http_response $this_response )
+    function setResponse( swoole_http_response $response )
     {
-        $this->_this_response = $this_response;
+        $this->_response = new Response( $response );
     }
 
     /**
@@ -197,7 +199,7 @@ class HttpApiServer implements Server
     function setSSLFile()
     {
         $this->getConfig()->set[ 'ssl_cert_file' ] = $this->getConfig()->ssl_cert_file;
-        $this->getConfig()->set[ 'ssl_key_file' ] = $this->getConfig()->ssl_key_file;
+        $this->getConfig()->set[ 'ssl_key_file' ]  = $this->getConfig()->ssl_key_file;
     }
 
     /**
@@ -263,55 +265,24 @@ class HttpApiServer implements Server
      * 收到请求后的回调
      * @param swoole_http_request $request
      * @param swoole_http_response $response
-     * @return bool
      */
     public
     function onRequest( swoole_http_request $request, swoole_http_response $response )
     {
-        var_dump( $request );
         //设定当次请求
-        $this->setThisRequest( $request );
+        $this->setRequest( $request );
 
         //设定当次响应
-        $this->setThisResponse( $response );
+        $this->setResponse( $response );
 
-        //拒绝不允许的请求
+        //拦截不允许的请求
         $this->refuseNotAllowedRequest();
 
-        //把请求的path字符串拆分为数组，用array_filter去空
-        $path_array = explode( '/', $request->server[ 'request_uri' ] );
+        //处理请求
+        $res = $this->getRequest()->handle();
 
-        //如果没有写控制器名称，默认为index
-        $controller_name = $path_array[ sizeof( $path_array ) - 2 ] ?? 'index';
-        $function_name = $path_array[ sizeof( $path_array ) - 1 ];
-
-        //遍历controller和function的路径深度，组成$path
-        $path = '';
-        foreach ( $path_array as $key => $dir ) {
-            if ( $key > sizeof( $path_array ) - 3 ) {
-                break;
-            }
-            $path .= ( $dir . '/' );
-        }
-
-        //获取文件路径
-        $file_path = $this->getConfig()->root . $path . $controller_name . '.php';
-
-        //控制器不存在
-        if ( !file_exists( $file_path ) ) {
-            $this->notFound();
-            return false;
-        }
-
-        //加载控制器类controller
-        include_once( $file_path );
-
-        //var_dump($file_path);
-        $controller = new AOP( new $controller_name, $request );
-        $res = $controller->$function_name();
-        $response->header( 'Access-Control-Allow-Origin', '*' );
-        $response->end( $res );
-        return true;
+        //响应请求结果
+        $this->getResponse()->response( $res );
     }
 
     /**
@@ -331,30 +302,68 @@ class HttpApiServer implements Server
     private
     function refuseFavicon()
     {
-        if ( $this->getThisResponse()->server[ 'request_uri' ] == '/favicon.ico' ) {
-            $this->refuseRequest();
+        if ( $this->getRequest()->server[ 'request_uri' ] === '/favicon.ico' ) {
+            $this->getResponse()->refuse();
         }
     }
 
     /**
-     * 资源没找到，返回404
+     * 处理api请求
      */
     private
-    function notFound()
+    function handleApiRequest()
     {
-        $this->getThisResponse()->statue( 404 );
-        $this->getThisResponse()->end();
+        //把请求的path字符串拆分为数组，用array_filter去空
+        $path_array = explode( '/', $request->server[ 'request_uri' ] );
+
+        //如果没有写控制器名称，默认为index
+        $controller_name = $path_array[ sizeof( $path_array ) - 2 ] ?? 'index';
+        $function_name   = $path_array[ sizeof( $path_array ) - 1 ];
+
+        //遍历controller和function的路径深度，组成$path
+        $path = '';
+        foreach ( $path_array as $key => $dir ) {
+            if ( $key > sizeof( $path_array ) - 3 ) {
+                break;
+            }
+            $path .= ( $dir . '/' );
+        }
+
+        //获取文件路径
+        $file_path = $this->getConfig()->root . $path . $controller_name . '.php';
+
+        //控制器不存在
+        if ( !file_exists( $file_path ) ) {
+            $this->getResponse()->notFound();
+            return false;
+        }
+
+        //加载控制器类controller
+        include_once( $file_path );
+
+        //var_dump($file_path);
+        $controller = new AOP( new $controller_name, $request );
+        $res        = $controller->$function_name();
+        $response->end( $res );
+        return true;
     }
 
     /**
-     * 拒绝请求
-     * @param $response
+     * 处理资源请求
      */
     private
-    function refuseRequest()
+    function handleResourceRequest()
     {
-        $this->getThisResponse()->statue( 403 );
-        $this->getThisResponse()->end();
+
+    }
+
+    /**
+     * 处理代理请求
+     */
+    private
+    function handleProxyRequest()
+    {
+
     }
 
     /**
