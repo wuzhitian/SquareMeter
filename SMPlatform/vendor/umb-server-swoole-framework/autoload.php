@@ -30,6 +30,6 @@ require_once( __DIR__ . '/LIBRARY/HTTP/Request.php' );
 require_once( __DIR__ . '/LIBRARY/HTTP/Response.php' );
 
 require_once( __DIR__ . '/COMPONENT/CORE/SERVER/CONFIG/ServerConfig.php' );
-require_once( __DIR__ . '/COMPONENT/CORE/SERVER/CONFIG/HttpApiServerConfig.php' );
+require_once( __DIR__ . '/COMPONENT/CORE/SERVER/CONFIG/HttpServerConfig.php' );
 require_once( __DIR__ . '/COMPONENT/CORE/SERVER/Server.php' );
 require_once( __DIR__ . '/COMPONENT/CORE/SERVER/HttpApiServer.php' );

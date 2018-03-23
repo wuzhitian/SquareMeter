@@ -11,7 +11,7 @@
 namespace UmbServer\SwooleFramework\LIBRARY\HTTP;
 
 use swoole_http_response;
-use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpResponseType;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpResponse;
 
 /**
  * http_response封装类
@@ -77,9 +77,15 @@ class Response
     {
         echo 'request refused.' . PHP_EOL;
         $this->status( 403 );
-        $this->setHeader();
-
+        $this->setHeader( _HttpResponse::html );
+        $this->send( file_get_contents( __DIR__ . '/403.html' ) );
         $this->end();
+    }
+
+    public
+    function response( $res )
+    {
+
     }
 
     /**
@@ -87,22 +93,22 @@ class Response
      * @param string $type
      */
     public
-    function setHeader( $type = _HttpResponseType::html )
+    function setHeader( $type = _HttpResponse::html )
     {
         $this->getSwooleResponse()->header( 'Access-Control-Allow-Origin', '*' );
         switch ( $type ) {
-            case _HttpResponseType::php:
-            case _HttpResponseType::html:
+            case _HttpResponse::php:
+            case _HttpResponse::html:
                 $this->getSwooleResponse()->header( 'Content-Type', 'text/html' );
                 break;
-            case _HttpResponseType::css:
+            case _HttpResponse::css:
                 $this->getSwooleResponse()->header( 'Content-Type', 'text/css' );
                 break;
-            case _HttpResponseType::js:
+            case _HttpResponse::js:
                 $this->getSwooleResponse()->header( 'Content-Type', 'text/javascript' );
                 break;
 
-            case _HttpResponseType::API:
+            case _HttpResponse::API:
             default:
         }
     }
@@ -124,5 +130,15 @@ class Response
     function end()
     {
         $this->getSwooleResponse()->end();
+    }
+
+    /**
+     * 发送data
+     * @param $data
+     */
+    private
+    function send( $data )
+    {
+        $this->getSwooleResponse()->write( $data );
     }
 }

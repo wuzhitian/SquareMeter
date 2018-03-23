@@ -10,10 +10,11 @@
 
 namespace UmbServer\SwooleFramework\COMPONENT\CORE\SERVER;
 
-use UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG\HttpApiServerConfig;
+use UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG\HttpServerConfig;
 use UmbServer\SwooleFramework\COMPONENT\SERVER\Server;
 use UmbServer\SwooleFramework\LIBRARY\BASE\AOP;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpServer;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\Request;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\Response;
 
@@ -31,6 +32,7 @@ class HttpApiServer implements Server
     const DEFAULT_CONFIG
         = [
             'name'        => 'HttpApiServer',
+            'type'        => _HttpServer::API,
             'listen_ip'   => '0.0.0.0',
             'listen_port' => 9527,
             'is_ssl'      => false,
@@ -53,16 +55,16 @@ class HttpApiServer implements Server
     public
     function setConfig( $config = self::DEFAULT_CONFIG, $config_file_type = _Config::ARRAY )
     {
-        $this->_config = new HttpApiServerConfig();
+        $this->_config = new HttpServerConfig();
         $this->getConfig()->setByConfig( $config, $config_file_type );
     }
 
     /**
      * 获取config
-     * @return HttpApiServerConfig
+     * @return HttpServerConfig
      */
-    private
-    function getConfig(): HttpApiServerConfig
+    public
+    function getConfig(): HttpServerConfig
     {
         return $this->_config;
     }

@@ -1,8 +1,7 @@
 <?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
- * File: _HttpResponseType.php
- * Create: 2018/3/22
+ * File: _HttpResponse.phpCreate: 2018/3/22
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
  * Copyright: Umbrella Inc.
@@ -12,10 +11,10 @@ namespace UmbServer\SwooleFramework\LIBRARY\ENUM;
 
 /**
  * http_response枚举类型
- * Class _HttpResponseType
+ * Class _HttpResponse
  * @package UmbServer\SwooleFramework\LIBRARY\ENUM
  */
-class _HttpResponseType
+class _HttpResponse
 {
     //API
     const API = 'API';

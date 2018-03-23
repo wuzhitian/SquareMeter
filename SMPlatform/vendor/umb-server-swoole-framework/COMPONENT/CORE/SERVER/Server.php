@@ -17,5 +17,12 @@ namespace UmbServer\SwooleFramework\COMPONENT\SERVER;
  */
 interface Server
 {
+    public
+    function onWorkerStart();
 
+    public
+    function onStart();
+
+    public
+    function onShutDown();
 }

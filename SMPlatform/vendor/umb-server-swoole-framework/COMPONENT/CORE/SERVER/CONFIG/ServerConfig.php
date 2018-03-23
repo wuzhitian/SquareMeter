@@ -20,7 +20,6 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\ConfigLoader;
 class ServerConfig
 {
     public $name;
-    public $type;
     public $root;
     public $path;
     public $listen_ip;
