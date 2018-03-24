@@ -1,4 +1,4 @@
-<?php
+<?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
  * File: AOPObject.php
@@ -9,8 +9,6 @@
  */
 
 namespace UmbServer\SwooleFramework\LIBRARY\BASE;
-
-use UmbServer\SwooleFramework\LIBRARY\HTTP\Response;
 
 /**
  * AOP对象接口类
@@ -23,7 +21,8 @@ interface AOPObject
      * 前置方法
      * @return bool
      */
-    public function _before(): bool;
+    public
+    function _before(): bool;
 
     /**
      * 执行中方法
@@ -31,24 +30,20 @@ interface AOPObject
      * @param $arguments
      * @return mixed
      */
-    public function _run( $function_name, $arguments );
+    public
+    function _run( $function_name, $arguments );
 
     /**
      * 后置方法
      * @return bool
      */
-    public function _after(): bool;
+    public
+    function _after(): bool;
 
     /**
-     * 设置结果
-     * @param $response
+     * 获取结果
      * @return mixed
      */
-    public function setResponse( Response $response );
-
-    /**
-     * 获取最终结果
-     * @return mixed
-     */
-    public function getResponse();
+    public
+    function getRes();
 }

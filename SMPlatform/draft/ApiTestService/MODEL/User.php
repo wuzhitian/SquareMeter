@@ -11,50 +11,57 @@
 namespace draft\ApiTestService\MODEL;
 
 use UmbServer\SwooleFramework\LIBRARY\AUTH\AuthUser;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\Generator;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\Time;
 
+/**
+ * User类
+ * Class User
+ * @package draft\ApiTestService\MODEL
+ */
 class User extends AuthUser
 {
     const LOCAL_INSTANCE = true;
 
-    const DATA_SCHEMA = [
-        'id' => STRING_TYPE,
-        'username' => STRING_TYPE,
-        'password' => STRING_TYPE,
-        'api_key' => STRING_TYPE,
-        'api_secret' => TEXT_TYPE,
-    ];
+    const SCHEMA
+        = [
+            'id'         => STRING_TYPE,
+            'username'   => STRING_TYPE,
+            'password'   => STRING_TYPE,
+            'api_key'    => STRING_TYPE,
+            'api_secret' => TEXT_TYPE,
+        ];
 
     public $username;
     public $password;
-    public $api_key;
-    public $api_secret;
 
-    public static function login( $username, $password )
+    public
+    function __construct()
+    {
+        $this->generateApiKey();
+    }
+
+    public static
+    function login( $username, $password )
     {
 
     }
 
-    public function logout()
+    public
+    function logout()
     {
 
     }
 
-    /**
-     *
-     * @return mixed
-     */
-    private function updateLoginInfo()
+    public
+    function getData( $is_auth = false ): object
     {
-        $last_login_timestamp = Time::getNow();
-        $api_secret = Generator::apiSecret();
-        $update_array = [
-            'is_login' => true,
-            'last_login_timestamp' => $last_login_timestamp,
-            'api_secret' => $api_secret,
-        ];
-        $this->setAttributeByArray( $update_array );
-        return $this->getData();
+        $res = parent::getData( $is_auth );
+        unset( $res->password );
+        return $res;
+    }
+
+    public static
+    function getById( $id ): self
+    {
+        return new self();
     }
 }

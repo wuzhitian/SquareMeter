@@ -1,4 +1,4 @@
-<?php
+<?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
  * File: Controller.php
@@ -8,80 +8,46 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\LIBRARY\HTTP;
+namespace UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER;
 
-use UmbServer\SwooleFramework\LIBRARY\BASE\AOPObject;
+use UmbServer\SwooleFramework\LIBRARY\EXTEND\POST;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\Request;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\RESPONSE\Response;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
 
 /**
  * 控制器基础类
  * Class Controller
- * @package UmbServer\SwooleFramework\LIBRARY\HTTP
+ * @package UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER
  */
-class Controller implements AOPObject
+class Controller implements AOPController
 {
-    /**
-     * http request对象
-     * @var
-     */
     public $REQUEST;
-
-    /**
-     * get数组
-     * @var null
-     */
     public $GET;
-
-    /**
-     * post数组
-     * @var null
-     */
     public $POST;
-
-    /**
-     * header数组
-     * @var null
-     */
+    public $PARAMS;
     public $HEADER;
-
-    /**
-     * cookie数组
-     * @var null
-     */
     public $COOKIE;
-
-    /**
-     * file数组
-     * @var
-     */
     public $FILES;
-
-    /**
-     * 返回结果
-     * @var
-     */
     public $RESPONSE;
 
-    /**
-     * 构造
-     * Controller constructor.
-     * @param Request $request
-     */
-    public function __construct( Request $request )
+    public
+    function __construct( Request $request )
     {
         $this->REQUEST = $request;
-        $this->GET = $request->get ?? NULL;
-        $this->POST = $request->post ?? NULL;
-        $this->HEADER = $request->header ?? NULL;
-        $this->COOKIE = $request->cookie ?? NULL;
-        $this->FILES = $request->files ?? NULL;
+        $this->GET     = $request->get ?? NULL;
+        $this->POST    = $request->post ?? NULL;
+        $this->HEADER  = $request->header ?? NULL;
+        $this->COOKIE  = $request->cookie ?? NULL;
+        $this->FILES   = $request->files ?? NULL;
     }
 
     /**
      * 前置
      * @return bool
      */
-    public function _before(): bool
+    public
+    function _before(): bool
     {
         return true;
     }
@@ -93,15 +59,16 @@ class Controller implements AOPObject
      * @return mixed
      * @throws \ReflectionException
      */
-    public function _run( $function_name, $arguments )
+    public
+    function _run( $function_name, $arguments )
     {
         //创建反射对象
-        $reflect_method = new \ReflectionMethod( $this, $function_name );
+        $reflect_method                  = new \ReflectionMethod( $this, $function_name );
         $expired_reflect_parameter_array = $reflect_method->getParameters();
-        $import_arguments = [];
-        $required_parameter_key_array = [];
-        $import_parameter_array = [];
-        $parameter_key_array = [];
+        $import_arguments                = [];
+        $required_parameter_key_array    = [];
+        $import_parameter_array          = [];
+        $parameter_key_array             = [];
 
         //由反射对象中反映的形参进行赋值
         foreach ( $expired_reflect_parameter_array as $expired_reflect_parameter ) {
@@ -113,7 +80,7 @@ class Controller implements AOPObject
                 $import_arguments[ $expired_reflect_parameter->getPosition() ] = new GET( NULL );
             }
             $parameter_key_array[] = $expired_reflect_parameter->getName();
-            $is_default = $expired_reflect_parameter->isDefaultValueAvailable();
+            $is_default            = $expired_reflect_parameter->isDefaultValueAvailable();
             if ( !$is_default ) {
                 $required_parameter_key_array[] = $expired_reflect_parameter->getPosition();
             }
@@ -122,7 +89,7 @@ class Controller implements AOPObject
                     if ( $expired_reflect_parameter->getType() == 'FILES' ) {
                         if ( $expired_reflect_parameter->getName() == $files_key ) {
                             $import_arguments[ $expired_reflect_parameter->getPosition() ] = new FILES( $files, true );
-                            $import_parameter_array[] = $expired_reflect_parameter;
+                            $import_parameter_array[]                                      = $expired_reflect_parameter;
                             break;
                         }
                     }
@@ -133,7 +100,7 @@ class Controller implements AOPObject
                     if ( $expired_reflect_parameter->getType() == 'POST' ) {
                         if ( $expired_reflect_parameter->getName() == $post_key ) {
                             $import_arguments[ $expired_reflect_parameter->getPosition() ] = new POST( $post, true );
-                            $import_parameter_array[] = $expired_reflect_parameter;
+                            $import_parameter_array[]                                      = $expired_reflect_parameter;
                             break;
                         }
                     }
@@ -144,7 +111,7 @@ class Controller implements AOPObject
                     if ( $expired_reflect_parameter->getType() == 'GET' ) {
                         if ( $expired_reflect_parameter->getName() == $get_key ) {
                             $import_arguments[ $expired_reflect_parameter->getPosition() ] = new GET( $get, true );
-                            $import_parameter_array[] = $expired_reflect_parameter;
+                            $import_parameter_array[]                                      = $expired_reflect_parameter;
                             break;
                         }
                     }
@@ -174,18 +141,19 @@ class Controller implements AOPObject
      * 后置
      * @return bool
      */
-    public function _after(): bool
+    public
+    function _after(): bool
     {
-        $this->setResponse( DataHandler::return ( true, $this->getResponse() ) );
         return true;
     }
 
     /**
      * 设置response
-     * @param Response $response
+     * @param $response
      * @return bool|mixed
      */
-    public function setResponse( Response $response )
+    public
+    function setResponse( $response )
     {
         $this->RESPONSE = $response;
         return true;
@@ -195,8 +163,25 @@ class Controller implements AOPObject
      * 获取response
      * @return mixed
      */
-    public function getResponse()
+    public
+    function getResponse()
     {
         return $this->RESPONSE;
+    }
+
+    /**
+     * 获取result
+     */
+    public
+    function getRes()
+    {
+        $res = $this->getResponse();
+        return $res;
+    }
+
+    public
+    function isConnected(): bool
+    {
+        return true;
     }
 }

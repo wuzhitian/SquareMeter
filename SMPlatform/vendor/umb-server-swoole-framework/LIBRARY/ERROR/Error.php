@@ -1,4 +1,4 @@
-<?php
+<?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
  * File: Error.php
@@ -32,15 +32,16 @@ class Error extends Exception
         ];
 
     public $error_code;
-    public $error_type = self::ERROR_TYPE;
+    public $error_type;
     public $error_message;
     public $error_data;
 
     public
     function __construct( $error = self::UNKNOWN_ERROR, $error_data = NULL )
     {
-        $this->error_code    = self::PREFIX_CODE . '-' . sprintf( "%04d", $error[ 'code' ] );
+        $this->error_code    = get_class( $this )::PREFIX_CODE . '-' . sprintf( "%04d", $error[ 'code' ] );
         $this->error_message = $error[ 'message' ];
+        $this->error_type    = get_class( $this )::ERROR_TYPE;
         $this->error_data    = $error_data;
     }
 

@@ -16,7 +16,7 @@ class TodoList extends Instance
 {
     const LOCAL_INSTANCE = true;
 
-    const DATA_SCHEMA = [
+    const SCHEMA = [
         'id' => STRING_TYPE,
         'todo_list_item_id_array' => ARRAY_TYPE,
     ];
@@ -38,5 +38,11 @@ class TodoList extends Instance
         $this->deleteIdFromIdArray( $delete_id, $this->todo_list_item_array );
         $todo_list_item->delete();
         $this->save();
+    }
+
+    public static
+    function getById( $id ): self
+    {
+        return new self();
     }
 }

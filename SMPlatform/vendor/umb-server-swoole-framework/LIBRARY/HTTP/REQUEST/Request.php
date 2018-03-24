@@ -8,7 +8,7 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\LIBRARY\HTTP;
+namespace UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST;
 
 use swoole_http_request;
 use UmbServer\SwooleFramework\COMPONENT\SERVER\HttpServer;
@@ -17,32 +17,19 @@ use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpServer;
 /**
  * http_request封装类
  * Class Request
- * @package UmbServer\SwooleFramework\LIBRARY\HTTP
+ * @package UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST
  */
 class Request
 {
     private $_swoole_http_request; //内置swoole_http_request对象
     private $_http_server; //内置http_server对象，api或者web
+    private $_request_target; //经过解析后的request目标，api或者web
 
     public $request_type;
     public $is_handle   = false;
     public $is_response = false;
     public $request_timestamp;
     public $response_timestamp;
-    public $time_span;
-
-    public $controller_name;
-    public $controller_file_path;
-    public $method_name;
-    public $params;
-    public $files;
-    public $verb;
-
-    public $resource_file_path;
-    public $resource_type;
-
-    public $api_key;
-    public $signature;
 
     public $requester; //请求发起者
     public $responder; //请求响应者
@@ -105,11 +92,10 @@ class Request
     }
 
     /**
-     * 根据request类型来进行请求处理，获得返回的结果
-     * @return null
+     * 根据request类型进行请求解析
      */
     public
-    function handle()
+    function parse()
     {
         switch ( $this->request_type ) {
             case _HttpServer::API:
@@ -119,28 +105,50 @@ class Request
             default:
                 $this->parseResourceRequestUri();
         }
-        $res = NULL;
-        return $res;
+        $this->getHttpServer()->setRequestTarget( $this->getRequestTarget() );
     }
 
     /**
-     * 解析api_http_request的uri
+     * 设置请求目标
+     * @param RequestTarget $request_target
+     */
+    private
+    function setRequestTarget( RequestTarget $request_target )
+    {
+        $this->_request_target = $request_target;
+    }
+
+    /**
+     * 获取请求目标
+     * @return RequestTarget
+     */
+    private
+    function getRequestTarget(): RequestTarget
+    {
+        return $this->_request_target;
+    }
+
+    /**
+     * 解析api_http_request的uri，并生成request_target
      */
     private
     function parseApiRequestUri()
     {
-        $path_array            = explode( '/', $this->request_uri );
-        $this->controller_name = $path_array[ sizeof( $path_array ) - 2 ] ?? 'index';
-        $this->method_name     = $path_array[ sizeof( $path_array ) - 1 ];
-        $relative_path         = '';
+        $api_target                  = new ApiTarget();
+        $path_array                  = explode( '/', $this->request_uri );
+        $api_target->request_uri     = $this->request_uri;
+        $api_target->controller_name = $path_array[ sizeof( $path_array ) - 2 ] ?? 'index';
+        $api_target->method_name     = $path_array[ sizeof( $path_array ) - 1 ];
+        $relative_path               = '';
         foreach ( $path_array as $key => $dir ) {
             if ( $key > sizeof( $path_array ) - 3 ) {
                 break;
             }
             $relative_path .= ( $dir . '/' );
         }
-        //获取文件路径
-        $this->controller_file_path = $this->getHttpServer()->getConfig()->root . $relative_path . $this->controller_name . '.php';
+        $api_target->controller_file_path = $this->getHttpServer()->getConfig()->root . $this->getHttpServer()->getConfig()->path . $relative_path . $api_target->controller_name . '.php';
+        $api_target->controller_namespace = $this->getHttpServer()->getConfig()->controller_namespace;
+        $this->setRequestTarget( $api_target );
     }
 
     /**
@@ -149,6 +157,6 @@ class Request
     private
     function parseResourceRequestUri()
     {
-
+        $this->request_target = new ResourceTarget();
     }
 }

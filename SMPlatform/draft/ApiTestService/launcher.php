@@ -10,29 +10,13 @@
 /**
  * 加载基础类库
  */
-require_once( __DIR__ . '/../../../LIBRARY/autoload.php' );
+require_once( __DIR__ . '/../../vendor/umb-server-swoole-framework/autoload.php' );
 
-/**
- * 加载SLF框架类库
- */
-require_once( __DIR__ . '/../../../SLFramework/autoload.php' );
+use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpApiServer;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
 
-/**
- * 加载公共业务类库
- */
-require_once( __DIR__ . '/../../LIBRARY/autoload.php' );
-
-/**
- * 加载host配置
- */
-$HOSTS = require_once( __DIR__ . '/../host_config.php' );
-
-require_once( __DIR__ . '/ApiTestService.php' );
-
-use draft\ApiTestService\MODEL\ApiTestService\ApiTestService;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\ConfigLoader;
-
-$config      = ConfigLoader::parse( require_once( __DIR__ . './config.json' ) );
-$service     = ApiTestService::getInstance();
-$service->setConfig( $config );
-$service->start();
+$config = file_get_contents( __DIR__ . '/config.json' );
+$server = new HttpApiServer();
+$server->setConfig( $config, _Config::JSON );
+$server->initial();
+$server->start();

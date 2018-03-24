@@ -1,4 +1,4 @@
-<?php
+<?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
  * File: AOP.php
@@ -10,6 +10,10 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\BASE;
 
+use UmbServer\SwooleFramework\LIBRARY\ERROR\Error;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\Console;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
+
 /**
  * 切面对象访问控制类
  * Class AOP
@@ -17,29 +21,24 @@ namespace UmbServer\SwooleFramework\LIBRARY\BASE;
  */
 class AOP
 {
-    /**
-     * 受控制的对象
-     */
-    private $_object;
+    private $_object; //切面控制对象
 
     /**
-     * 内部构造切面访问对象
-     * AOP constructor.
-     *
+     * 设置切面控制对象
      * @param $object
-     * @param $request
      */
-    public function __construct( $object, $request )
+    public
+    function setObject( $object )
     {
-        $this->object_name = $object;
-        $this->_object = new $object( $request );
+        $this->_object = $object;
     }
 
     /**
-     * 获取切面对象
+     * 获取切面控制对象
      * @return AOPObject
      */
-    private function getObject(): AOPObject
+    public
+    function getObject(): AOPObject
     {
         return $this->_object;
     }
@@ -52,23 +51,24 @@ class AOP
      *
      * @return string
      */
-    public function __call( $function_name, $arguments )
+    public
+    function __call( $function_name, $arguments )
     {
         try {
             if ( !method_exists( $this->getObject(), $function_name ) ) {
-                throw new Error( Error::FUNCTION_NOT_EXIST );
+                throw new Error( Error::UNKNOWN_ERROR );
             }
             $this->getObject()->_before();
             $this->getObject()->_run( $function_name, $arguments );
             $this->getObject()->_after();
-            $res = $this->getObject()->getResponse();
-        } catch ( Exception $e ) {
-            $res = StringFormat::return ( false, json_decode( $e->getMessage() ) );
-            echo 'AOP Error:' . PHP_EOL;
-            echo $e->getMessage() . PHP_EOL;
-            echo $e->getTraceAsString() . PHP_EOL;
+            $res = $this->getObject()->getRes();
         }
-        var_dump( $res );
+        catch ( \Exception $e ) {
+            $res = DataHandler::return ( false, json_decode( $e->getMessage() ) );
+            Console::log( 'AOP Error:' );
+            Console::log( $e->getMessage() );
+            Console::log( $e->getTraceAsString() );
+        }
         return $res;
     }
 }

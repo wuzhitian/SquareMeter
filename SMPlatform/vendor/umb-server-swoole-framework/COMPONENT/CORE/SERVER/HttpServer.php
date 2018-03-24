@@ -13,6 +13,9 @@ namespace UmbServer\SwooleFramework\COMPONENT\SERVER;
 use swoole_http_request;
 use swoole_http_response;
 use UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG\HttpServerConfig;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\Request;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\RequestTarget;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\RESPONSE\Response;
 
 /**
  * http服务器接口类
@@ -36,6 +39,35 @@ interface HttpServer extends Server
      */
     public
     function getConfig(): HttpServerConfig;
+
+    /**
+     * 获取request
+     * @return Request
+     */
+    public
+    function getRequest(): Request;
+
+    /**
+     * 获取response
+     * @return Response
+     */
+    public
+    function getResponse(): Response;
+
+    /**
+     * 设置解析后的请求目标对象
+     * @param RequestTarget $request_target
+     * @return mixed
+     */
+    public
+    function setRequestTarget( RequestTarget $request_target );
+
+    /**
+     * 获取解析后的请求目标对象
+     * @return RequestTarget
+     */
+    public
+    function getRequestTarget(): RequestTarget;
 
     /**
      * 初始化

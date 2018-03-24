@@ -11,12 +11,13 @@
 namespace UmbServer\SwooleFramework\COMPONENT\CORE\SERVER;
 
 use UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG\HttpServerConfig;
-use UmbServer\SwooleFramework\COMPONENT\SERVER\Server;
-use UmbServer\SwooleFramework\LIBRARY\BASE\AOP;
+use UmbServer\SwooleFramework\COMPONENT\SERVER\HttpServer;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpServer;
-use UmbServer\SwooleFramework\LIBRARY\HTTP\Request;
-use UmbServer\SwooleFramework\LIBRARY\HTTP\Response;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\Request;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\RequestTarget;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\HANDLER\RequestHandler;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\RESPONSE\Response;
 
 use swoole_http_server;
 use swoole_http_request;
@@ -27,7 +28,7 @@ use swoole_http_response;
  * Class HttpApiServer
  * @package UmbServer\SwooleFramework\COMPONENT\BASE\SERVER
  */
-class HttpApiServer implements Server
+class HttpApiServer implements HttpServer
 {
     const DEFAULT_CONFIG
         = [
@@ -42,10 +43,12 @@ class HttpApiServer implements Server
     private $_server; //swoole_http_server对象
     private $_config; //配置
 
-    private $extra_data; //附加数据
+    private $_extra_data; //附加数据
 
-    private $_request; //当次请求的对象暂存
-    private $_response; //当次响应的对象暂存
+    private $_request         = NULL; //当次请求的对象暂存
+    private $_request_target  = NULL; //当次请求解析后的目标对象暂存
+    private $_request_handler = NULL; //当次请求的处理器对象暂存
+    private $_response        = NULL; //当次响应的对象暂存
 
     /**
      * 设置配置
@@ -85,7 +88,7 @@ class HttpApiServer implements Server
      * 获取当次请求
      * @return Request
      */
-    private
+    public
     function getRequest(): Request
     {
         return $this->_request;
@@ -95,10 +98,30 @@ class HttpApiServer implements Server
      * 获取当次响应
      * @return Response
      */
-    private
+    public
     function getResponse(): Response
     {
         return $this->_response;
+    }
+
+    /**
+     * 获取当次请求处理器对象
+     * @return RequestHandler
+     */
+    public
+    function getRequestHandler(): RequestHandler
+    {
+        return $this->_request_handler;
+    }
+
+    /**
+     * 获取解析后的请求目标对象
+     * @return RequestTarget
+     */
+    public
+    function getRequestTarget(): RequestTarget
+    {
+        return $this->_request_target;
     }
 
     /**
@@ -108,7 +131,7 @@ class HttpApiServer implements Server
     private
     function setRequest( swoole_http_request $request )
     {
-        $this->_request = new Request( $request );
+        $this->_request = new Request( $request, $this );
     }
 
     /**
@@ -118,7 +141,26 @@ class HttpApiServer implements Server
     private
     function setResponse( swoole_http_response $response )
     {
-        $this->_response = new Response( $response );
+        $this->_response = new Response( $response, $this );
+    }
+
+    /**
+     * 设置解析后当次请求的目标
+     * @param RequestTarget $request_target
+     */
+    public
+    function setRequestTarget( RequestTarget $request_target )
+    {
+        $this->_request_target = $request_target;
+    }
+
+    /**
+     * 设置请求处理器
+     */
+    private
+    function setRequestHandler()
+    {
+        $this->_request_handler = new RequestHandler( $this );
     }
 
     /**
@@ -138,7 +180,7 @@ class HttpApiServer implements Server
     public
     function getExtraData()
     {
-        return $this->extra_data;
+        return $this->_extra_data;
     }
 
     /**
@@ -148,7 +190,7 @@ class HttpApiServer implements Server
     public
     function setExtraData( $extra_data = NULL )
     {
-        $this->extra_data = $extra_data;
+        $this->_extra_data = $extra_data;
     }
 
     /**
@@ -267,105 +309,64 @@ class HttpApiServer implements Server
      * 收到请求后的回调
      * @param swoole_http_request $request
      * @param swoole_http_response $response
+     * @return bool
      */
     public
     function onRequest( swoole_http_request $request, swoole_http_response $response )
     {
-        //设定当次请求
         $this->setRequest( $request );
-
-        //设定当次响应
         $this->setResponse( $response );
-
-        //拦截不允许的请求
-        $this->refuseNotAllowedRequest();
-
-        //处理请求
-        $res = $this->getRequest()->handle();
-
-        //响应请求结果
-        $this->getResponse()->response( $res );
-    }
-
-    /**
-     * 拒绝不允许访问的请求
-     */
-    private
-    function refuseNotAllowedRequest()
-    {
-        $this->refuseFavicon();
-
-        // TODO 加入配置文件的支持，拦截掉一些扫描请求，加入黑/白名单机制
-    }
-
-    /**
-     * api服务器拒绝部分浏览器自动发起的favicon请求
-     */
-    private
-    function refuseFavicon()
-    {
-        if ( $this->getRequest()->server[ 'request_uri' ] === '/favicon.ico' ) {
-            $this->getResponse()->refuse();
-        }
-    }
-
-    /**
-     * 处理api请求
-     */
-    private
-    function handleApiRequest()
-    {
-        //把请求的path字符串拆分为数组，用array_filter去空
-        $path_array = explode( '/', $request->server[ 'request_uri' ] );
-
-        //如果没有写控制器名称，默认为index
-        $controller_name = $path_array[ sizeof( $path_array ) - 2 ] ?? 'index';
-        $function_name   = $path_array[ sizeof( $path_array ) - 1 ];
-
-        //遍历controller和function的路径深度，组成$path
-        $path = '';
-        foreach ( $path_array as $key => $dir ) {
-            if ( $key > sizeof( $path_array ) - 3 ) {
-                break;
-            }
-            $path .= ( $dir . '/' );
-        }
-
-        //获取文件路径
-        $file_path = $this->getConfig()->root . $path . $controller_name . '.php';
-
-        //控制器不存在
-        if ( !file_exists( $file_path ) ) {
-            $this->getResponse()->notFound();
+        $is_refuse = $this->refuseNotAllowedRequest(); //拦截不允许的请求
+        if ( $is_refuse === true ) {
             return false;
-        }
-
-        //加载控制器类controller
-        include_once( $file_path );
-
-        //var_dump($file_path);
-        $controller = new AOP( new $controller_name, $request );
-        $res        = $controller->$function_name();
-        $response->end( $res );
+        };
+        $this->getRequest()->parse(); //解析请求
+        $this->setRequestHandler(); //设置请求处理器
+        $this->getRequestHandler()->handle(); //处理请求
+        $this->getResponse()->response(); //响应请求
+        $this->clean(); //清理请求缓存对象
         return true;
     }
 
     /**
-     * 处理资源请求
+     * 拒绝不允许访问的请求
+     * @return bool
      */
     private
-    function handleResourceRequest()
+    function refuseNotAllowedRequest()
     {
+        $res = $this->refuseFavicon();
 
+        // TODO 加入配置文件的支持，拦截掉一些扫描请求，加入黑/白名单机制
+
+        return $res;
     }
 
     /**
-     * 处理代理请求
+     * api服务器拒绝部分浏览器自动发起的favicon请求
+     * @return bool
      */
     private
-    function handleProxyRequest()
+    function refuseFavicon()
     {
+        $res = false;
+        if ( $this->getRequest()->server[ 'request_uri' ] === '/favicon.ico' ) {
+            $this->getResponse()->refuse();
+            $res = true;
+        }
+        return $res;
+    }
 
+    /**
+     * 清理request和response相关缓存对象
+     */
+    private
+    function clean()
+    {
+        $this->_request         = NULL;
+        $this->_request_target  = NULL;
+        $this->_request_handler = NULL;
+        $this->_response        = NULL;
     }
 
     /**

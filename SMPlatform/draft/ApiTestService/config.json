@@ -1,6 +1,9 @@
 {
     "name": "ApiTestServer",
-    "path": "./ApiTestServer",
+    "root": "/SquareMeter",
+    "path": "/SMPlatform/draft/ApiTestService",
+    "type": "api",
+    "controller_namespace": "draft\\ApiTestService\\Controller",
     "listen_ip": "0.0.0.0",
     "listen_port": 9527
 }

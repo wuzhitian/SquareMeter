@@ -8,7 +8,7 @@
  * Copyright: SMBC Inc.
  */
 
-namespace draft\ApiTestService\MODEL\ApiTestService;
+namespace draft\ApiTestService;
 
 use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\MODEL\Service;
 

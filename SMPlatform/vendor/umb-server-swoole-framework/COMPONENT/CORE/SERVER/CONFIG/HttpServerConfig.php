@@ -13,7 +13,7 @@ namespace UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpServer;
 
 /**
- * http(s)api服务器配置类
+ * http(s)服务器配置类
  * Class HttpServerConfig
  * @package UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG
  */
@@ -24,4 +24,5 @@ class HttpServerConfig extends ServerConfig
     public $is_http2 = false;
     public $ssl_cert_file;
     public $ssl_key_file;
+    public $controller_namespace = '';
 }

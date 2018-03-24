@@ -26,7 +26,13 @@ class ServerConfig
     public $listen_port;
     public $set = [];
 
-    public function setByConfig( $config, $config_file_type )
+    /**
+     * 获取配置
+     * @param $config
+     * @param $config_file_type
+     */
+    public
+    function setByConfig( $config, $config_file_type )
     {
         $config_object = ConfigLoader::parse( $config, $config_file_type );
         foreach ( $config_object as $key => $value ) {

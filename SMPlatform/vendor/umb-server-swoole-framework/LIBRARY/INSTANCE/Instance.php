@@ -14,6 +14,7 @@ use UmbServer\SwooleFramework\LIBRARY\DATA\Data;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Generator;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\Time;
 
 /**
  * 实例基础类
@@ -23,6 +24,8 @@ use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
 class Instance
 {
     public $id = NULL; //所有实例都必须有id，可以是指定的、序号或是uuid
+    public $create_timestamp;
+    public $update_timestamp;
 
     const SCHEMA      = []; //数据图谱
     const CACHE       = _DB::Redis; //缓存方式，目前只可以选用null或redis或swoole_table
@@ -137,7 +140,7 @@ class Instance
     public
     function update()
     {
-
+        $this->update_timestamp = Time::getNow();
     }
 
     /**
@@ -188,7 +191,7 @@ class Instance
     }
 
     /**
-     * 获取对象数据
+     * 通过反射获取对象数据
      * @return array
      */
     public
@@ -566,6 +569,18 @@ class Instance
         $instance_name    = self::_getTableName( $class_path ) . '_data';
         $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
         $res              = $instance_manager->isExistByApiKey( $api_key );
+        return $res;
+    }
+
+    /**
+     * 获取实例数据，is_auth用于标记是否有auth授权
+     * @param bool $is_auth
+     * @return object
+     */
+    public
+    function getData( $is_auth = false ): object
+    {
+        $res = $this->getDataObjectBySchema();
         return $res;
     }
 }

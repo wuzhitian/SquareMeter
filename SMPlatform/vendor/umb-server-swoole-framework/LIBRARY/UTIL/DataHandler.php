@@ -10,9 +10,6 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\UTIL;
 
-use UmbServer\SwooleFramework\LIBRARY\DATA\Data;
-use UmbServer\SwooleFramework\LIBRARY\DATA\DBData;
-
 /**
  * 数据处理工具类
  * Class DataHandler

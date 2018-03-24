@@ -26,31 +26,29 @@ class AuthUser extends Instance
     public $is_login;
     public $last_login_timestamp;
 
-    public static function login()
+    public
+    function logout()
     {
 
     }
 
-    public function logout()
+    protected
+    function generateApiKey()
     {
-
-    }
-
-    private function generateApiKey()
-    {
-        $api_key = Generator::token();
+        $api_key       = Generator::token();
         $this->api_key = $api_key;
         $this->save();
     }
 
-    private function updateLoginInfo()
+    protected
+    function updateLoginInfo()
     {
         $last_login_timestamp = Time::getNow();
-        $api_secret = Generator::apiSecret();
-        $update_array = [
-            'is_login' => true,
+        $api_secret           = Generator::apiSecret();
+        $update_array         = [
+            'is_login'             => true,
             'last_login_timestamp' => $last_login_timestamp,
-            'api_secret' => $api_secret,
+            'api_secret'           => $api_secret,
         ];
         $this->setAttributeByArray( $update_array );
         return $this->getData();

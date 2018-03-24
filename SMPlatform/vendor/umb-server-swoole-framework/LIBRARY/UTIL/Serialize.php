@@ -25,12 +25,12 @@ class Serialize
 {
     /**
      * 序列化
-     * @param mixed $un_pack_data
+     * @param $un_pack_data
      * @param string $type
      * @return string
      */
     public static
-    function encode( mixed $un_pack_data, $type = _Serialize::JSON ): string
+    function encode( $un_pack_data, $type = _Serialize::JSON ): string
     {
         switch ( $type ) {
             case _Serialize::UMB:
@@ -47,10 +47,10 @@ class Serialize
      * 反序列化
      * @param string $pack_data
      * @param string $type
-     * @return mixed
+     * @return mixed|object
      */
     public static
-    function decode( string $pack_data, $type = _Serialize::JSON ): mixed
+    function decode( string $pack_data, $type = _Serialize::JSON )
     {
         switch ( $type ) {
             case _Serialize::UMB:
@@ -103,7 +103,7 @@ class Serialize
      * @throws UtilError
      */
     private static
-    function umbDecode( string $pack_data ): mixed
+    function umbDecode( string $pack_data )
     {
         $pack_length = strlen( $pack_data );
         $SOF_length  = strlen( _Serialize::UMB_SERIALIZE_SOF );
@@ -119,11 +119,11 @@ class Serialize
 
     /**
      * json序列化
-     * @param mixed $data
+     * @param $data
      * @return string
      */
     private static
-    function jsonEncode( mixed $data ): string
+    function jsonEncode( $data ): string
     {
         $res = json_encode( $data, JSON_UNESCAPED_UNICODE ); // 解决中文乱码问题
         return $res;
