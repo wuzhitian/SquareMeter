@@ -13,6 +13,7 @@ namespace UmbServer\SwooleFramework\LIBRARY\HTTP\HANDLER;
 use UmbServer\SwooleFramework\COMPONENT\SERVER\HttpServer;
 use UmbServer\SwooleFramework\LIBRARY\BASE\AOP;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_ContentType;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpResponseStatus;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpServer;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_InstanceBaseOperator;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_Serialize;
@@ -50,24 +51,36 @@ class RequestHandler
     public
     function __construct( HttpServer $http_server )
     {
-        $this->_http_server    = $http_server;
-        $this->_request        = $http_server->getRequest();
-        $this->_response       = $http_server->getResponse();
+        $this->_http_server = $http_server;
+        $this->_request = $http_server->getRequest();
+        $this->_response = $http_server->getResponse();
         $this->_request_target = $http_server->getRequestTarget();
     }
 
+    /**
+     * 获取request对象
+     * @return Request
+     */
     private
     function getRequest(): Request
     {
         return $this->_request;
     }
 
+    /**
+     * 获取response对象
+     * @return Response
+     */
     private
     function getResponse(): Response
     {
         return $this->_response;
     }
 
+    /**
+     * 获取target对象
+     * @return RequestTarget
+     */
     private
     function getRequestTarget(): RequestTarget
     {
@@ -94,25 +107,31 @@ class RequestHandler
         switch ( $this->getRequestType() ) {
             case _HttpServer::API:
                 try {
-                    $this->getRequestTarget()->prepare();
                     $controller_file_path = $this->getRequestTarget()->getTargetFilePath();
+                    $controller_classpath = $this->getRequestTarget()->getControllerClasspath();
+                    //检查控制器是否存在
+                    if ( !file_exists( $controller_file_path ) ) {
+                        $this->getResponse()->setStatus( _HttpResponseStatus::NOT_FOUND );
+                        throw new HttpError( HttpError::CONTROLLER_NOT_FOUND, 'Controller "' . $controller_classpath . '" is not found' );
+
+                    }
+                    //引用控制器文件
                     include_once( $controller_file_path );
-                    $controller_classpath     = $this->getRequestTarget()->getControllerClasspath();
-                    Console::log( $controller_classpath );
-                    $controller               = new $controller_classpath( $this->getRequest() );
+                    $controller = new $controller_classpath( $this->getRequest() );
                     $aop_controller_container = new AOP();
                     $aop_controller_container->setObject( $controller );
                     $method_name = $this->getRequestTarget()->getMethodName();
+                    //检查方法是否存在
                     if ( !method_exists( $aop_controller_container->getObject(), $method_name ) ) {
-                        throw new HttpError( HttpError::METHOD_NOT_FOUND );
+                        $this->getResponse()->setStatus( _HttpResponseStatus::NOT_FOUND );
+                        throw new HttpError( HttpError::METHOD_NOT_FOUND, 'Method "' . $method_name . '" is not found' );
                     }
                     $this->data = $aop_controller_container->$method_name();
-                    $res        = $this->getApiRequestRes();
-                }
-                catch ( Error $e ) {
+                    $res = $this->getApiRequestEncodeRes();
+                } catch ( Error $e ) {
                     $this->success = false;
-                    $this->error   = $e->getInfo();
-                    $res           = $this->getApiRequestRes();
+                    $this->error = $e->getInfo();
+                    $res = $this->getApiRequestEncodeRes();
                 }
                 $this->getResponse()->setContent( $res, _ContentType::API );
                 break;
@@ -125,18 +144,20 @@ class RequestHandler
     }
 
     /**
-     * 获取api请求结果
+     * 获取api请求结果并序列化
+     * @param string $encode_type
      * @return string
      */
     private
-    function getApiRequestRes(): string
+    function getApiRequestEncodeRes( string $encode_type = _Serialize::JSON ): string
     {
-        $api_request_res            = new \stdClass();
-        $api_request_res->success   = $this->success;
-        $api_request_res->error     = $this->error;
-        $api_request_res->data      = $this->data;
+        $api_request_res = new \stdClass();
+        $api_request_res->success = $this->success;
+        $api_request_res->error = $this->error;
+        $api_request_res->data = $this->data;
         $api_request_res->instances = $this->instances;
-        $res                        = Serialize::encode( $api_request_res, _Serialize::JSON );
+        Console::log( $api_request_res );
+        $res = Serialize::encode( $api_request_res, $encode_type );
         return $res;
     }
 
@@ -173,7 +194,7 @@ class RequestHandler
     {
         $this->instances->create[] = [
             'class_name' => get_class( $instance ),
-            'instance'   => $instance->getData(),
+            'instance' => $instance->getData(),
         ];
     }
 
@@ -186,7 +207,7 @@ class RequestHandler
     {
         $this->instances->read[] = [
             'class_name' => get_class( $instance ),
-            'instance'   => $instance->getData(),
+            'instance' => $instance->getData(),
         ];;
     }
 
@@ -199,7 +220,7 @@ class RequestHandler
     {
         $this->instances->update[] = [
             'class_name' => get_class( $instance ),
-            'instance'   => $instance->getData(),
+            'instance' => $instance->getData(),
         ];
     }
 

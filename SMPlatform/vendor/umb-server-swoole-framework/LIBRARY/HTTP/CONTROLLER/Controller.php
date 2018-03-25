@@ -10,10 +10,12 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER;
 
+use UmbServer\SwooleFramework\LIBRARY\ERROR\HttpError;
+use UmbServer\SwooleFramework\LIBRARY\EXTEND\GET;
 use UmbServer\SwooleFramework\LIBRARY\EXTEND\POST;
+use UmbServer\SwooleFramework\LIBRARY\EXTEND\UPLOAD_FILE;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\Request;
-use UmbServer\SwooleFramework\LIBRARY\HTTP\RESPONSE\Response;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\Console;
 
 /**
  * 控制器基础类
@@ -35,11 +37,11 @@ class Controller implements AOPController
     function __construct( Request $request )
     {
         $this->REQUEST = $request;
-        $this->GET     = $request->get ?? NULL;
-        $this->POST    = $request->post ?? NULL;
-        $this->HEADER  = $request->header ?? NULL;
-        $this->COOKIE  = $request->cookie ?? NULL;
-        $this->FILES   = $request->files ?? NULL;
+        $this->GET = $request->get ?? NULL;
+        $this->POST = $request->post ?? NULL;
+        $this->HEADER = $request->header ?? NULL;
+        $this->COOKIE = $request->cookie ?? NULL;
+        $this->UPLOAD_FILE = $request->files ?? NULL;
     }
 
     /**
@@ -63,33 +65,33 @@ class Controller implements AOPController
     function _run( $function_name, $arguments )
     {
         //创建反射对象
-        $reflect_method                  = new \ReflectionMethod( $this, $function_name );
+        $reflect_method = new \ReflectionMethod( $this, $function_name );
         $expired_reflect_parameter_array = $reflect_method->getParameters();
-        $import_arguments                = [];
-        $required_parameter_key_array    = [];
-        $import_parameter_array          = [];
-        $parameter_key_array             = [];
+        $import_arguments = [];
+        $required_parameter_key_array = [];
+        $import_parameter_array = [];
+        $parameter_key_array = [];
 
         //由反射对象中反映的形参进行赋值
         foreach ( $expired_reflect_parameter_array as $expired_reflect_parameter ) {
-            if ( $expired_reflect_parameter->getType() == 'FILES' ) {
-                $import_arguments[ $expired_reflect_parameter->getPosition() ] = new FILES( NULL );
-            } elseif ( $expired_reflect_parameter->getType() == 'POST' ) {
+            if ( $expired_reflect_parameter->getClass()->name === UPLOAD_FILE::class ) {
+                $import_arguments[ $expired_reflect_parameter->getPosition() ] = new UPLOAD_FILE( NULL );
+            } elseif ( $expired_reflect_parameter->getClass()->name === POST::class ) {
                 $import_arguments[ $expired_reflect_parameter->getPosition() ] = new POST( NULL );
-            } elseif ( $expired_reflect_parameter->getType() == 'GET' ) {
+            } elseif ( $expired_reflect_parameter->getClass()->name === GET::class ) {
                 $import_arguments[ $expired_reflect_parameter->getPosition() ] = new GET( NULL );
             }
             $parameter_key_array[] = $expired_reflect_parameter->getName();
-            $is_default            = $expired_reflect_parameter->isDefaultValueAvailable();
+            $is_default = $expired_reflect_parameter->isDefaultValueAvailable();
             if ( !$is_default ) {
                 $required_parameter_key_array[] = $expired_reflect_parameter->getPosition();
             }
-            if ( !empty( $this->FILES ) ) {
-                foreach ( $this->FILES as $files_key => $files ) {
-                    if ( $expired_reflect_parameter->getType() == 'FILES' ) {
-                        if ( $expired_reflect_parameter->getName() == $files_key ) {
-                            $import_arguments[ $expired_reflect_parameter->getPosition() ] = new FILES( $files, true );
-                            $import_parameter_array[]                                      = $expired_reflect_parameter;
+            if ( !empty( $this->UPLOAD_FILE ) ) {
+                foreach ( $this->UPLOAD_FILE as $files_key => $files ) {
+                    if ( $expired_reflect_parameter->getClass()->name === UPLOAD_FILE::class ) {
+                        if ( $expired_reflect_parameter->getName() === $files_key ) {
+                            $import_arguments[ $expired_reflect_parameter->getPosition() ] = new UPLOAD_FILE( $files, true );
+                            $import_parameter_array[] = $expired_reflect_parameter;
                             break;
                         }
                     }
@@ -97,10 +99,10 @@ class Controller implements AOPController
             }
             if ( !empty( $this->POST ) ) {
                 foreach ( $this->POST as $post_key => $post ) {
-                    if ( $expired_reflect_parameter->getType() == 'POST' ) {
-                        if ( $expired_reflect_parameter->getName() == $post_key ) {
+                    if ( $expired_reflect_parameter->getClass()->name === POST::class ) {
+                        if ( $expired_reflect_parameter->getName() === $post_key ) {
                             $import_arguments[ $expired_reflect_parameter->getPosition() ] = new POST( $post, true );
-                            $import_parameter_array[]                                      = $expired_reflect_parameter;
+                            $import_parameter_array[] = $expired_reflect_parameter;
                             break;
                         }
                     }
@@ -108,10 +110,10 @@ class Controller implements AOPController
             }
             if ( !empty( $this->GET ) ) {
                 foreach ( $this->GET as $get_key => $get ) {
-                    if ( $expired_reflect_parameter->getType() == 'GET' ) {
-                        if ( $expired_reflect_parameter->getName() == $get_key ) {
+                    if ( $expired_reflect_parameter->getClass()->name === GET::class ) {
+                        if ( $expired_reflect_parameter->getName() === $get_key ) {
                             $import_arguments[ $expired_reflect_parameter->getPosition() ] = new GET( $get, true );
-                            $import_parameter_array[]                                      = $expired_reflect_parameter;
+                            $import_parameter_array[] = $expired_reflect_parameter;
                             break;
                         }
                     }
@@ -125,7 +127,7 @@ class Controller implements AOPController
         //参数检查
         foreach ( $required_parameter_key_array as $required_parameter_key ) {
             if ( is_null( $import_arguments[ $required_parameter_key ]->getVal() ) ) {
-                throw new Error( Error::PARAMETER_ERROR, 'Parameter ' . $parameter_key_array[ $required_parameter_key ] . ' is needed.' );
+                throw new HttpError( HttpError::NECESSARY_PARAMETER_MISSING, 'Parameter "' . $parameter_key_array[ $required_parameter_key ] . '" is necessary' );
             }
         }
 
@@ -179,6 +181,10 @@ class Controller implements AOPController
         return $res;
     }
 
+    /**
+     * 控制器通用的isConnected接口
+     * @return bool
+     */
     public
     function isConnected(): bool
     {

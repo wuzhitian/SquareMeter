@@ -36,15 +36,12 @@ class ApiTarget implements RequestTarget
     public $signature;
 
     /**
-     * 准备api目标资源
+     * 准备目标资源
      */
     public
     function prepare()
     {
-        Console::log( $this->controller_file_path );
-        if ( !file_exists( $this->controller_file_path ) ) {
-            throw new HttpError( HttpError::CONTROLLER_NOT_FOUND );
-        }
+        
     }
 
     /**

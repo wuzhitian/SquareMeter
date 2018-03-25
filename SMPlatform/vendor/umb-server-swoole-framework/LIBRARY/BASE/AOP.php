@@ -54,21 +54,10 @@ class AOP
     public
     function __call( $function_name, $arguments )
     {
-        try {
-            if ( !method_exists( $this->getObject(), $function_name ) ) {
-                throw new Error( Error::UNKNOWN_ERROR );
-            }
-            $this->getObject()->_before();
-            $this->getObject()->_run( $function_name, $arguments );
-            $this->getObject()->_after();
-            $res = $this->getObject()->getRes();
-        }
-        catch ( \Exception $e ) {
-            $res = DataHandler::return ( false, json_decode( $e->getMessage() ) );
-            Console::log( 'AOP Error:' );
-            Console::log( $e->getMessage() );
-            Console::log( $e->getTraceAsString() );
-        }
+        $this->getObject()->_before();
+        $this->getObject()->_run( $function_name, $arguments );
+        $this->getObject()->_after();
+        $res = $this->getObject()->getRes();
         return $res;
     }
 }

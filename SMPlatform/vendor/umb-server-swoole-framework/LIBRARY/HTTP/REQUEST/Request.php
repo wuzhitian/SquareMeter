@@ -53,6 +53,7 @@ class Request
     {
         $this->setSwooleRequest( $request );
         $this->_http_server      = $http_server;
+        $this->server            = $this->getSwooleRequest()->server;
         $this->verb              = $this->getSwooleRequest()->server[ 'request_method' ];
         $this->request_uri       = $this->getSwooleRequest()->server[ 'request_uri' ];
         $this->get               = $this->getSwooleRequest()->get;

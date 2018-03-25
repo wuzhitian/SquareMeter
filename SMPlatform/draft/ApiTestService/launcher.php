@@ -12,8 +12,12 @@
  */
 require_once( __DIR__ . '/../../vendor/umb-server-swoole-framework/autoload.php' );
 
+
 use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpApiServer;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\Autoloader;
+
+Autoloader::attach( __DIR__ . '/MODEL' );
 
 $config = file_get_contents( __DIR__ . '/config.json' );
 $server = new HttpApiServer();

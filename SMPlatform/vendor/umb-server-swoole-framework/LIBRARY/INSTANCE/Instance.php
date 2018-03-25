@@ -178,17 +178,17 @@ class Instance
         $this->instance_name = $this->table_name . self::POSTFIX;
     }
 
-    /**
-     * 保存到数据库
-     * @return bool
-     */
-    public
-    function save()
-    {
-        $data_array = $this->getDataArray();
-        $res        = $this->getDB()->updateById( $this->table_name, $data_array, $this->id );
-        return $res;
-    }
+//    /**
+//     * 保存到数据库
+//     * @return bool
+//     */
+//    public
+//    function save()
+//    {
+//        $data_array = $this->getDataArray();
+//        $res        = $this->getDB()->updateById( $this->table_name, $data_array, $this->id );
+//        return $res;
+//    }
 
     /**
      * 通过反射获取对象数据
@@ -300,26 +300,26 @@ class Instance
         $this->$key = $value;
     }
 
-    /**
-     * 创建新Data
-     *
-     * @param null $id
-     */
-    public
-    function create( $id = NULL )
-    {
-        if ( isset( $id ) ) {
-            $this->setVal( 'id', $id );
-        } else {
-            if ( get_class( $this )::TYPE_MAP[ 'id' ] == INT_TYPE ) {
-                $this->id = $this->getDB()->getNextIntId( $this->table_name );
-            } else {
-                $this->id = Generator::uuid();
-            }
-        }
-        $this->registerToIRM();
-        $this->insert();
-    }
+//    /**
+//     * 创建新Data
+//     *
+//     * @param null $id
+//     */
+//    public
+//    function create( $id = NULL )
+//    {
+//        if ( isset( $id ) ) {
+//            $this->setVal( 'id', $id );
+//        } else {
+//            if ( get_class( $this )::TYPE_MAP[ 'id' ] == INT_TYPE ) {
+//                $this->id = $this->getDB()->getNextIntId( $this->table_name );
+//            } else {
+//                $this->id = Generator::uuid();
+//            }
+//        }
+//        $this->registerToIRM();
+//        $this->insert();
+//    }
 
     /**
      * 创建新Data，不在IRM中注册
@@ -405,15 +405,15 @@ class Instance
         return $res;
     }
 
-    /**
-     * 删除记录，并在IRM中去掉对象
-     */
-    public
-    function delete()
-    {
-        $this->logoutFromIRM();
-        $this->getDB()->deleteById( $this->table_name, $this->id );
-    }
+//    /**
+//     * 删除记录，并在IRM中去掉对象
+//     */
+//    public
+//    function delete()
+//    {
+//        $this->logoutFromIRM();
+//        $this->getDB()->deleteById( $this->table_name, $this->id );
+//    }
 
     /**
      * 为对象检索数据库获取数据信息
@@ -432,28 +432,28 @@ class Instance
         }
     }
 
-    /**
-     * 从数据库更新数据
-     */
-    public
-    function update()
-    {
-        $this->setDataById( $this->id );
-    }
+//    /**
+//     * 从数据库更新数据
+//     */
+//    public
+//    function update()
+//    {
+//        $this->setDataById( $this->id );
+//    }
 
-    /**
-     * 从IRM中取出数据给本对象赋值，用于子类复制数据
-     *
-     * @param \LIBRARY\TOOL\Data $object
-     */
-    public
-    function setDataByIRM( Data $object )
-    {
-        $res_array = $object->getDataArray();
-        foreach ( $res_array as $key => $value ) {
-            $this->setVal( $key, $value );
-        }
-    }
+//    /**
+//     * 从IRM中取出数据给本对象赋值，用于子类复制数据
+//     *
+//     * @param \LIBRARY\TOOL\Data $object
+//     */
+//    public
+//    function setDataByIRM( Data $object )
+//    {
+//        $res_array = $object->getDataArray();
+//        foreach ( $res_array as $key => $value ) {
+//            $this->setVal( $key, $value );
+//        }
+//    }
 
     /**
      * 通过类名获取数据库表名的基础服务
@@ -490,30 +490,30 @@ class Instance
         return $res;
     }
 
-    /**
-     * 返回IRM中的相应的对象，用于给子类封装
-     *
-     * @param $class_path
-     * @param $id
-     *
-     * @return null
-     * @throws \LIBRARY\TOOL\Error
-     */
-    public
-    static
-    function _getDataObjectById( $class_path, $id )
-    {
-        try {
-            $IRM              = IRManager::getInstance();
-            $instance_name    = self::_getTableName( $class_path ) . '_data';
-            $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
-            $res              = $instance_manager->getById( $id );
-        }
-        catch ( \Exception $e ) {
-            throw new Error( Error::DATA_NOT_FOUND );
-        }
-        return $res;
-    }
+//    /**
+//     * 返回IRM中的相应的对象，用于给子类封装
+//     *
+//     * @param $class_path
+//     * @param $id
+//     *
+//     * @return null
+//     * @throws \LIBRARY\TOOL\Error
+//     */
+//    public
+//    static
+//    function _getDataObjectById( $class_path, $id )
+//    {
+//        try {
+//            $IRM              = IRManager::getInstance();
+//            $instance_name    = self::_getTableName( $class_path ) . '_data';
+//            $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
+//            $res              = $instance_manager->getById( $id );
+//        }
+//        catch ( \Exception $e ) {
+//            throw new Error( Error::DATA_NOT_FOUND );
+//        }
+//        return $res;
+//    }
 
     /**
      * 查看本$id的实例是否已经完成注册，也是用于给子类封装

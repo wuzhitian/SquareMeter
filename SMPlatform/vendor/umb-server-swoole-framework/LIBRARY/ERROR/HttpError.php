@@ -55,4 +55,13 @@ class HttpError extends Error
                 'EN' => 'Method not found',
             ],
         ];
+
+    const NECESSARY_PARAMETER_MISSING
+        = [
+            'code'    => 4,
+            'message' => [
+                'CN' => '必要参数缺少',
+                'EN' => 'Necessary parameter missing',
+            ],
+        ];
 }

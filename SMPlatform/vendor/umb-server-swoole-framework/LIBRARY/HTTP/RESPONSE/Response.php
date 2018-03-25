@@ -27,8 +27,8 @@ class Response
     private $_http_server; //内置http_server对象，api或者web
 
     public $status_code = _HttpResponseStatus::SUCCESS;
-    public $header      = [ 'Access-Control-Allow-Origin' => '*' ];
-    public $content     = '';
+    public $header = [ 'Access-Control-Allow-Origin' => '*' ];
+    public $content = NULL;
 
     /**
      * 构造
@@ -94,8 +94,6 @@ class Response
     public
     function response()
     {
-        Console::log( $this->status_code );
-        $this->prepareContent();
         $this->prepareHeader();
         $this->prepareStatus();
         $this->send();
@@ -132,7 +130,6 @@ class Response
             case _ContentType::js:
                 $this->addHeader( 'Content-Type', 'text/javascript' );
                 break;
-
             case _ContentType::API:
             default:
         }
@@ -142,19 +139,10 @@ class Response
      * 设置response状态码
      * @param int $status_code
      */
-    private
+    public
     function setStatus( int $status_code = _HttpResponseStatus::SUCCESS )
     {
         $this->status_code = $status_code;
-    }
-
-    /**
-     * 向swoole_http_response注入content
-     */
-    private
-    function prepareContent()
-    {
-        $this->getSwooleResponse()->write( $this->content );
     }
 
     /**
@@ -178,11 +166,13 @@ class Response
     }
 
     /**
-     * 发送data
+     * 向swoole_http_response注入content，并发送response
      */
     private
     function send()
     {
-        $this->getSwooleResponse()->end();
+        if ( !is_null( $this->content ) ) {
+            $this->getSwooleResponse()->end( $this->content );
+        }
     }
 }

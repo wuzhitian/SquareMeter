@@ -26,11 +26,19 @@ require_once( __DIR__ . '/LIBRARY/ERROR/Error.php' );
 require_once( __DIR__ . '/LIBRARY/ERROR/UtilError.php' );
 require_once( __DIR__ . '/LIBRARY/ERROR/HttpError.php' );
 
+require_once( __DIR__ . '/LIBRARY/FILESYSTEM/File.php' );
+require_once( __DIR__ . '/LIBRARY/FILESYSTEM/Folder.php' );
+
 require_once( __DIR__ . '/LIBRARY/UTIL/ConfigLoader.php' );
 require_once( __DIR__ . '/LIBRARY/UTIL/Console.php' );
 require_once( __DIR__ . '/LIBRARY/UTIL/Time.php' );
 require_once( __DIR__ . '/LIBRARY/UTIL/Generator.php' );
 require_once( __DIR__ . '/LIBRARY/UTIL/Serialize.php' );
+require_once( __DIR__ . '/LIBRARY/UTIL/Autoloader.php' );
+
+require_once( __DIR__ . '/LIBRARY/INSTANCE/Instance.php' );
+
+require_once( __DIR__ . '/LIBRARY/AUTH/AuthUser.php' );
 
 require_once( __DIR__ . '/LIBRARY/BASE/AOPObject.php' );
 require_once( __DIR__ . '/LIBRARY/BASE/AOP.php' );
