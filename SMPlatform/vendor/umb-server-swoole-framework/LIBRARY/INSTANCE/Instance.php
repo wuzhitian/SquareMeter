@@ -10,11 +10,14 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\INSTANCE;
 
-use UmbServer\SwooleFramework\LIBRARY\DATA\Data;
+use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpApiServer;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_ID;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_InstanceBaseOperator;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Generator;
-use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Time;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
+use UmbServer\SwooleFramework\MICROSERVICE\DataCenter;
 
 /**
  * 实例基础类
@@ -27,19 +30,72 @@ class Instance
     public $create_timestamp;
     public $update_timestamp;
 
-    const SCHEMA      = []; //数据图谱
+    const LOCAL_INSTANCE    = false; //实例是否为本地实例，远程实例由DataCenter管理
+    const DATA_CENTER_CLASS = DataCenter::class; //远程数据中心默认值
+
+    const DEFAULT_SCHEMA
+                      = [
+            'id'               => STRING_TYPE,
+            'create_timestamp' => INT_TYPE,
+            'update_timestamp' => INT_TYPE,
+
+        ]; //默认字段数据图谱
     const CACHE       = _DB::Redis; //缓存方式，目前只可以选用null或redis或swoole_table
     const PERSISTENCE = _DB::MySQL; //持久化方式，目前只可以选用null或mysql
+
+    private
+    function push( $operator )
+    {
+        HttpApiServer::getInstance()->getRequestHandler()->addInfluenceInstance( $operator, $this );
+    }
+
+    /**
+     * 获取schema对象
+     * @return object
+     */
+    private
+    function getSchema(): object
+    {
+        $schema         = get_class( $this )::SCHEMA;
+        $default_schema = self::DEFAULT_SCHEMA;
+        //将default_schema中在schema里没有重写的字段类型赋值
+        foreach ( $default_schema as $key => $type ) {
+            if ( !array_key_exists( $key, $schema ) ) {
+                $schema[ $key ] = $type;
+            }
+        }
+        $res = $schema;
+        return (object)$res;
+    }
+
+    /**
+     * 获取id规则，(string)uuid | (int)auto_increase
+     * @return string
+     */
+    private
+    function getIdRule(): string
+    {
+        $type = $this->getSchema()->id;
+        switch ( $type ) {
+            case STRING_TYPE:
+                $res = _ID::UUID;
+                break;
+            case INT_TYPE:
+            default:
+                $res = _ID::AUTO_INCREASE;
+        }
+        return $res;
+    }
 
     /**
      * 根据schema获取数据对象
      * @return object
      */
     public
-    function getDataObjectBySchema(): object
+    function getDataBySchema(): object
     {
         $data_array = [];
-        foreach ( self::SCHEMA as $key => $type ) {
+        foreach ( $this->getSchema() as $key => $type ) {
             $value              = $this->$key;
             $data_array[ $key ] = DataHandler::typeConversion( $type, $value );
         }
@@ -48,11 +104,16 @@ class Instance
     }
 
     /**
-     * 保存实例，如果是本地数据，则需要自己操作缓存和持久层，如果是远程数据服务则不管
+     * 根据schema中要求的类型，给本实例属性重新赋值
      */
-    public
-    function save()
+    private
+    function checkDataBySchema()
     {
+        foreach ( $this->getSchema() as $key => $type ) {
+            $pre_value  = $this->$key;
+            $value      = DataHandler::typeConversion( $type, $pre_value );
+            $this->$key = $value;
+        }
     }
 
     /**
@@ -79,7 +140,7 @@ class Instance
     private
     function getTypeByKey( $key )
     {
-        $res = self::SCHEMA[ $key ];
+        $res = $this->getSchema()->$key;
         return $res;
     }
 
@@ -101,6 +162,50 @@ class Instance
             }
         }
         $this->registerToInstancePool();
+        $this->pushToInfluenceInstance( _InstanceBaseOperator::CREATE );
+    }
+
+    /**
+     * 读取实例
+     *
+     * 从DataService读取数据
+     */
+    public
+    function read()
+    {
+        $this->pushToInfluenceInstance( _InstanceBaseOperator::READ );
+    }
+
+    /**
+     * 更新实例
+     * 向DataService更新数据
+     */
+    public
+    function update()
+    {
+        $this->update_timestamp = Time::getNow();
+        $this->pushToInfluenceInstance( _InstanceBaseOperator::UPDATE );
+    }
+
+    /**
+     * 删除实例
+     * 向DataService删除实例
+     * 实际上是软删除
+     */
+    public
+    function delete()
+    {
+        $this->pushToInfluenceInstance( _InstanceBaseOperator::DELETE );
+    }
+
+    /**
+     * 恢复实例
+     * 向DataService申请回复实例，有可能已经被清除了，只能尝试
+     */
+    public
+    function recover()
+    {
+
     }
 
     private
@@ -118,48 +223,6 @@ class Instance
 
     private
     function createByDataService()
-    {
-
-    }
-
-    /**
-     * 读取实例
-     *
-     * 从DataService读取数据
-     */
-    public
-    function read()
-    {
-
-    }
-
-    /**
-     * 更新实例
-     * 向DataService更新数据
-     */
-    public
-    function update()
-    {
-        $this->update_timestamp = Time::getNow();
-    }
-
-    /**
-     * 删除实例
-     * 向DataService删除实例
-     * 实际上是软删除
-     */
-    public
-    function delete()
-    {
-
-    }
-
-    /**
-     * 恢复实例
-     * 向DataService申请回复实例，有可能已经被清除了，只能尝试
-     */
-    public
-    function recover()
     {
 
     }
@@ -580,7 +643,7 @@ class Instance
     public
     function getData( $is_auth = false ): object
     {
-        $res = $this->getDataObjectBySchema();
+        $res = $this->getDataBySchema();
         return $res;
     }
 }

@@ -11,8 +11,6 @@
 namespace UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST;
 
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpServer;
-use UmbServer\SwooleFramework\LIBRARY\ERROR\HttpError;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\Console;
 
 /**
  * api请求目标类
@@ -28,6 +26,8 @@ class ApiTarget implements RequestTarget
     public $controller_file_path;
     public $method_name;
     public $controller_namespace;
+    public $header;
+    public $cookie;
     public $params;
     public $files;
     public $verb;
@@ -41,7 +41,7 @@ class ApiTarget implements RequestTarget
     public
     function prepare()
     {
-        
+
     }
 
     /**
@@ -83,5 +83,25 @@ class ApiTarget implements RequestTarget
     function getHttpServerType(): string
     {
         return self::HTTP_SERVER_TYPE;
+    }
+
+    /**
+     * 获取api目标对象
+     * @return ApiTarget
+     */
+    public
+    function getApiTarget(): ApiTarget
+    {
+        return $this;
+    }
+
+    /**
+     * 获取resource目标对象
+     * @return ResourceTarget
+     */
+    public
+    function getResourceTarget(): ResourceTarget
+    {
+        return NULL;
     }
 }

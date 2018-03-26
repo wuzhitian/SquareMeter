@@ -1,4 +1,4 @@
-<?php
+<?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
  * File: AuthUser.php
@@ -29,7 +29,9 @@ class AuthUser extends Instance
     public
     function logout()
     {
-
+        $this->api_secret = NULL;
+        $this->is_login   = false;
+//        $this->save();
     }
 
     protected
@@ -37,20 +39,23 @@ class AuthUser extends Instance
     {
         $api_key       = Generator::token();
         $this->api_key = $api_key;
-        $this->save();
+//        $this->save();
     }
 
     protected
     function updateLoginInfo()
     {
-        $last_login_timestamp = Time::getNow();
-        $api_secret           = Generator::apiSecret();
-        $update_array         = [
+        $last_login_timestamp       = Time::getNow();
+        $api_secret                 = Generator::apiSecret();
+        $this->is_login             = true;
+        $this->last_login_timestamp = $last_login_timestamp;
+        $this->api_secret           = $api_secret;
+        $update_array               = [
             'is_login'             => true,
             'last_login_timestamp' => $last_login_timestamp,
             'api_secret'           => $api_secret,
         ];
-        $this->setAttributeByArray( $update_array );
+//        $this->setAttributeByArray( $update_array );
         return $this->getData();
     }
 }

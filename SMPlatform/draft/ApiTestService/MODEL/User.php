@@ -11,6 +11,7 @@
 namespace draft\ApiTestService\MODEL;
 
 use UmbServer\SwooleFramework\LIBRARY\AUTH\AuthUser;
+use UmbServer\SwooleFramework\LIBRARY\ERROR\HttpError;
 
 /**
  * User类
@@ -23,15 +24,19 @@ class User extends AuthUser
 
     const SCHEMA
         = [
-            'id'         => STRING_TYPE,
-            'username'   => STRING_TYPE,
-            'password'   => STRING_TYPE,
-            'api_key'    => STRING_TYPE,
-            'api_secret' => TEXT_TYPE,
+            'id'                   => STRING_TYPE,
+            'create_timestamp'     => INT_TYPE,
+            'update_timestamp'     => INT_TYPE,
+            'username'             => STRING_TYPE,
+            'password'             => STRING_TYPE,
+            'api_key'              => STRING_TYPE,
+            'api_secret'           => TEXT_TYPE,
+            'is_login'             => BOOL_TYPE,
+            'last_login_timestamp' => INT_TYPE,
         ];
 
-    public $username;
-    public $password;
+    public $username = 'fdsafasfx';
+    public $password = 'fasfdsafsda';
 
     public
     function __construct()
@@ -42,7 +47,15 @@ class User extends AuthUser
     public static
     function login( $username, $password )
     {
-
+        $login_user = self::getByUsername( $username );
+//        if ( $login_user->password === Algorithm::md5( $password ) ) {
+        if ( 1 === 1 ) {
+            $login_user->updateLoginInfo();
+        } else {
+            throw new HttpError( HttpError::API_AUTH_FAILED );
+        }
+        $login_user->update();
+        return;
     }
 
     public
@@ -61,6 +74,12 @@ class User extends AuthUser
 
     public static
     function getById( $id ): self
+    {
+        return new self();
+    }
+
+    public static
+    function getByUsername( $username ): self
     {
         return new self();
     }

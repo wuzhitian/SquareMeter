@@ -10,8 +10,13 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER;
 
-use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\Request;
+use UmbServer\SwooleFramework\LIBRARY\AUTH\AuthUser;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpRequestVerb;
+use UmbServer\SwooleFramework\LIBRARY\ERROR\HttpError;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\ApiTarget;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Algorithm;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\Console;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\Serialize;
 
 /**
  * 认证控制器类
@@ -21,62 +26,88 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\Algorithm;
 class AuthController extends Controller
 {
     private $_auth_user; //登陆用户实例
+    private $_auth_user_class;
+
+    public $request_uri;
+    public $api_key;
+    public $signature;
 
     public
-    function __construct( Request $request )
+    function __construct( ApiTarget $api_target )
     {
-        parent::__construct( $request );
-    }
-
-    private
-    function authSignature()
-    {
-
-    }
-
-    public
-    function getAuthUserId()
-    {
-        return '123';
+        parent::__construct( $api_target );
+        $this->request_uri = $api_target->request_uri;
+        $this->api_key     = $api_target->api_key;
+        $this->signature   = $api_target->signature;
     }
 
     /**
-     * 重写前置方法
+     * 设置验证用户类名
+     * @param string $auth_user_class
+     */
+    public
+    function setAuthUserClass( string $auth_user_class )
+    {
+        $this->_auth_user_class = $auth_user_class;
+    }
+
+    /**
+     * 获取验证用户类名
+     * @return string
+     */
+    private
+    function getAuthUserClass(): string
+    {
+        return $this->_auth_user_class;
+    }
+
+    /**
+     * 设置验证用户
+     * @param $auth_user
+     */
+    private
+    function setAuthUser( $auth_user )
+    {
+        $this->_auth_user = $auth_user;
+    }
+
+    /**
+     * 获取验证用户
+     * @return AuthUser
+     */
+    private
+    function getAuthUser(): AuthUser
+    {
+        return $this->_auth_user;
+    }
+
+    /**
+     * 重写前置方法用于验证
      * @return bool
+     * @throws HttpError
      */
     public
     function _before(): bool
     {
-        $api_key = $this->HEADER[ 'api_key' ];
-        $user    = call_user_func( [ __CLASS__, 'getByApiKey' ] );
+        $auth_user = call_user_func( [ $this->getAuthUserClass(), 'getByApiKey' ], $this->api_key );
+        $this->setAuthUser( $auth_user );
 
-
-        if ( isset( $this->FILES ) ) {
-            $this->_login_user = $user;
+        //如果是上传文件则不验证signature
+        if ( $this->VERB === _HttpRequestVerb::UPLOAD_FILE ) {
             return true;
         }
 
         //检查signature
-        $signature  = $this->HEADER[ 'signature' ];
-        $path       = $this->REQUEST->server[ 'request_uri' ];
-        $api_secret = $user->getAttribute( 'api_secret' );
-        $verb       = $this->REQUEST->server[ 'request_method' ];
-        $payload    = $verb . $path;
-
-        if ( !empty( $this->$verb ) ) {
-            //JSON_UNESCAPED_UNICODE用于处理中文问题
-            $params_encode = json_encode( $this->$verb, JSON_UNESCAPED_UNICODE );
-            $payload       .= $params_encode;
-        }
-
-        // var_dump($this->REQUEST->rawContent());
-        echo 'Expire Preload String: ' . $payload . PHP_EOL;
+        $api_secret       = $this->getAuthUser()->api_secret;
+        $payload          = $this->VERB . $this->request_uri . Serialize::encode( $this->PARAMS );
         $expire_signature = Algorithm::hmacSha256( $payload, $api_secret );
-        echo 'Signature: ' . $signature . PHP_EOL;
-        echo 'Expire: ' . $expire_signature . PHP_EOL;
-//        if ( $signature != $expire_signature ) {
-//            throw new Error( Error::API_AUTH_FAIL );
-//        }
+
+        Console::log( 'Expire Preload String: ' . $payload );
+        Console::log( 'Expire Signature: ' . $expire_signature );
+        Console::log( 'Signature: ' . $this->signature );
+        if ( $this->signature !== $expire_signature ) {
+            throw new HttpError( HttpError::API_AUTH_FAILED );
+        }
         return true;
     }
 

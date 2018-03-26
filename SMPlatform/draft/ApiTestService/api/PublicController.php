@@ -10,8 +10,8 @@
 
 namespace draft\ApiTestService\Controller;
 
-use UmbServer\SwooleFramework\LIBRARY\EXTEND\GET;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER\Controller;
+use UmbServer\SwooleFramework\LIBRARY\EXTEND\GET;
 use UmbServer\SwooleFramework\LIBRARY\EXTEND\POST;
 
 use draft\ApiTestService\MODEL\User;
@@ -26,6 +26,7 @@ class PublicController extends Controller
      * 登录
      * @param GET $username
      * @param GET $password
+     * @return object
      */
     public
     function login( GET $username, GET $password )

@@ -11,6 +11,7 @@
 namespace UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER;
 
 use UmbServer\SwooleFramework\LIBRARY\BASE\AOPObject;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\ApiTarget;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\Request;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\RESPONSE\Response;
 
@@ -24,8 +25,8 @@ interface AOPController extends AOPObject
     /**
      * 构造
      * AOPController constructor.
-     * @param Request $request
+     * @param ApiTarget $api_target
      */
     public
-    function __construct( Request $request );
+    function __construct( ApiTarget $api_target );
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
  * File: Algorithm.php
@@ -15,7 +15,8 @@ namespace UmbServer\SwooleFramework\LIBRARY\UTIL;
  * Class Algorithm
  * @package UmbServer\SwooleFramework\LIBRARY\UTIL
  */
-abstract class Algorithm
+abstract
+class Algorithm
 {
     /**
      * sha384 hmac加密
@@ -23,7 +24,8 @@ abstract class Algorithm
      * @param $secret
      * @return string
      */
-    public static function hmacSha384( $data, $secret )
+    public static
+    function hmacSha384( $data, $secret )
     {
         $res = bin2hex( mhash( MHASH_SHA384, $data, $secret ) );
         return $res;
@@ -35,9 +37,22 @@ abstract class Algorithm
      * @param $secret
      * @return string
      */
-    public static function hmacSha256( $data, $secret )
+    public static
+    function hmacSha256( $data, $secret )
     {
         $res = bin2hex( mhash( MHASH_SHA256, $data, $secret ) );
+        return $res;
+    }
+
+    /**
+     * md5
+     * @param string $data
+     * @return string
+     */
+    public static
+    function md5( string $data ): string
+    {
+        $res = md5( $data );
         return $res;
     }
 }

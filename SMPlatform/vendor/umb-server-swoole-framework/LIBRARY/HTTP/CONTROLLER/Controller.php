@@ -10,12 +10,12 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER;
 
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpRequestVerb;
 use UmbServer\SwooleFramework\LIBRARY\ERROR\HttpError;
 use UmbServer\SwooleFramework\LIBRARY\EXTEND\GET;
 use UmbServer\SwooleFramework\LIBRARY\EXTEND\POST;
 use UmbServer\SwooleFramework\LIBRARY\EXTEND\UPLOAD_FILE;
-use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\Request;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\Console;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\ApiTarget;
 
 /**
  * 控制器基础类
@@ -24,7 +24,7 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\Console;
  */
 class Controller implements AOPController
 {
-    public $REQUEST;
+    public $VERB;
     public $GET;
     public $POST;
     public $PARAMS;
@@ -34,14 +34,25 @@ class Controller implements AOPController
     public $RESPONSE;
 
     public
-    function __construct( Request $request )
+    function __construct( ApiTarget $api_target )
     {
-        $this->REQUEST = $request;
-        $this->GET = $request->get ?? NULL;
-        $this->POST = $request->post ?? NULL;
-        $this->HEADER = $request->header ?? NULL;
-        $this->COOKIE = $request->cookie ?? NULL;
-        $this->UPLOAD_FILE = $request->files ?? NULL;
+        $this->VERB = $api_target->verb;
+        switch ( $this->VERB ) {
+            case _HttpRequestVerb::UPLOAD_FILE:
+                $this->PARAMS      = $api_target->files;
+                $this->UPLOAD_FILE = $api_target->files;
+                break;
+            case _HttpRequestVerb::GET:
+                $this->PARAMS = $api_target->params;
+                $this->GET    = $api_target->params;
+                break;
+            case _HttpRequestVerb::POST:
+            default:
+                $this->PARAMS = $api_target->params;
+                $this->POST   = $api_target->params;
+        }
+        $this->HEADER = $api_target->header;
+        $this->COOKIE = $api_target->cookie;
     }
 
     /**
@@ -59,18 +70,18 @@ class Controller implements AOPController
      * @param $function_name
      * @param $arguments
      * @return mixed
-     * @throws \ReflectionException
+     * @throws HttpError
      */
     public
     function _run( $function_name, $arguments )
     {
         //创建反射对象
-        $reflect_method = new \ReflectionMethod( $this, $function_name );
+        $reflect_method                  = new \ReflectionMethod( $this, $function_name );
         $expired_reflect_parameter_array = $reflect_method->getParameters();
-        $import_arguments = [];
-        $required_parameter_key_array = [];
-        $import_parameter_array = [];
-        $parameter_key_array = [];
+        $import_arguments                = [];
+        $required_parameter_key_array    = [];
+        $import_parameter_array          = [];
+        $parameter_key_array             = [];
 
         //由反射对象中反映的形参进行赋值
         foreach ( $expired_reflect_parameter_array as $expired_reflect_parameter ) {
@@ -82,16 +93,16 @@ class Controller implements AOPController
                 $import_arguments[ $expired_reflect_parameter->getPosition() ] = new GET( NULL );
             }
             $parameter_key_array[] = $expired_reflect_parameter->getName();
-            $is_default = $expired_reflect_parameter->isDefaultValueAvailable();
+            $is_default            = $expired_reflect_parameter->isDefaultValueAvailable();
             if ( !$is_default ) {
                 $required_parameter_key_array[] = $expired_reflect_parameter->getPosition();
             }
-            if ( !empty( $this->UPLOAD_FILE ) ) {
-                foreach ( $this->UPLOAD_FILE as $files_key => $files ) {
+            if ( !empty( $this->FILES ) ) {
+                foreach ( $this->FILES as $files_key => $files ) {
                     if ( $expired_reflect_parameter->getClass()->name === UPLOAD_FILE::class ) {
                         if ( $expired_reflect_parameter->getName() === $files_key ) {
                             $import_arguments[ $expired_reflect_parameter->getPosition() ] = new UPLOAD_FILE( $files, true );
-                            $import_parameter_array[] = $expired_reflect_parameter;
+                            $import_parameter_array[]                                      = $expired_reflect_parameter;
                             break;
                         }
                     }
@@ -102,7 +113,7 @@ class Controller implements AOPController
                     if ( $expired_reflect_parameter->getClass()->name === POST::class ) {
                         if ( $expired_reflect_parameter->getName() === $post_key ) {
                             $import_arguments[ $expired_reflect_parameter->getPosition() ] = new POST( $post, true );
-                            $import_parameter_array[] = $expired_reflect_parameter;
+                            $import_parameter_array[]                                      = $expired_reflect_parameter;
                             break;
                         }
                     }
@@ -113,7 +124,7 @@ class Controller implements AOPController
                     if ( $expired_reflect_parameter->getClass()->name === GET::class ) {
                         if ( $expired_reflect_parameter->getName() === $get_key ) {
                             $import_arguments[ $expired_reflect_parameter->getPosition() ] = new GET( $get, true );
-                            $import_parameter_array[] = $expired_reflect_parameter;
+                            $import_parameter_array[]                                      = $expired_reflect_parameter;
                             break;
                         }
                     }

@@ -64,4 +64,13 @@ class HttpError extends Error
                 'EN' => 'Necessary parameter missing',
             ],
         ];
+
+    const API_AUTH_FAILED
+        = [
+            'code'    => 8,
+            'message' => [
+                'CN' => 'api验证失败',
+                'EN' => 'Api auth failed',
+            ],
+        ];
 }

@@ -22,7 +22,6 @@ use UmbServer\SwooleFramework\LIBRARY\HTTP\RESPONSE\Response;
 use swoole_http_server;
 use swoole_http_request;
 use swoole_http_response;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\Console;
 
 /**
  * http(s)api服务器基础类
@@ -31,14 +30,39 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\Console;
  */
 class HttpApiServer implements HttpServer
 {
+    //构建单例
+    /************************************************************/
+    private static $_instance;
+
+    private
+    function __construct()
+    {
+    }
+
+    private
+    function __clone()
+    {
+    }
+
+    public static
+    function getInstance(): self
+    {
+        if ( !( self::$_instance instanceof self ) ) {
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
+
+    /************************************************************/
+
     const DEFAULT_CONFIG
         = [
-            'name' => 'HttpApiServer',
-            'type' => _HttpServer::API,
-            'listen_ip' => '0.0.0.0',
+            'name'        => 'HttpApiServer',
+            'type'        => _HttpServer::API,
+            'listen_ip'   => '0.0.0.0',
             'listen_port' => 9527,
-            'is_ssl' => false,
-            'is_http2' => false,
+            'is_ssl'      => false,
+            'is_http2'    => false,
         ]; //默认配置
 
     private $_server; //swoole_http_server对象
@@ -46,10 +70,10 @@ class HttpApiServer implements HttpServer
 
     private $_extra_data; //附加数据
 
-    private $_request = NULL; //当次请求的对象暂存
-    private $_request_target = NULL; //当次请求解析后的目标对象暂存
+    private $_request         = NULL; //当次请求的对象暂存
+    private $_request_target  = NULL; //当次请求解析后的目标对象暂存
     private $_request_handler = NULL; //当次请求的处理器对象暂存
-    private $_response = NULL; //当次响应的对象暂存
+    private $_response        = NULL; //当次响应的对象暂存
 
     /**
      * 设置配置
@@ -244,7 +268,7 @@ class HttpApiServer implements HttpServer
     function setSSLFile()
     {
         $this->getConfig()->set[ 'ssl_cert_file' ] = $this->getConfig()->ssl_cert_file;
-        $this->getConfig()->set[ 'ssl_key_file' ] = $this->getConfig()->ssl_key_file;
+        $this->getConfig()->set[ 'ssl_key_file' ]  = $this->getConfig()->ssl_key_file;
     }
 
     /**
@@ -364,10 +388,10 @@ class HttpApiServer implements HttpServer
     private
     function clean()
     {
-        $this->_request = NULL;
-        $this->_request_target = NULL;
+        $this->_request         = NULL;
+        $this->_request_target  = NULL;
         $this->_request_handler = NULL;
-        $this->_response = NULL;
+        $this->_response        = NULL;
     }
 
     /**

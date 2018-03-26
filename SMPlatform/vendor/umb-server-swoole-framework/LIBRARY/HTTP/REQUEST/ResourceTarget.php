@@ -61,4 +61,16 @@ class ResourceTarget implements RequestTarget
     {
         // TODO: Implement getControllerClasspath() method.
     }
+
+    public
+    function getApiTarget(): ApiTarget
+    {
+        return NULL;
+    }
+
+    public
+    function getResourceTarget(): ResourceTarget
+    {
+        return $this;
+    }
 }

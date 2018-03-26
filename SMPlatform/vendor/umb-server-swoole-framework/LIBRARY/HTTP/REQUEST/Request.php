@@ -12,6 +12,7 @@ namespace UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST;
 
 use swoole_http_request;
 use UmbServer\SwooleFramework\COMPONENT\SERVER\HttpServer;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpRequestVerb;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpServer;
 
 /**
@@ -26,13 +27,7 @@ class Request
     private $_request_target; //经过解析后的request目标，api或者web
 
     public $request_type;
-    public $is_handle   = false;
-    public $is_response = false;
     public $request_timestamp;
-    public $response_timestamp;
-
-    public $requester; //请求发起者
-    public $responder; //请求响应者
 
     public $header;
     public $server;
@@ -40,7 +35,7 @@ class Request
     public $cookie;
     public $get;
     public $post;
-    public $tmpfiles;
+    public $files;
 
     /**
      * 构造
@@ -53,13 +48,16 @@ class Request
     {
         $this->setSwooleRequest( $request );
         $this->_http_server      = $http_server;
-        $this->server            = $this->getSwooleRequest()->server;
-        $this->verb              = $this->getSwooleRequest()->server[ 'request_method' ];
-        $this->request_uri       = $this->getSwooleRequest()->server[ 'request_uri' ];
-        $this->get               = $this->getSwooleRequest()->get;
-        $this->post              = $this->getSwooleRequest()->post;
-        $this->request_timestamp = (int)$this->getSwooleRequest()->server[ 'request_time_float' ] * 1000;
-        $this->request_type      = $this->getHttpServer()->getConfig()->type;
+        $this->header            = $request->header;
+        $this->cookie            = $request->cookie;
+        $this->server            = $request->server;
+        $this->verb              = $request->server[ 'request_method' ];
+        $this->request_uri       = $request->server[ 'request_uri' ];
+        $this->get               = $request->get;
+        $this->post              = $request->post;
+        $this->files             = $request->files;
+        $this->request_timestamp = (int)$request->server[ 'request_time_float' ] * 1000;
+        $this->request_type      = $http_server->getConfig()->type;
     }
 
     /**
@@ -135,9 +133,23 @@ class Request
     private
     function parseApiRequestUri()
     {
-        $api_target                  = new ApiTarget();
-        $path_array                  = explode( '/', $this->request_uri );
-        $api_target->request_uri     = $this->request_uri;
+        $api_target              = new ApiTarget();
+        $path_array              = explode( '/', $this->request_uri );
+        $api_target->request_uri = $this->request_uri;
+        $api_target->verb        = $this->verb;
+        $api_target->header      = $this->header;
+        $api_target->cookie      = $this->cookie;
+        switch ( $this->verb ) {
+            case _HttpRequestVerb::UPLOAD_FILE:
+                $api_target->params = $this->files;
+                break;
+            case _HttpRequestVerb::GET:
+                $api_target->params = $this->get;
+                break;
+            case _HttpRequestVerb::POST:
+            default:
+                $api_target->params = $this->post;
+        }
         $api_target->controller_name = $path_array[ sizeof( $path_array ) - 2 ] ?? 'index';
         $api_target->method_name     = $path_array[ sizeof( $path_array ) - 1 ];
         $relative_path               = '';

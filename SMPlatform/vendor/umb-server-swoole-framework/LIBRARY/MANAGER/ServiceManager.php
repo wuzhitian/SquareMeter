@@ -17,6 +17,8 @@ namespace UmbServer\SwooleLibrary\FRAMEWORK\CORE\MANAGER;
  */
 class ServiceManager
 {
+    //构建单例
+    /************************************************************/
     private static $_instance;
 
     private
@@ -37,6 +39,7 @@ class ServiceManager
         }
         return self::$_instance;
     }
+    /************************************************************/
 
     function launch()
     {

@@ -60,11 +60,12 @@ class DataHandler
      * @param string $quotation
      * @return int|string
      */
-    public static function quotation( $string, $quotation = '"' )
+    public static
+    function quotation( $string, $quotation = '"' )
     {
         $string_format = $string;
         if ( isset( $string ) && is_string( $string ) ) {
-            $string = str_replace( '"', '\"', $string );
+            $string        = str_replace( '"', '\"', $string );
             $string_format = $quotation . $string . $quotation;
         }
         if ( is_bool( $string ) ) {
@@ -74,29 +75,16 @@ class DataHandler
     }
 
     /**
-     * 返回格式化，默认格式化为json
-     * @param $success
-     * @param $response
-     * @param string $format
-     * @return string
+     * 获取指定分割符的最后一个片段
+     * @param string $delimiter
+     * @param string $string
+     * @return mixed
      */
-    public static function return( $success, $response, $format = 'json' )
+    public static
+    function lastSegment( string $delimiter, string $string )
     {
-        //对数组进行键名排序
-        if ( is_array( $response ) ) {
-            ksort( $response );
-        }
-        $return[ 'success' ] = $success;
-        $return[ 'data' ] = $response;
-        switch ( $format ) {
-            case 'json':
-                //JSON_UNESCAPED_UNICODE用于处理中文问题
-                $res = json_encode( $return, JSON_UNESCAPED_UNICODE );
-
-                break;
-            default:
-                $res = $return;
-        }
+        $explode_array = array_reverse( explode( $delimiter, $string ) );
+        $res           = $explode_array[ 0 ];
         return $res;
     }
 }

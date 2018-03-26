@@ -10,8 +10,22 @@
 
 namespace UmbServer\SwooleFramework\COMPONENT\CLIENT;
 
-
-class TCPClient
+/**
+ * tcp客户端类
+ * Class TCPClient
+ * @package UmbServer\SwooleFramework\COMPONENT\CLIENT
+ */
+class TCPClient implements Client
 {
+    public
+    function connect(): bool
+    {
+        // TODO: Implement connect() method.
+    }
 
+    public
+    function disconnect(): bool
+    {
+        // TODO: Implement disconnect() method.
+    }
 }

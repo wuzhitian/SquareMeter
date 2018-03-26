@@ -51,4 +51,18 @@ interface RequestTarget
      */
     public
     function getMethodName(): string;
+
+    /**
+     * 获取api目标对象，仅api请求存在
+     * @return ApiTarget
+     */
+    public
+    function getApiTarget(): ApiTarget;
+
+    /**
+     * 获取resource目标对象，仅resource请求存在
+     * @return ResourceTarget
+     */
+    public
+    function getResourceTarget(): ResourceTarget;
 }

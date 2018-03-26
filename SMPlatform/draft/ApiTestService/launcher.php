@@ -20,7 +20,7 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\Autoloader;
 Autoloader::attach( __DIR__ . '/MODEL' );
 
 $config = file_get_contents( __DIR__ . '/config.json' );
-$server = new HttpApiServer();
+$server = HttpApiServer::getInstance();
 $server->setConfig( $config, _Config::JSON );
 $server->initial();
 $server->start();
