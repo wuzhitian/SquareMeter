@@ -18,7 +18,8 @@ namespace UmbServer\SwooleFramework\LIBRARY\ENUM;
 abstract
 class _DB
 {
-    const MySQL       = 'mysql';
-    const Redis       = 'redis';
-    const SwooleTable = 'swoole_table';
+    const MYSQL        = 'mysql';
+    const REDIS        = 'redis';
+    const SWOOLE_TABLE = 'swoole_table';
+    const NONE         = 'none';
 }

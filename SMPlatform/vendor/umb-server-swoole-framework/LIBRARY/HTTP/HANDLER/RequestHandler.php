@@ -220,7 +220,7 @@ class RequestHandler
     function addCreateInstance( Instance $instance )
     {
         $this->instances->create[] = [
-            'class_name' => DataHandler::lastSegment( '\\', get_class( $instance ) ),
+            'class_name' => $instance->getClientInstancePoolClassName(),
             'instance'   => $instance->getData(),
         ];
     }
@@ -233,7 +233,7 @@ class RequestHandler
     function addReadInstance( Instance $instance )
     {
         $this->instances->read[] = [
-            'class_name' => DataHandler::lastSegment( '\\', get_class( $instance ) ),
+            'class_name' => $instance->getClientInstancePoolClassName(),
             'instance'   => $instance->getData(),
         ];
     }
@@ -246,7 +246,7 @@ class RequestHandler
     function addUpdateInstance( Instance $instance )
     {
         $this->instances->update[] = [
-            'class_name' => DataHandler::lastSegment( '\\', get_class( $instance ) ),
+            'class_name' => $instance->getClientInstancePoolClassName(),
             'instance'   => $instance->getData(),
         ];
     }
@@ -259,7 +259,7 @@ class RequestHandler
     function addDeleteInstance( Instance $instance )
     {
         $this->instances->delete[] = [
-            'class_name' => DataHandler::lastSegment( '\\', get_class( $instance ) ),
+            'class_name' => $instance->getClientInstancePoolClassName(),
             'instance'   => [
                 'id' => $instance->id,
             ],

@@ -11,12 +11,14 @@
 namespace UmbServer\SwooleFramework\LIBRARY\INSTANCE;
 
 use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpApiServer;
+use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\VISITOR\DataCenterVisitor;
+use UmbServer\SwooleFramework\LIBRARY\DATA\LocalDataCenter;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_ID;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_InstanceBaseOperator;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\Generator;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\Time;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_InstanceMode;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\Time;
 use UmbServer\SwooleFramework\MICROSERVICE\DataCenter;
 
 /**
@@ -26,25 +28,29 @@ use UmbServer\SwooleFramework\MICROSERVICE\DataCenter;
  */
 class Instance
 {
-    public $id = NULL; //所有实例都必须有id，可以是指定的、序号或是uuid
+    public $id; //所有实例都必须有id，可以是指定的、序号或是uuid
     public $create_timestamp;
     public $update_timestamp;
 
-    const LOCAL_INSTANCE    = false; //实例是否为本地实例，远程实例由DataCenter管理
+    const MODE              = _InstanceMode::LOCAL; //实例是否为本地实例，远程实例由DataCenter管理
     const DATA_CENTER_CLASS = DataCenter::class; //远程数据中心默认值
 
     const DEFAULT_SCHEMA
                       = [
             'id'               => STRING_TYPE,
-            'create_timestamp' => INT_TYPE,
-            'update_timestamp' => INT_TYPE,
+            'create_timestamp' => TIMESTAMP_TYPE,
+            'update_timestamp' => TIMESTAMP_TYPE,
 
         ]; //默认字段数据图谱
-    const CACHE       = _DB::Redis; //缓存方式，目前只可以选用null或redis或swoole_table
-    const PERSISTENCE = _DB::MySQL; //持久化方式，目前只可以选用null或mysql
+    const CACHE       = _DB::REDIS; //缓存方式，目前只可以选用null或redis或swoole_table
+    const PERSISTENCE = _DB::MYSQL; //持久化方式，目前只可以选用null或mysql
 
+    /**
+     * 根据操作类型向request_handler的受影响实例池赋值
+     * @param $operator
+     */
     private
-    function push( $operator )
+    function pushToInfluenceInstance( $operator )
     {
         HttpApiServer::getInstance()->getRequestHandler()->addInfluenceInstance( $operator, $this );
     }
@@ -72,7 +78,7 @@ class Instance
      * 获取id规则，(string)uuid | (int)auto_increase
      * @return string
      */
-    private
+    public
     function getIdRule(): string
     {
         $type = $this->getSchema()->id;
@@ -117,22 +123,6 @@ class Instance
     }
 
     /**
-     * 获取缓存数据
-     */
-    public
-    function getCacheData()
-    {
-    }
-
-    /**
-     * 获取持久层数据
-     */
-    public
-    function getPersistenceData()
-    {
-    }
-
-    /**
      * 根据key获取schema中的type
      * @param $key
      * @return mixed
@@ -146,492 +136,224 @@ class Instance
 
     /**
      * 创建实例
-     * 处理好id问题
-     * 判断LOCAL_INSTANCE，如果是，就在本地实例池创建，如果不是就在DataService创建
-     * 根据CACHE和PERSISTENCE决定缓存和持久化方式，通过DataService实现
+     * 判断MODE，如果是Local，就在本地实例池创建，如果不是就在remoteDataCenter创建
+     * 根据CACHE和PERSISTENCE决定缓存和持久化方式，通过remoteDataCenter实现
+     * @param bool $is_push
+     * @return Instance
      */
     public
-    function create()
+    function create( $is_push = true )
     {
-        //如果有id就用传入的id
-        if ( !isset( $this->id ) ) {
-            if ( get_class( $this )::TYPE_MAP[ 'id' ] == INT_TYPE ) {
-                $this->id = $this->getDB()->getNextIntId( $this->table_name );
-            } else {
-                $this->id = $this->generateId();
-            }
+        $this->create_timestamp = Time::getNow();
+        switch ( get_class( $this )::MODE ) {
+            case _InstanceMode::LOCAL:
+                $res = $this->localCreate();
+                break;
+            case _InstanceMode::REMOTE:
+            default:
+                $res = $this->remoteCreate();
         }
-        $this->registerToInstancePool();
-        $this->pushToInfluenceInstance( _InstanceBaseOperator::CREATE );
+        if ( $is_push === true ) {
+            $this->pushToInfluenceInstance( _InstanceBaseOperator::CREATE );
+        }
+        return $res;
     }
 
     /**
      * 读取实例
-     *
-     * 从DataService读取数据
+     * @param bool $is_push
+     * @return Instance
      */
     public
-    function read()
+    function read( $is_push = true )
     {
-        $this->pushToInfluenceInstance( _InstanceBaseOperator::READ );
+        switch ( get_class( $this )::MODE ) {
+            case _InstanceMode::LOCAL:
+                $res = $this->localRead();
+                break;
+            case _InstanceMode::REMOTE:
+            default:
+                $res = $this->remoteRead();
+        }
+        if ( $is_push === true ) {
+            $this->pushToInfluenceInstance( _InstanceBaseOperator::READ );
+        }
+        return $res;
     }
 
     /**
      * 更新实例
-     * 向DataService更新数据
+     * @param bool $is_push
+     * @return bool
      */
     public
-    function update()
+    function update( $is_push = true )
     {
         $this->update_timestamp = Time::getNow();
-        $this->pushToInfluenceInstance( _InstanceBaseOperator::UPDATE );
+        switch ( get_class( $this )::MODE ) {
+            case _InstanceMode::LOCAL:
+                $res = $this->localUpdate();
+                break;
+            case _InstanceMode::REMOTE:
+            default:
+                $res = $this->remoteUpdate();
+        }
+        if ( $is_push === true ) {
+            $this->pushToInfluenceInstance( _InstanceBaseOperator::UPDATE );
+        }
+        return $res;
     }
 
     /**
      * 删除实例
-     * 向DataService删除实例
-     * 实际上是软删除
+     * @param bool $is_push
+     * @return bool
      */
     public
-    function delete()
+    function delete( $is_push = true )
     {
-        $this->pushToInfluenceInstance( _InstanceBaseOperator::DELETE );
-    }
-
-    /**
-     * 恢复实例
-     * 向DataService申请回复实例，有可能已经被清除了，只能尝试
-     */
-    public
-    function recover()
-    {
-
-    }
-
-    private
-    function createByLocalInstancePool()
-    {
-
-    }
-
-    public
-    function deleteIdFromIdArray( $id, $id_array )
-    {
-        $key = array_search( $id, $id_array );
-        array_splice( $id_array, $key, 1 );
-    }
-
-    private
-    function createByDataService()
-    {
-
-    }
-
-    /**
-     * 为数据库映射对象设置数据库名和表名
-     *
-     * @param null $table_name
-     * @param null $DB_name
-     */
-    public
-    function setDBInfo( $table_name = NULL, $DB_name = NULL )
-    {
-        $this->table_name    = $table_name ?? self::_getTableName( get_class( $this ) );
-        $this->DB_name       = $DB_name ?? $this->getDB()->DB_name;
-        $this->instance_name = $this->table_name . self::POSTFIX;
-    }
-
-//    /**
-//     * 保存到数据库
-//     * @return bool
-//     */
-//    public
-//    function save()
-//    {
-//        $data_array = $this->getDataArray();
-//        $res        = $this->getDB()->updateById( $this->table_name, $data_array, $this->id );
-//        return $res;
-//    }
-
-    /**
-     * 通过反射获取对象数据
-     * @return array
-     */
-    public
-    function getDataArray(): array
-    {
-        $reflect_object = new \ReflectionObject( $this );
-        $params         = $reflect_object->getProperties();
-        $data_array     = [];
-        foreach ( $params as $param ) {
-            $param->setAccessible( true );
-            $data_array[ $param->getName() ] = $param->getValue( $this );
+        switch ( get_class( $this )::MODE ) {
+            case _InstanceMode::LOCAL:
+                $res = $this->localDelete();
+                break;
+            case _InstanceMode::REMOTE:
+            default:
+                $res = $this->remoteDelete();
         }
-        unset( $data_array[ 'TYPE_MAP' ] );
-        unset( $data_array[ 'DB_name' ] );
-        unset( $data_array[ 'table_name' ] );
-        unset( $data_array[ 'instance_name' ] );
-        return $data_array;
+        if ( $is_push === true ) {
+            $this->pushToInfluenceInstance( _InstanceBaseOperator::DELETE );
+        }
+        return $res;
     }
 
     /**
-     * 从DBM中获取本Data的数据库对象
-     * @return DB
+     * 本地实例创建
+     * @return Instance
      */
-    public
-    function getDB(): DB
+    private
+    function localCreate()
     {
-        $DBM = DBManager::getInstance();
-        return $DBM->getDB( $this->DB_name );
+        $res = LocalDataCenter::getInstance()->createInstance( $this );
+        return $res;
     }
 
     /**
-     * 插入记录
-     * @return mixed
+     * 远程实例创建
+     * @return Instance
+     */
+    private
+    function remoteCreate()
+    {
+        //远程实例的id问题交给data_center处理
+        //远程实例的缓存层与持久层问题交给data_center处理
+        $res = DataCenterVisitor::getInstance()->createInstance( $this );
+        return $res;
+    }
+
+    /**
+     * 本地读取实例
+     * @return Instance
+     */
+    private
+    function localRead()
+    {
+        $res = LocalDataCenter::getInstance()->readInstance( $this );
+        return $res;
+    }
+
+    /**
+     * 远程实例读取
+     * @return Instance
+     */
+    private
+    function remoteRead()
+    {
+        $res = DataCenterVisitor::getInstance()->readInstance( $this );
+        return $res;
+    }
+
+    /**
+     * 本地实例更新
+     * @return bool
+     */
+    private
+    function localUpdate()
+    {
+        $res = LocalDataCenter::getInstance()->updateInstance( $this );
+        return $res;
+    }
+
+    /**
+     * 远程实例更新
+     * @return bool
+     */
+    private
+    function remoteUpdate()
+    {
+        $res = DataCenterVisitor::getInstance()->updateInstance( $this );
+        return $res;
+    }
+
+    /**
+     * 本地实例删除
+     * @return bool
+     */
+    private
+    function localDelete()
+    {
+        $res = LocalDataCenter::getInstance()->deleteInstance( $this );
+        return $res;
+    }
+
+    /**
+     * 远程实例删除
+     * @return bool
+     */
+    private
+    function remoteDelete()
+    {
+        $res = DataCenterVisitor::getInstance()->deleteInstance( $this );
+        return $res;
+    }
+
+    /**
+     * 获取表名
+     * @return string
      */
     public
-    function insert()
+    function getTableName(): string
     {
-        $sql = 'INSERT INTO ' . $this->table_name . ' (id) VALUES (' . StringFormat::quotation( $this->id ) . ')';
-        $res = $this->getDB()->insert( $sql );
+        $res = DataHandler::lastSegment( '\\', get_class( $this ) );
+        return $res;
+    }
+
+    /**
+     * 获取客户端实例池类名
+     * @return string
+     */
+    public
+    function getClientInstancePoolClassName(): string
+    {
+        $res = DataHandler::lastSegment( '\\', get_class( $this ) );
         return $res;
     }
 
     /**
      * 执行属性赋值
-     *
-     * @param $key
-     * @param $value
-     *
-     * @return bool
+     * @param $data
+     * @return object
      */
     public
-    function setAttribute( $key, $value )
+    function setData( $data )
     {
-        $this->setVal( $key, $value );
-        $res = $this->save();
-        return $res;
-    }
-
-    /**
-     * 获取属性值
-     *
-     * @param $key
-     *
-     * @return mixed
-     */
-    public
-    function getAttribute( $key )
-    {
-        $res = $this->$key;
-        return $res;
-    }
-
-    /**
-     * 通过数组为Data赋值
-     *
-     * @param array $array
-     *
-     * @return bool
-     */
-    public
-    function setAttributeByArray( array $array )
-    {
-        foreach ( $array as $key => $value ) {
-            if ( !isset( $value ) ) {
-                continue;
-            }
-            $this->setVal( $key, $value );
-        }
-        $res = $this->save();
-        return $res;
-    }
-
-    /**
-     * 设置值
-     *
-     * @param $key
-     * @param $value
-     */
-    public
-    function setVal( $key, $value )
-    {
-        $type = get_class( $this )::TYPE_MAP[ $key ] ?? NULL;
-        if ( isset( $type ) ) {
-            $value = self::dataTypeStrict( $type, $value );
-        }
-        $this->$key = $value;
-    }
-
-//    /**
-//     * 创建新Data
-//     *
-//     * @param null $id
-//     */
-//    public
-//    function create( $id = NULL )
-//    {
-//        if ( isset( $id ) ) {
-//            $this->setVal( 'id', $id );
-//        } else {
-//            if ( get_class( $this )::TYPE_MAP[ 'id' ] == INT_TYPE ) {
-//                $this->id = $this->getDB()->getNextIntId( $this->table_name );
-//            } else {
-//                $this->id = Generator::uuid();
-//            }
-//        }
-//        $this->registerToIRM();
-//        $this->insert();
-//    }
-
-    /**
-     * 创建新Data，不在IRM中注册
-     *
-     * @param null $id
-     */
-    public
-    function createWithoutIRM( $id = NULL )
-    {
-        if ( isset( $id ) ) {
-            $this->setVal( 'id', $id );
-        } else {
-            if ( get_class( $this )::TYPE_MAP[ 'id' ] == INT_TYPE ) {
-                $this->id = $this->getDB()->getNextIntId( $this->table_name );
-            } else {
-                $this->id = Generator::uuid();
+        $data = (object)$data;
+        foreach ( $data as $key => $value ) {
+            if ( property_exists( get_class( $this ), $key ) ) {
+                $this->$key = $value;
             }
         }
-        $this->insert();
-    }
-
-    /**
-     * 向IRM中注册，如果对应的InstanceManager没有创建，就先创建再注册
-     * @return bool
-     */
-    public
-    function registerToIRM()
-    {
-        $IRM = IRManager::getInstance();
-        if ( $IRM->isExistInstanceManagerArray( $this->instance_name ) ) {
-            if ( $IRM->getInstanceManagerByName( $this->instance_name )->isExistById( $this->id ) ) {
-                $res = false;
-            } else {
-                $IRM->getInstanceManagerByName( $this->instance_name )->register( $this );
-                $res = true;
-            }
-        } else {
-            $IRM->registerInstanceManager( $this->instance_name );
-            $IRM->getInstanceManagerByName( $this->instance_name )->register( $this );
-            $res = true;
-        }
-        return $res;
-    }
-
-    /**
-     * 在IRM中注销
-     * @return bool
-     */
-    public
-    function logoutFromIRM()
-    {
-        $IRM = IRManager::getInstance();
-        if ( $IRM->isExistInstanceManagerArray( $this->instance_name ) ) {
-            if ( $IRM->getInstanceManagerByName( $this->instance_name )->isExistById( $this->id ) ) {
-                $IRM->getInstanceManagerByName( $this->instance_name )->logout( $this->id );
-                $res = true;
-            } else {
-                $res = false;
-            }
-        } else {
-            $res = false;
-        }
-        return $res;
-    }
-
-    /**
-     * 判断是否在IRM中存在
-     * @return bool
-     */
-    public
-    function isRegister()
-    {
-        $IRM = IRManager::getInstance();
-        if ( $IRM->isExistInstanceManagerArray( $this->instance_name ) ) {
-            if ( $IRM->getInstanceManagerByName( $this->instance_name )->isExistById( $this->id ) ) {
-                $res = true;
-            } else {
-                $res = false;
-            }
-        } else {
-            $res = false;
-        }
-        return $res;
-    }
-
-//    /**
-//     * 删除记录，并在IRM中去掉对象
-//     */
-//    public
-//    function delete()
-//    {
-//        $this->logoutFromIRM();
-//        $this->getDB()->deleteById( $this->table_name, $this->id );
-//    }
-
-    /**
-     * 为对象检索数据库获取数据信息
-     *
-     * @param      $id
-     * @param null $table_name
-     * @param null $DB_name
-     */
-    public
-    function setDataById( $id, $table_name = NULL, $DB_name = NULL )
-    {
-        $this->setDBInfo( $table_name, $DB_name );
-        $res_array = $this->getDB()->fetchById( $this->table_name, $id );
-        foreach ( $res_array as $key => $value ) {
-            $this->setVal( $key, $value );
-        }
-    }
-
-//    /**
-//     * 从数据库更新数据
-//     */
-//    public
-//    function update()
-//    {
-//        $this->setDataById( $this->id );
-//    }
-
-//    /**
-//     * 从IRM中取出数据给本对象赋值，用于子类复制数据
-//     *
-//     * @param \LIBRARY\TOOL\Data $object
-//     */
-//    public
-//    function setDataByIRM( Data $object )
-//    {
-//        $res_array = $object->getDataArray();
-//        foreach ( $res_array as $key => $value ) {
-//            $this->setVal( $key, $value );
-//        }
-//    }
-
-    /**
-     * 通过类名获取数据库表名的基础服务
-     *
-     * @param $class_path
-     *
-     * @return string
-     */
-    public
-    static
-    function _getTableName( $class_path )
-    {
-        $class_path_array = explode( '\\', $class_path );
-        $class_name       = array_reverse( $class_path_array )[ 0 ];
-        $table_name       = strtolower( substr( $class_name, 0, -4 ) );
-        return $table_name;
-    }
-
-    /**
-     * 返回IRM中的相应的对象数组，用于遍历
-     *
-     * @param $class_path
-     *
-     * @return array
-     */
-    public
-    static
-    function _getDataObjectArray( $class_path ): array
-    {
-        $IRM              = IRManager::getInstance();
-        $instance_name    = self::_getTableName( $class_path ) . '_data';
-        $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
-        $res              = $instance_manager->getObjectArray();
-        return $res;
-    }
-
-//    /**
-//     * 返回IRM中的相应的对象，用于给子类封装
-//     *
-//     * @param $class_path
-//     * @param $id
-//     *
-//     * @return null
-//     * @throws \LIBRARY\TOOL\Error
-//     */
-//    public
-//    static
-//    function _getDataObjectById( $class_path, $id )
-//    {
-//        try {
-//            $IRM              = IRManager::getInstance();
-//            $instance_name    = self::_getTableName( $class_path ) . '_data';
-//            $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
-//            $res              = $instance_manager->getById( $id );
-//        }
-//        catch ( \Exception $e ) {
-//            throw new Error( Error::DATA_NOT_FOUND );
-//        }
-//        return $res;
-//    }
-
-    /**
-     * 查看本$id的实例是否已经完成注册，也是用于给子类封装
-     *
-     * @param $class_path
-     * @param $id
-     *
-     * @return bool
-     */
-    public
-    static
-    function _isExistDataObjectById( $class_path, $id )
-    {
-        $IRM              = IRManager::getInstance();
-        $instance_name    = self::_getTableName( $class_path ) . '_data';
-        $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
-        $res              = $instance_manager->isExistById( $id );
-        return $res;
-    }
-
-    /**
-     * 通过api_key返回IRM中的相应的对象，用于给子类封装
-     *
-     * @param $class_path
-     * @param $api_key
-     *
-     * @return null
-     */
-    public
-    static
-    function _getDataObjectByApiKey( $class_path, $api_key )
-    {
-        $IRM              = IRManager::getInstance();
-        $instance_name    = self::_getTableName( $class_path ) . '_data';
-        $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
-        $res              = $instance_manager->getByApiKey( $api_key );
-        return $res;
-    }
-
-    /**
-     * 查看本$api_key的实例是否已经完成注册，也是用于给子类封装
-     *
-     * @param $class_path
-     * @param $api_key
-     *
-     * @return bool
-     */
-    public
-    static
-    function _isExistDataObjectByApiKey( $class_path, $api_key )
-    {
-        $IRM              = IRManager::getInstance();
-        $instance_name    = self::_getTableName( $class_path ) . '_data';
-        $instance_manager = $IRM->getInstanceManagerByName( $instance_name );
-        $res              = $instance_manager->isExistByApiKey( $api_key );
+        $this->checkDataBySchema();
+        $res = $this->getData();
         return $res;
     }
 

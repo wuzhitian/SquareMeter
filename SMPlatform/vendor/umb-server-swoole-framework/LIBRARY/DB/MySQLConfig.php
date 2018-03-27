@@ -1,8 +1,8 @@
 <?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
- * File: DB.php
- * create: 2018/3/9
+ * File: MySQLConfig.php
+ * Create: 2018/3/27
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
  * Copyright: Umbrella Inc.
@@ -10,15 +10,16 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\DB;
 
-use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
-
 /**
- * 数据库接口类
- * Interface DB
+ * mysql配置
+ * Class MySQLConfig
  * @package UmbServer\SwooleFramework\LIBRARY\DB
  */
-interface DB
+class MySQLConfig
 {
-    public
-    function setConfig( $config, string $config_type = _Config::OBJECT );
+    public $host;
+    public $port;
+    public $username;
+    public $password;
+    public $database;
 }

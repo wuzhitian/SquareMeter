@@ -45,25 +45,25 @@ class DataCenterVisitor extends Visitor
     /************************************************************/
 
     public
-    function createInstance( string $class, Instance $instance ): bool
+    function createInstance( Instance $instance ): Instance
     {
 
     }
 
     public
-    function updateInstance( string $class, Instance $instance ): bool
+    function updateInstance( Instance $instance ): bool
     {
 
     }
 
     public
-    function readInstance( string $class, $id ): Instance
+    function readInstance( Instance $instance ): Instance
     {
 
     }
 
     public
-    function deleteInstance( string $class, $id ): bool
+    function deleteInstance( Instance $instance ): bool
     {
 
     }

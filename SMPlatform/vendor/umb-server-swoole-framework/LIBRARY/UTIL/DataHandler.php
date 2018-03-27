@@ -29,6 +29,7 @@ class DataHandler
     {
         switch ( $type ) {
             case INT_TYPE:
+            case TIMESTAMP_TYPE:
                 $res = (int)$value;
                 break;
             case BOOL_TYPE:

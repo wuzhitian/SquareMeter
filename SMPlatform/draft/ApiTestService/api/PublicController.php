@@ -34,4 +34,13 @@ class PublicController extends Controller
         $res = User::login( $username, $password );
         return $res;
     }
+
+    public
+    function test( GET $username, GET $password )
+    {
+        $user           = new User();
+        $user->username = $username;
+        $user->password = $password;
+        $user->create();
+    }
 }

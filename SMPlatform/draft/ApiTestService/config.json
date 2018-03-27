@@ -5,5 +5,19 @@
     "type": "api",
     "controller_namespace": "draft\\ApiTestService\\Controller",
     "listen_ip": "0.0.0.0",
-    "listen_port": 9527
+    "listen_port": 9527,
+    "mysql": {
+        "host": "127.0.0.1",
+        "port": 3306,
+        "username": "root",
+        "password": "root",
+        "database": "Test"
+    },
+    "redis": {
+        "host": "127.0.0.1",
+        "port": 3306,
+        "username": "root",
+        "password": "root",
+        "database": "Test"
+    }
 }

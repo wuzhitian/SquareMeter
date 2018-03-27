@@ -22,12 +22,14 @@ require_once( __DIR__ . '/LIBRARY/EXTEND/UPLOAD_FILE.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_Config.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_ContentType.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_DB.php' );
+require_once( __DIR__ . '/LIBRARY/ENUM/_ID.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_InstanceBaseOperator.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_HttpServer.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_HttpResponseStatus.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_HttpRequestVerb.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_Server.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_Serialize.php' );
+require_once( __DIR__ . '/LIBRARY/ENUM/_InstanceMode.php' );
 
 //ERROR
 require_once( __DIR__ . '/LIBRARY/ERROR/Error.php' );
@@ -47,6 +49,17 @@ require_once( __DIR__ . '/LIBRARY/UTIL/Generator.php' );
 require_once( __DIR__ . '/LIBRARY/UTIL/Serialize.php' );
 require_once( __DIR__ . '/LIBRARY/UTIL/Autoloader.php' );
 require_once( __DIR__ . '/LIBRARY/UTIL/Algorithm.php' );
+
+//DB
+require_once( __DIR__ . '/LIBRARY/DB/DB.php' );
+require_once( __DIR__ . '/LIBRARY/DB/MySQLConfig.php' );
+require_once( __DIR__ . '/LIBRARY/DB/MySQL.php' );
+require_once( __DIR__ . '/LIBRARY/DB/RedisConfig.php' );
+require_once( __DIR__ . '/LIBRARY/DB/Redis.php' );
+
+//DATA
+require_once( __DIR__ . '/LIBRARY/DATA/DataCenterConfig.php' );
+require_once( __DIR__ . '/LIBRARY/DATA/LocalDataCenter.php' );
 
 //INSTANCE
 require_once( __DIR__ . '/LIBRARY/INSTANCE/Instance.php' );

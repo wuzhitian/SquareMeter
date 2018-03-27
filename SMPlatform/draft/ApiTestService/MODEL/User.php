@@ -24,15 +24,15 @@ class User extends AuthUser
 
     const SCHEMA
         = [
-            'id' => STRING_TYPE,
-            'create_timestamp' => INT_TYPE,
-            'update_timestamp' => INT_TYPE,
-            'username' => STRING_TYPE,
-            'password' => STRING_TYPE,
-            'api_key' => STRING_TYPE,
-            'api_secret' => TEXT_TYPE,
-            'is_login' => BOOL_TYPE,
-            'last_login_timestamp' => INT_TYPE,
+            'id'                   => STRING_TYPE,
+            'create_timestamp'     => INT_TYPE,
+            'update_timestamp'     => INT_TYPE,
+            'username'             => STRING_TYPE,
+            'password'             => STRING_TYPE,
+            'api_key'              => STRING_TYPE,
+            'api_secret'           => TEXT_TYPE,
+            'is_login'             => BOOL_TYPE,
+            'last_login_timestamp' => TIMESTAMP_TYPE,
         ];
 
     public $username = 'fdsafasfx';

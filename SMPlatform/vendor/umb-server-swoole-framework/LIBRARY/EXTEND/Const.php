@@ -8,11 +8,12 @@
  * Copyright: Umbrella Inc.
  */
 
-const INT_TYPE    = 'int'; //整型
-const BOOL_TYPE   = 'bool'; //布尔型
-const STRING_TYPE = 'string'; //字符串型
-const TEXT_TYPE   = 'text'; //文本型
-const FLOAT_TYPE  = 'float'; //单精度浮点型
-const DOUBLE_TYPE = 'double'; //双精度浮点型
-const ARRAY_TYPE  = 'array'; //数组型，数组默认在数据库存json
-const OBJECT_TYPE = 'object'; //对象类型
+const INT_TYPE       = 'int'; //整型
+const BOOL_TYPE      = 'bool'; //布尔型
+const STRING_TYPE    = 'string'; //字符串型
+const TIMESTAMP_TYPE = 'timestamp'; //时间戳型
+const TEXT_TYPE      = 'text'; //文本型
+const FLOAT_TYPE     = 'float'; //单精度浮点型
+const DOUBLE_TYPE    = 'double'; //双精度浮点型
+const ARRAY_TYPE     = 'array'; //数组型，数组默认在数据库存json
+const OBJECT_TYPE    = 'object'; //对象类型
