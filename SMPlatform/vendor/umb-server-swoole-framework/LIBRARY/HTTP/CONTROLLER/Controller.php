@@ -71,6 +71,7 @@ class Controller implements AOPController
      * @param $arguments
      * @return mixed
      * @throws HttpError
+     * @throws \ReflectionException
      */
     public
     function _run( $function_name, $arguments )

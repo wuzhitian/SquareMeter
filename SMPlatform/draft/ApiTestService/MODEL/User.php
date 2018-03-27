@@ -24,14 +24,14 @@ class User extends AuthUser
 
     const SCHEMA
         = [
-            'id'                   => STRING_TYPE,
-            'create_timestamp'     => INT_TYPE,
-            'update_timestamp'     => INT_TYPE,
-            'username'             => STRING_TYPE,
-            'password'             => STRING_TYPE,
-            'api_key'              => STRING_TYPE,
-            'api_secret'           => TEXT_TYPE,
-            'is_login'             => BOOL_TYPE,
+            'id' => STRING_TYPE,
+            'create_timestamp' => INT_TYPE,
+            'update_timestamp' => INT_TYPE,
+            'username' => STRING_TYPE,
+            'password' => STRING_TYPE,
+            'api_key' => STRING_TYPE,
+            'api_secret' => TEXT_TYPE,
+            'is_login' => BOOL_TYPE,
             'last_login_timestamp' => INT_TYPE,
         ];
 
@@ -44,6 +44,12 @@ class User extends AuthUser
         $this->generateApiKey();
     }
 
+    /**
+     * 登录
+     * @param $username
+     * @param $password
+     * @throws HttpError
+     */
     public static
     function login( $username, $password )
     {
@@ -58,12 +64,20 @@ class User extends AuthUser
         return;
     }
 
+    /**
+     * 登出
+     */
     public
     function logout()
     {
 
     }
 
+    /**
+     * 获取数据
+     * @param bool $is_auth
+     * @return object
+     */
     public
     function getData( $is_auth = false ): object
     {
@@ -72,12 +86,22 @@ class User extends AuthUser
         return $res;
     }
 
+    /**
+     * 通过id获取数据
+     * @param $id
+     * @return User
+     */
     public static
     function getById( $id ): self
     {
         return new self();
     }
 
+    /**
+     * 通过username获取数据
+     * @param $username
+     * @return User
+     */
     public static
     function getByUsername( $username ): self
     {
