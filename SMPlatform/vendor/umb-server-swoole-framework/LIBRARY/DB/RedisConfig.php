@@ -19,6 +19,6 @@ class RedisConfig
 {
     public $host;
     public $port;
-    public $username;
     public $password;
+    public $database_index = 0;
 }

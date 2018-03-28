@@ -49,6 +49,7 @@ require_once( __DIR__ . '/LIBRARY/UTIL/Generator.php' );
 require_once( __DIR__ . '/LIBRARY/UTIL/Serialize.php' );
 require_once( __DIR__ . '/LIBRARY/UTIL/Autoloader.php' );
 require_once( __DIR__ . '/LIBRARY/UTIL/Algorithm.php' );
+require_once( __DIR__ . '/LIBRARY/UTIL/Crypto.php' );
 
 //DB
 require_once( __DIR__ . '/LIBRARY/DB/DB.php' );
@@ -63,6 +64,7 @@ require_once( __DIR__ . '/LIBRARY/DATA/LocalDataCenter.php' );
 
 //INSTANCE
 require_once( __DIR__ . '/LIBRARY/INSTANCE/Instance.php' );
+require_once( __DIR__ . '/LIBRARY/INSTANCE/InstanceTraits.php' );
 
 //AUTH
 require_once( __DIR__ . '/LIBRARY/AUTH/AuthUser.php' );

@@ -17,6 +17,7 @@ use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_ID;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\ConfigLoader;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\Console;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Generator;
 
 /**
@@ -27,24 +28,24 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\Generator;
 class LocalDataCenter
 {
     private $_config;
-
+    
     private $_redis;
     private $_mysql;
-
+    
     //构建单例
     /************************************************************/
     private static $_instance;
-
+    
     private
     function __construct()
     {
     }
-
+    
     private
     function __clone()
     {
     }
-
+    
     public static
     function getInstance(): self
     {
@@ -53,9 +54,9 @@ class LocalDataCenter
         }
         return self::$_instance;
     }
-
+    
     /************************************************************/
-
+    
     /**
      * 设置配置
      * @param $config
@@ -64,12 +65,12 @@ class LocalDataCenter
     public
     function setConfig( $config, $config_type = _Config::JSON )
     {
-        $config               = ConfigLoader::parse( $config, $config_type );
-        $this->_config        = new DataCenterConfig();
+        $config = ConfigLoader::parse( $config, $config_type )->local_data_center;
+        $this->_config = new DataCenterConfig();
         $this->_config->mysql = $config->mysql;
         $this->_config->redis = $config->redis;
     }
-
+    
     /**
      * 获取配置
      * @return DataCenterConfig
@@ -79,7 +80,7 @@ class LocalDataCenter
     {
         return $this->_config;
     }
-
+    
     /**
      * 初始化数据中心
      */
@@ -89,7 +90,7 @@ class LocalDataCenter
         $this->initialRedis();
         $this->initialMySQL();
     }
-
+    
     /**
      * 初始化Redis
      */
@@ -100,7 +101,7 @@ class LocalDataCenter
         $redis_config = $this->getConfig()->redis;
         $this->_redis->setConfig( $redis_config, _Config::OBJECT );
     }
-
+    
     /**
      * 初始化MySQL
      */
@@ -111,7 +112,7 @@ class LocalDataCenter
         $mysql_config = $this->getConfig()->mysql;
         $this->_mysql->setConfig( $mysql_config, _Config::OBJECT );
     }
-
+    
     /**
      * 获得redis对象
      * @return Redis
@@ -121,7 +122,7 @@ class LocalDataCenter
     {
         return $this->_redis;
     }
-
+    
     /**
      * 获得mysql对象
      * @return MySQL
@@ -131,7 +132,7 @@ class LocalDataCenter
     {
         return $this->_mysql;
     }
-
+    
     /**
      * 获取持久层数据库对象
      * @param Instance $instance
@@ -148,7 +149,7 @@ class LocalDataCenter
         }
         return $res;
     }
-
+    
     /**
      * 获取缓存层数据库对象
      * @param Instance $instance
@@ -165,7 +166,7 @@ class LocalDataCenter
         }
         return $res;
     }
-
+    
     /**
      * 创建实例至数据库，只考虑持久层
      * @param Instance $instance
@@ -175,7 +176,7 @@ class LocalDataCenter
     function createInstance( Instance $instance ): Instance
     {
         $persistence_db = $this->getPersistenceDB( $instance );
-        $table_name     = $instance->getTableName();
+        $table_name = $instance->getTableName();
         //处理id问题
         switch ( $instance->getIdRule() ) {
             case _ID::UUID:
@@ -185,12 +186,12 @@ class LocalDataCenter
             default:
                 $instance->id = $persistence_db->getNextIntId( $table_name );
         }
-        $persistence_db->insert( $table_name, $instance->id );
-        $persistence_db->updateById( $table_name, $instance->id, (array)$instance->getDataBySchema() );
+        $persistence_db->insert( $table_name, $instance );
+        $persistence_db->updateById( $table_name, $instance->id, $instance );
         $res = $instance;
         return $res;
     }
-
+    
     /**
      * 更新实例，先考虑持久层，再考虑缓存层
      * @param Instance $instance
@@ -200,43 +201,43 @@ class LocalDataCenter
     function updateInstance( Instance $instance ): bool
     {
         $persistence_db = $this->getPersistenceDB( $instance );
-        $cache_db       = $this->getCacheDB( $instance );
-        $table_name     = $instance->getTableName();
+        $cache_db = $this->getCacheDB( $instance );
+        $table_name = $instance->getTableName();
         try {
-            $persistence_db->updateById( $table_name, $instance->id, (array)$instance->getDataBySchema( ) );
-            $cache_db->updateById( $table_name, $instance->id, (array)$instance->getDataBySchema() );
+            $persistence_db->updateById( $table_name, $instance->id, $instance );
+            $cache_db->updateById( $table_name, $instance->id, $instance );
             $res = true;
-        }
-        catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             $res = false;
         }
         return $res;
     }
-
+    
     /**
      * 读取实例，先考虑缓存层，不存在则考虑持久层，并向缓存层存储
      * @param Instance $instance
      * @return Instance
+     * @throws \UmbServer\SwooleFramework\LIBRARY\ERROR\UtilError
      */
     public
     function readInstance( Instance $instance ): Instance
     {
         $persistence_db = $this->getPersistenceDB( $instance );
-        $cache_db       = $this->getCacheDB( $instance );
-        $table_name     = $instance->getTableName();
+        $cache_db = $this->getCacheDB( $instance );
+        $table_name = $instance->getTableName();
         try {
             $query_res = $cache_db->fetchById( $table_name, $instance->id );
-        }
-        catch ( \Exception $e ) {
+            Console::log( $instance->getTableName() . ' #' . $instance->id . ' get from Redis' );
+            $instance->setData( $query_res );
+        } catch ( \Exception $e ) {
             $query_res = $persistence_db->fetchById( $table_name, $instance->id );
-            $cache_db->cache( $table_name, $instance, 30 * 60 * 1000 );
+            Console::log( $instance->getTableName() . ' #' . $instance->id . ' get from MySQL' );
+            $instance->setData( $query_res );
+            $cache_db->insert( $table_name, $instance );
         }
-        $instance_class = get_class( $instance );
-        $res            = new $instance_class();
-        $res->setData( $query_res );
-        return $res;
+        return $instance;
     }
-
+    
     /**
      * 删除实例，先处理持久层，再处理缓存层
      * @param Instance $instance
@@ -246,14 +247,13 @@ class LocalDataCenter
     function deleteInstance( Instance $instance ): bool
     {
         $persistence_db = $this->getPersistenceDB( $instance );
-        $cache_db       = $this->getCacheDB( $instance );
-        $table_name     = $instance->getTableName();
+        $cache_db = $this->getCacheDB( $instance );
+        $table_name = $instance->getTableName();
         try {
             $persistence_db->deleteById( $table_name, $instance->id );
             $cache_db->deleteById( $table_name, $instance->id );
             $res = true;
-        }
-        catch ( \Exception $e ) {
+        } catch ( \Exception $e ) {
             $res = false;
         }
         return $res;

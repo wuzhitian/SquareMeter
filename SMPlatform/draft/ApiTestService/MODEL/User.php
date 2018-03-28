@@ -11,7 +11,10 @@
 namespace draft\ApiTestService\MODEL;
 
 use UmbServer\SwooleFramework\LIBRARY\AUTH\AuthUser;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
 use UmbServer\SwooleFramework\LIBRARY\ERROR\HttpError;
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceTraits;
 
 /**
  * User类
@@ -20,34 +23,37 @@ use UmbServer\SwooleFramework\LIBRARY\ERROR\HttpError;
  */
 class User extends AuthUser
 {
+    use InstanceTraits;
+    
     const LOCAL_INSTANCE = true;
-
+    
+    const PERSISTENCE = _DB::MYSQL;
+    const CACHE = _DB::REDIS;
+    
     const SCHEMA
         = [
-            'id'                   => STRING_TYPE,
-            'create_timestamp'     => INT_TYPE,
-            'update_timestamp'     => INT_TYPE,
-            'username'             => STRING_TYPE,
-            'password'             => STRING_TYPE,
-            'api_key'              => STRING_TYPE,
-            'api_secret'           => TEXT_TYPE,
-            'is_login'             => BOOL_TYPE,
+            'username' => STRING_TYPE,
+            'password' => STRING_TYPE,
+            'api_key' => STRING_TYPE,
+            'api_secret' => TEXT_TYPE,
+            'is_login' => BOOL_TYPE,
             'last_login_timestamp' => TIMESTAMP_TYPE,
         ];
-
+    
     public $username = 'fdsafasfx';
     public $password = 'fasfdsafsda';
-
+    
     public
     function __construct()
     {
         $this->generateApiKey();
     }
-
+    
     /**
      * 登录
      * @param $username
      * @param $password
+     * @return User
      * @throws HttpError
      */
     public static
@@ -61,18 +67,18 @@ class User extends AuthUser
             throw new HttpError( HttpError::API_AUTH_FAILED );
         }
         $login_user->update();
-        return;
+        return $login_user;
     }
-
+    
     /**
      * 登出
      */
     public
     function logout()
     {
-
+    
     }
-
+    
     /**
      * 获取数据
      * @param bool $is_auth
@@ -85,18 +91,7 @@ class User extends AuthUser
         unset( $res->password );
         return $res;
     }
-
-    /**
-     * 通过id获取数据
-     * @param $id
-     * @return User
-     */
-    public static
-    function getById( $id ): self
-    {
-        return new self();
-    }
-
+    
     /**
      * 通过username获取数据
      * @param $username
@@ -105,6 +100,8 @@ class User extends AuthUser
     public static
     function getByUsername( $username ): self
     {
+        $user = Instance::_getByFilter( [ 'username', 'equal', $username ] );
+        
         return new self();
     }
 }

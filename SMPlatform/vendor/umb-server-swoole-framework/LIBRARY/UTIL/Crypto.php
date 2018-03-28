@@ -17,13 +17,15 @@ namespace UmbServer\SwooleFramework\LIBRARY\UTIL;
  */
 abstract class Crypto
 {
+    const DEFAULT_KEY = 'UMB_DEFAULT_KEY'; //默认key
+    
     /**
      * 加密算法
      * @param $data
      * @param $key
      * @return string
      */
-    public static function enCrypt( $data, $key )
+    public static function enCrypt( $data, $key = self::DEFAULT_KEY )
     {
         $key = md5( $key );
         $char = '';
@@ -43,14 +45,14 @@ abstract class Crypto
         }
         return base64_encode( $str );
     }
-
+    
     /**
      * 解密算法
      * @param $data
      * @param $key
      * @return string
      */
-    public static function deCrypt( $data, $key )
+    public static function deCrypt( $data, $key = self::DEFAULT_KEY )
     {
         $key = md5( $key );
         $char = '';

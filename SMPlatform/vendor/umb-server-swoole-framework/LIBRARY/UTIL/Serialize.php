@@ -28,6 +28,7 @@ class Serialize
      * @param $un_pack_data
      * @param string $type
      * @return string
+     * @throws UtilError
      */
     public static
     function encode( $un_pack_data, $type = _Serialize::JSON ): string
@@ -42,12 +43,13 @@ class Serialize
         }
         return $res;
     }
-
+    
     /**
      * 反序列化
      * @param string $pack_data
      * @param string $type
      * @return mixed|object
+     * @throws UtilError
      */
     public static
     function decode( string $pack_data, $type = _Serialize::JSON )
@@ -62,7 +64,7 @@ class Serialize
         }
         return $res;
     }
-
+    
     /**
      * 是否为umbEncode的字符串
      * @param string $pack_data
@@ -73,20 +75,20 @@ class Serialize
     {
         $SOF_length = strlen( _Serialize::UMB_SERIALIZE_SOF );
         $EOF_length = strlen( _Serialize::UMB_SERIALIZE_EOF );
-        $SOF        = substr( $pack_data, 0, $SOF_length );
-        $EOF        = substr( $pack_data, -$EOF_length );
-        $res        = $SOF === _Serialize::UMB_SERIALIZE_SOF && $EOF === _Serialize::UMB_SERIALIZE_EOF;
+        $SOF = substr( $pack_data, 0, $SOF_length );
+        $EOF = substr( $pack_data, -$EOF_length );
+        $res = $SOF === _Serialize::UMB_SERIALIZE_SOF && $EOF === _Serialize::UMB_SERIALIZE_EOF;
         return $res;
     }
-
+    
     /**
      * umb序列化
-     * @param mixed $un_pack_data
+     * @param $un_pack_data
      * @return string
      * @throws UtilError
      */
     private static
-    function umbEncode( mixed $un_pack_data ): string
+    function umbEncode( $un_pack_data ): string
     {
         $pack_res = swoole_serialize::pack( $un_pack_data );
         if ( $pack_res === false ) {
@@ -95,7 +97,7 @@ class Serialize
         $res = _Serialize::UMB_SERIALIZE_SOF . $pack_res . _Serialize::UMB_SERIALIZE_EOF;
         return $res;
     }
-
+    
     /**
      * umb反序列化
      * @param string $pack_data
@@ -106,17 +108,17 @@ class Serialize
     function umbDecode( string $pack_data )
     {
         $pack_length = strlen( $pack_data );
-        $SOF_length  = strlen( _Serialize::UMB_SERIALIZE_SOF );
-        $EOF_length  = strlen( _Serialize::UMB_SERIALIZE_EOF );
+        $SOF_length = strlen( _Serialize::UMB_SERIALIZE_SOF );
+        $EOF_length = strlen( _Serialize::UMB_SERIALIZE_EOF );
         $data_length = $pack_length - $SOF_length - $EOF_length;
-        $data        = substr( $pack_data, $SOF_length, $data_length );
-        $res         = swoole_serialize::unpack( $data );
+        $data = substr( $pack_data, $SOF_length, $data_length );
+        $res = swoole_serialize::unpack( $data );
         if ( !self::isUmbEncodeData( $pack_data ) || $res === false ) {
             throw new UtilError( UtilError::UN_SUPPORT_DECODE_DATA );
         }
         return $res;
     }
-
+    
     /**
      * json序列化
      * @param $data
@@ -128,7 +130,7 @@ class Serialize
         $res = json_encode( $data, JSON_UNESCAPED_UNICODE ); // 解决中文乱码问题
         return $res;
     }
-
+    
     /**
      * json反序列化
      * @param string $data
