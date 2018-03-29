@@ -21,23 +21,11 @@ class PrivateKeySafe extends SafeInstance
 {
     const TYPE_MAP
         = [
-            'id'                    => INT_TYPE,
-            'avatar_picture_id'     => INT_TYPE,
-            'create_timestamp'      => INT_TYPE,
-            'last_update_timestamp' => INT_TYPE,
-            'last_login_timestamp'  => INT_TYPE,
-            'is_login'              => BOOL_TYPE,
-            'user_id'               => STRING_TYPE,
-            'api_secret'            => STRING_TYPE,
-            'nickname'              => STRING_TYPE,
-            'username'              => STRING_TYPE,
-            'password'              => STRING_TYPE,
-            'cellphone'             => STRING_TYPE,
-            'email'                 => STRING_TYPE,
-            'post'                  => STRING_TYPE,
-            'privilege_id_array'    => STRING_TYPE,
+            'user_id' => STRING_TYPE,
+            'private_key' => STRING_TYPE,
+            'wallet_address' => STRING_TYPE,
         ];
-
+    
     public $id;
     public $user_id;
     public $token_type;
