@@ -57,7 +57,7 @@ class DataHandler
         }
         return $res;
     }
-    
+
     /**
      * 为string类型的字符串前后添加符号，默认为双引号
      * @param $string
@@ -69,7 +69,7 @@ class DataHandler
     {
         $string_format = $string;
         if ( isset( $string ) && is_string( $string ) ) {
-            $string = str_replace( '"', '\"', $string );
+            $string        = str_replace( '"', '\"', $string );
             $string_format = $quotation . $string . $quotation;
         }
         if ( is_bool( $string ) ) {
@@ -77,7 +77,7 @@ class DataHandler
         }
         return $string_format;
     }
-    
+
     /**
      * 获取指定分割符的最后一个片段
      * @param string $delimiter
@@ -88,7 +88,7 @@ class DataHandler
     function lastSegment( string $delimiter, string $string )
     {
         $explode_array = array_reverse( explode( $delimiter, $string ) );
-        $res = $explode_array[ 0 ];
+        $res           = $explode_array[ 0 ];
         return $res;
     }
 }

@@ -32,20 +32,20 @@ class Instance
     public $id; //所有实例都必须有id，可以是指定的、序号或是uuid
     public $create_timestamp;
     public $update_timestamp;
-    
-    const MODE = _InstanceMode::LOCAL; //实例是否为本地实例，远程实例由DataCenter管理
+
+    const MODE              = _InstanceMode::LOCAL; //实例是否为本地实例，远程实例由DataCenter管理
     const DATA_CENTER_CLASS = DataCenter::class; //远程数据中心默认值
-    
+
     const DEFAULT_SCHEMA
-        = [
-            'id' => STRING_TYPE,
+                      = [
+            'id'               => STRING_TYPE,
             'create_timestamp' => TIMESTAMP_TYPE,
             'update_timestamp' => TIMESTAMP_TYPE,
-        
+
         ]; //默认字段数据图谱
-    const CACHE = _DB::REDIS; //缓存方式，目前只可以选用null或redis或swoole_table
+    const CACHE       = _DB::REDIS; //缓存方式，目前只可以选用null或redis或swoole_table
     const PERSISTENCE = _DB::MYSQL; //持久化方式，目前只可以选用null或mysql
-    
+
     /**
      * 根据操作类型向request_handler的受影响实例池赋值
      * @param $operator
@@ -55,7 +55,7 @@ class Instance
     {
         HttpApiServer::getInstance()->getRequestHandler()->addInfluenceInstance( $operator, $this );
     }
-    
+
     /**
      * 获取schema对象
      * @return object
@@ -63,7 +63,7 @@ class Instance
     private
     function getSchema(): object
     {
-        $schema = get_class( $this )::SCHEMA;
+        $schema         = get_class( $this )::SCHEMA;
         $default_schema = self::DEFAULT_SCHEMA;
         //将default_schema中在schema里没有重写的字段类型赋值
         foreach ( $default_schema as $key => $type ) {
@@ -74,7 +74,7 @@ class Instance
         $res = $schema;
         return (object)$res;
     }
-    
+
     /**
      * 获取id规则，(string)uuid | (int)auto_increase
      * @return string
@@ -93,7 +93,7 @@ class Instance
         }
         return $res;
     }
-    
+
     /**
      * 根据schema获取数据对象
      * @return object
@@ -103,14 +103,14 @@ class Instance
     {
         $data_array = [];
         foreach ( $this->getSchema() as $key => $type ) {
-            $value = $this->$key;
-            $value = DataHandler::typeConversion( $type, $value );
+            $value              = $this->$key;
+            $value              = DataHandler::typeConversion( $type, $value );
             $data_array[ $key ] = $value;
         }
         $res = (object)$data_array;
         return $res;
     }
-    
+
     /**
      * 根据schema中要求的类型，给本实例属性重新赋值
      */
@@ -118,12 +118,12 @@ class Instance
     function checkDataBySchema()
     {
         foreach ( $this->getSchema() as $key => $type ) {
-            $pre_value = $this->$key;
-            $value = DataHandler::typeConversion( $type, $pre_value );
+            $pre_value  = $this->$key;
+            $value      = DataHandler::typeConversion( $type, $pre_value );
             $this->$key = $value;
         }
     }
-    
+
     /**
      * 根据key获取schema中的type
      * @param $key
@@ -135,30 +135,7 @@ class Instance
         $res = $this->getSchema()->$key;
         return $res;
     }
-    
-    /**
-     * 通过id获取数据对象的封装
-     * @param string $class
-     * @param $id
-     * @return mixed
-     */
-    public static function _getById( string $class, $id )
-    {
-        $instance = new $class();
-        $id = DataHandler::typeConversion( $instance->getTypeByKey( 'id' ), $id );
-        $instance->id = $id;
-        switch ( $class::MODE ) {
-            case _InstanceMode::LOCAL:
-                $res = $instance->localRead();
-                break;
-            case _InstanceMode::REMOTE:
-            default:
-                $res = $instance->remoteRead();
-        }
-        $instance->setData( $res );
-        return $instance;
-    }
-    
+
     /**
      * 创建实例
      * 判断MODE，如果是Local，就在本地实例池创建，如果不是就在remoteDataCenter创建
@@ -183,7 +160,7 @@ class Instance
         }
         return $res;
     }
-    
+
     /**
      * 读取实例
      * @param bool $is_push
@@ -205,7 +182,7 @@ class Instance
         }
         return $res;
     }
-    
+
     /**
      * 更新实例
      * @param bool $is_push
@@ -229,7 +206,7 @@ class Instance
         }
         return $res;
     }
-    
+
     /**
      * 删除实例
      * @param bool $is_push
@@ -251,7 +228,7 @@ class Instance
         }
         return $res;
     }
-    
+
     /**
      * 本地实例创建
      * @return Instance
@@ -262,7 +239,7 @@ class Instance
         $res = LocalDataCenter::getInstance()->createInstance( $this );
         return $res;
     }
-    
+
     /**
      * 远程实例创建
      * @return Instance
@@ -275,7 +252,7 @@ class Instance
         $res = DataCenterVisitor::getInstance()->createInstance( $this );
         return $res;
     }
-    
+
     /**
      * 本地读取实例
      * @return Instance
@@ -286,7 +263,7 @@ class Instance
         $res = LocalDataCenter::getInstance()->readInstance( $this );
         return $res;
     }
-    
+
     /**
      * 远程实例读取
      * @return Instance
@@ -297,7 +274,7 @@ class Instance
         $res = DataCenterVisitor::getInstance()->readInstance( $this );
         return $res;
     }
-    
+
     /**
      * 本地实例更新
      * @return bool
@@ -308,7 +285,7 @@ class Instance
         $res = LocalDataCenter::getInstance()->updateInstance( $this );
         return $res;
     }
-    
+
     /**
      * 远程实例更新
      * @return bool
@@ -319,7 +296,7 @@ class Instance
         $res = DataCenterVisitor::getInstance()->updateInstance( $this );
         return $res;
     }
-    
+
     /**
      * 本地实例删除
      * @return bool
@@ -330,7 +307,7 @@ class Instance
         $res = LocalDataCenter::getInstance()->deleteInstance( $this );
         return $res;
     }
-    
+
     /**
      * 远程实例删除
      * @return bool
@@ -341,7 +318,7 @@ class Instance
         $res = DataCenterVisitor::getInstance()->deleteInstance( $this );
         return $res;
     }
-    
+
     /**
      * 获取表名
      * @return string
@@ -352,7 +329,7 @@ class Instance
         $res = DataHandler::lastSegment( '\\', get_class( $this ) );
         return $res;
     }
-    
+
     /**
      * 获取客户端实例池类名
      * @return string
@@ -363,7 +340,7 @@ class Instance
         $res = DataHandler::lastSegment( '\\', get_class( $this ) );
         return $res;
     }
-    
+
     /**
      * 执行属性赋值
      * @param $data
@@ -374,15 +351,15 @@ class Instance
     {
         $data = (object)$data;
         foreach ( $this->getSchema() as $key => $type ) {
-            $value = $data->$key;
-            $value = DataHandler::typeConversion( $type, $value );
+            $value      = $data->$key;
+            $value      = DataHandler::typeConversion( $type, $value );
             $this->$key = $value;
         }
         $this->checkDataBySchema();
         $res = $this->getData();
         return $res;
     }
-    
+
     /**
      * 获取实例数据，is_auth用于标记是否有auth授权
      * @param bool $is_auth
@@ -393,5 +370,35 @@ class Instance
     {
         $res = $this->getDataBySchema();
         return $res;
+    }
+
+    /**
+     * 通过id获取数据对象的封装
+     * @param string $class
+     * @param $id
+     * @return mixed
+     */
+    public static
+    function _getById( string $class, $id )
+    {
+        $instance     = new $class();
+        $id           = DataHandler::typeConversion( $instance->getTypeByKey( 'id' ), $id );
+        $instance->id = $id;
+        switch ( $class::MODE ) {
+            case _InstanceMode::LOCAL:
+                $res = $instance->localRead();
+                break;
+            case _InstanceMode::REMOTE:
+            default:
+                $res = $instance->remoteRead();
+        }
+        $instance->setData( $res );
+        return $instance;
+    }
+
+    public static
+    function _getByFilter( array $filter )
+    {
+
     }
 }

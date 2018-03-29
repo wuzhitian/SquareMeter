@@ -24,31 +24,31 @@ use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceTraits;
 class User extends AuthUser
 {
     use InstanceTraits;
-    
+
     const LOCAL_INSTANCE = true;
-    
+
     const PERSISTENCE = _DB::MYSQL;
-    const CACHE = _DB::REDIS;
-    
+    const CACHE       = _DB::REDIS;
+
     const SCHEMA
         = [
-            'username' => STRING_TYPE,
-            'password' => STRING_TYPE,
-            'api_key' => STRING_TYPE,
-            'api_secret' => TEXT_TYPE,
-            'is_login' => BOOL_TYPE,
+            'username'             => STRING_TYPE,
+            'password'             => STRING_TYPE,
+            'api_key'              => STRING_TYPE,
+            'api_secret'           => TEXT_TYPE,
+            'is_login'             => BOOL_TYPE,
             'last_login_timestamp' => TIMESTAMP_TYPE,
         ];
-    
+
     public $username = 'fdsafasfx';
     public $password = 'fasfdsafsda';
-    
+
     public
     function __construct()
     {
         $this->generateApiKey();
     }
-    
+
     /**
      * 登录
      * @param $username
@@ -69,16 +69,16 @@ class User extends AuthUser
         $login_user->update();
         return $login_user;
     }
-    
+
     /**
      * 登出
      */
     public
     function logout()
     {
-    
+
     }
-    
+
     /**
      * 获取数据
      * @param bool $is_auth
@@ -91,7 +91,7 @@ class User extends AuthUser
         unset( $res->password );
         return $res;
     }
-    
+
     /**
      * 通过username获取数据
      * @param $username
@@ -101,7 +101,6 @@ class User extends AuthUser
     function getByUsername( $username ): self
     {
         $user = Instance::_getByFilter( [ 'username', 'equal', $username ] );
-        
-        return new self();
+        return $user;
     }
 }
