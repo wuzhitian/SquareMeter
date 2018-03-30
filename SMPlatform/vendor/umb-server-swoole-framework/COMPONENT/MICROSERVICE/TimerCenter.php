@@ -1,8 +1,8 @@
 <?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
- * File: Registry.php
- * Create: 2018/3/12
+ * File: TimerCenter.php
+ * Create: 2018/3/30
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
  * Copyright: Umbrella Inc.
@@ -11,11 +11,11 @@
 namespace UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\MODEL;
 
 /**
- * 微服务注册
- * Class Registry
- * @package UmbServer\SwooleFramework\MICROSERVICE
+ * 定时器服务中心
+ * Class TimerCenter
+ * @package UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\MODEL
  */
-class Registry extends Service
+class TimerCenter extends Service
 {
     //构建单例
     /************************************************************/

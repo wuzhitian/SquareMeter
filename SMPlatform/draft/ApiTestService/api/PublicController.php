@@ -24,7 +24,7 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\Crypto;
  */
 class PublicController extends Controller
 {
-    const CRYPTO = false;
+    const CRYPTO       = false;
     const CRYPTO_CLASS = Crypto::class;
     
     /**
@@ -38,14 +38,14 @@ class PublicController extends Controller
     function login( GET $username, GET $password )
     {
         $user = User::login( $username, $password );
-        $res = $user->getData( true );
+        $res  = $user->getData( true );
         return $res;
     }
     
     public
     function test( GET $username, GET $password )
     {
-        $user = new User();
+        $user           = new User();
         $user->username = $username;
         $user->password = $password;
         $user->create();
@@ -59,7 +59,7 @@ class PublicController extends Controller
     
     public function set( GET $id, GET $is_login )
     {
-        $user = User::getById( $id );
+        $user           = User::getById( $id );
         $user->is_login = $is_login;
         $user->update();
     }

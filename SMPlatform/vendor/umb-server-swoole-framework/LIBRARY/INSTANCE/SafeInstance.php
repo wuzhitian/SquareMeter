@@ -8,12 +8,12 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\LIBRARY\CORE\INSTANCE;
+namespace UmbServer\SwooleFramework\LIBRARY\INSTANCE;
 
 /**
  * 加密存储传输实例
  * Class SafeInstance
- * @package UmbServer\SwooleFramework\LIBRARY\BASE\INSTANCE
+ * @package UmbServer\SwooleFramework\LIBRARY\INSTANCE
  */
 class SafeInstance extends Instance
 {

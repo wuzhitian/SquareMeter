@@ -34,10 +34,10 @@ class MySQL implements DB
     public
     function setConfig( $config, string $config_type = _Config::OBJECT )
     {
-        $config = ConfigLoader::parse( $config, $config_type );
-        $this->_config = new MySQLConfig();
-        $this->_config->host = $config->host;
-        $this->_config->port = $config->port;
+        $config                  = ConfigLoader::parse( $config, $config_type );
+        $this->_config           = new MySQLConfig();
+        $this->_config->host     = $config->host;
+        $this->_config->port     = $config->port;
         $this->_config->username = $config->username;
         $this->_config->password = $config->password;
         $this->_config->database = $config->database;
@@ -80,7 +80,7 @@ class MySQL implements DB
                 \PDO::ATTR_PERSISTENT => true,
                 \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8';",
             ] );
-            $this->_is_connected = true;
+            $this->_is_connected   = true;
         } catch ( \PDOException $e ) {
             Console::log( "MySQL connection failed!" );
             Console::log( $e->getMessage() );
@@ -96,7 +96,7 @@ class MySQL implements DB
     function disconnect(): bool
     {
         $this->_connect_object = NULL;
-        $this->_is_connected = false;
+        $this->_is_connected   = false;
         return true;
     }
     
@@ -120,7 +120,7 @@ class MySQL implements DB
     {
         $this->connect();
         $statement = $this->getConnectObject()->prepare( $sql );
-        $res = $statement->execute();
+        $res       = $statement->execute();
         $this->disconnect();
         return $res;
     }
@@ -217,7 +217,7 @@ class MySQL implements DB
      */
     public function isExistById( string $table_name, $id ): bool
     {
-        $sql = 'SELECT count(*) FROM ' . $table_name . ' WHERE id=' . DataHandler::quotation( $id );
+        $sql       = 'SELECT count(*) FROM ' . $table_name . ' WHERE id=' . DataHandler::quotation( $id );
         $count_res = $this->select( $sql );
         if ( $count_res === 1 ) {
             $res = true;
@@ -252,8 +252,8 @@ class MySQL implements DB
     function updateById( string $table_name, $id, Instance $instance ): bool
     {
         $data_array = (array)$instance->getDataBySchema();
-        $head = 'UPDATE ' . $table_name . ' SET ';
-        $body = '';
+        $head       = 'UPDATE ' . $table_name . ' SET ';
+        $body       = '';
         foreach ( $data_array as $key => $value ) {
             if ( $key === 'id' || $value === NULL || !isset( $value ) ) { //跳过id不执行，id不能改变，如果$value为NULL也不考虑
                 continue;
@@ -262,7 +262,7 @@ class MySQL implements DB
         }
         $body = substr( $body, 0, -1 ); //去掉最后一个逗号
         $rear = ' WHERE id=' . DataHandler::quotation( $id );
-        $sql = $head . $body . $rear;
+        $sql  = $head . $body . $rear;
         Console::log( $sql );
         $res = $this->execute( $sql );
         return $res;
