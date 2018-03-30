@@ -82,10 +82,10 @@ class User extends AuthUser
     /**
      * 获取数据
      * @param bool $is_auth
-     * @return object
+     * @return \stdClass
      */
     public
-    function getData( $is_auth = false ): object
+    function getData( $is_auth = false ): \stdClass
     {
         $res = parent::getData( $is_auth );
         unset( $res->password );

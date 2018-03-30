@@ -14,6 +14,7 @@ use UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER\AuthController;
 use UmbServer\SwooleFramework\LIBRARY\EXTEND\POST;
 
 use draft\ApiTestService\MODEL\User;
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceControllerTraits;
 
 /**
  * User控制器类
@@ -21,14 +22,8 @@ use draft\ApiTestService\MODEL\User;
  */
 class UserController extends AuthController
 {
-    public
-    function read( POST $id )
-    {
-        $instance = User::getById( $id );
-        $res      = $instance->getData();
-        return $res;
-    }
-
+    use InstanceControllerTraits; //加载实例控制器功能
+    
     /**
      * 登出
      */

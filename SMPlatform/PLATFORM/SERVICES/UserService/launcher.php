@@ -2,15 +2,13 @@
 /**
  * Project: SMPlatform
  * File: launcher.php
- * Create: 2018/3/20
+ * Create: 2018/3/30
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
  * Copyright: SMBC Inc.
  */
-/**
- * 加载基础类库
- */
-require_once( __DIR__ . '/../../vendor/umb-server-swoole-framework/autoload.php' );
+
+require_once( __DIR__ . '/../../../vendor/umb-server-swoole-framework/autoload.php' ); //加载umb-server-swoole-framework
 
 use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpApiServer;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;

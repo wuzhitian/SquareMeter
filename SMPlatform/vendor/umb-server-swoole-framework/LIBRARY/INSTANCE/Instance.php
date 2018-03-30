@@ -20,7 +20,7 @@ use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Console;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Time;
-use UmbServer\SwooleFramework\MICROSERVICE\DataCenter;
+use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\BASE\DataCenter;
 
 /**
  * 实例基础类
@@ -32,20 +32,19 @@ class Instance
     public $id; //所有实例都必须有id，可以是指定的、序号或是uuid
     public $create_timestamp;
     public $update_timestamp;
-
+    
     const MODE              = _InstanceMode::LOCAL; //实例是否为本地实例，远程实例由DataCenter管理
     const DATA_CENTER_CLASS = DataCenter::class; //远程数据中心默认值
-
-    const DEFAULT_SCHEMA
-                      = [
-            'id'               => STRING_TYPE,
-            'create_timestamp' => TIMESTAMP_TYPE,
-            'update_timestamp' => TIMESTAMP_TYPE,
-
-        ]; //默认字段数据图谱
+    
+    const DEFAULT_SCHEMA = [
+        'id'               => STRING_TYPE,
+        'create_timestamp' => TIMESTAMP_TYPE,
+        'update_timestamp' => TIMESTAMP_TYPE,
+    ]; //默认字段数据图谱
+    
     const CACHE       = _DB::REDIS; //缓存方式，目前只可以选用null或redis或swoole_table
     const PERSISTENCE = _DB::MYSQL; //持久化方式，目前只可以选用null或mysql
-
+    
     /**
      * 根据操作类型向request_handler的受影响实例池赋值
      * @param $operator
@@ -55,13 +54,13 @@ class Instance
     {
         HttpApiServer::getInstance()->getRequestHandler()->addInfluenceInstance( $operator, $this );
     }
-
+    
     /**
      * 获取schema对象
-     * @return object
+     * @return \stdClass
      */
     private
-    function getSchema(): object
+    function getSchema(): \stdClass
     {
         $schema         = get_class( $this )::SCHEMA;
         $default_schema = self::DEFAULT_SCHEMA;
@@ -74,7 +73,7 @@ class Instance
         $res = $schema;
         return (object)$res;
     }
-
+    
     /**
      * 获取id规则，(string)uuid | (int)auto_increase
      * @return string
@@ -93,13 +92,13 @@ class Instance
         }
         return $res;
     }
-
+    
     /**
      * 根据schema获取数据对象
-     * @return object
+     * @return \stdClass
      */
     public
-    function getDataBySchema(): object
+    function getDataBySchema(): \stdClass
     {
         $data_array = [];
         foreach ( $this->getSchema() as $key => $type ) {
@@ -110,7 +109,7 @@ class Instance
         $res = (object)$data_array;
         return $res;
     }
-
+    
     /**
      * 根据schema中要求的类型，给本实例属性重新赋值
      */
@@ -123,7 +122,7 @@ class Instance
             $this->$key = $value;
         }
     }
-
+    
     /**
      * 根据key获取schema中的type
      * @param $key
@@ -135,7 +134,7 @@ class Instance
         $res = $this->getSchema()->$key;
         return $res;
     }
-
+    
     /**
      * 创建实例
      * 判断MODE，如果是Local，就在本地实例池创建，如果不是就在remoteDataCenter创建
@@ -160,7 +159,7 @@ class Instance
         }
         return $res;
     }
-
+    
     /**
      * 读取实例
      * @param bool $is_push
@@ -182,7 +181,7 @@ class Instance
         }
         return $res;
     }
-
+    
     /**
      * 更新实例
      * @param bool $is_push
@@ -206,7 +205,7 @@ class Instance
         }
         return $res;
     }
-
+    
     /**
      * 删除实例
      * @param bool $is_push
@@ -228,7 +227,7 @@ class Instance
         }
         return $res;
     }
-
+    
     /**
      * 本地实例创建
      * @return Instance
@@ -239,7 +238,7 @@ class Instance
         $res = LocalDataCenter::getInstance()->createInstance( $this );
         return $res;
     }
-
+    
     /**
      * 远程实例创建
      * @return Instance
@@ -252,7 +251,7 @@ class Instance
         $res = DataCenterVisitor::getInstance()->createInstance( $this );
         return $res;
     }
-
+    
     /**
      * 本地读取实例
      * @return Instance
@@ -263,7 +262,7 @@ class Instance
         $res = LocalDataCenter::getInstance()->readInstance( $this );
         return $res;
     }
-
+    
     /**
      * 远程实例读取
      * @return Instance
@@ -274,7 +273,7 @@ class Instance
         $res = DataCenterVisitor::getInstance()->readInstance( $this );
         return $res;
     }
-
+    
     /**
      * 本地实例更新
      * @return bool
@@ -285,7 +284,7 @@ class Instance
         $res = LocalDataCenter::getInstance()->updateInstance( $this );
         return $res;
     }
-
+    
     /**
      * 远程实例更新
      * @return bool
@@ -296,7 +295,7 @@ class Instance
         $res = DataCenterVisitor::getInstance()->updateInstance( $this );
         return $res;
     }
-
+    
     /**
      * 本地实例删除
      * @return bool
@@ -307,7 +306,7 @@ class Instance
         $res = LocalDataCenter::getInstance()->deleteInstance( $this );
         return $res;
     }
-
+    
     /**
      * 远程实例删除
      * @return bool
@@ -318,7 +317,7 @@ class Instance
         $res = DataCenterVisitor::getInstance()->deleteInstance( $this );
         return $res;
     }
-
+    
     /**
      * 获取表名
      * @return string
@@ -326,10 +325,10 @@ class Instance
     public
     function getTableName(): string
     {
-        $res = DataHandler::lastSegment( '\\', get_class( $this ) );
+        $res = get_class( $this )::TABLE_NAME;
         return $res;
     }
-
+    
     /**
      * 获取客户端实例池类名
      * @return string
@@ -337,14 +336,13 @@ class Instance
     public
     function getClientInstancePoolClassName(): string
     {
-        $res = DataHandler::lastSegment( '\\', get_class( $this ) );
+        $res = get_class( $this )::TABLE_NAME;
         return $res;
     }
-
+    
     /**
      * 执行属性赋值
      * @param $data
-     * @return object
      */
     public
     function setData( $data )
@@ -356,22 +354,20 @@ class Instance
             $this->$key = $value;
         }
         $this->checkDataBySchema();
-        $res = $this->getData();
-        return $res;
     }
-
+    
     /**
      * 获取实例数据，is_auth用于标记是否有auth授权
      * @param bool $is_auth
-     * @return object
+     * @return \stdClass
      */
     public
-    function getData( $is_auth = false ): object
+    function getData( $is_auth = false ): \stdClass
     {
         $res = $this->getDataBySchema();
         return $res;
     }
-
+    
     /**
      * 通过id获取数据对象的封装
      * @param string $class
@@ -395,10 +391,10 @@ class Instance
         $instance->setData( $res );
         return $instance;
     }
-
+    
     public static
     function _getByFilter( array $filter )
     {
-
+    
     }
 }

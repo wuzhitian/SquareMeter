@@ -224,10 +224,9 @@ class RequestHandler
     private
     function addCreateInstance( Instance $instance )
     {
-        $this->instances->create[] = [
-            'class_name' => $instance->getClientInstancePoolClassName(),
-            'instance' => $instance->getData(),
-        ];
+        $class_name = $instance->getClientInstancePoolClassName();
+        $instance_id = $instance->id;
+        $this->instances->create->$class_name->$instance_id = $instance->getData();
     }
     
     /**
@@ -237,10 +236,9 @@ class RequestHandler
     private
     function addReadInstance( Instance $instance )
     {
-        $this->instances->read[] = [
-            'class_name' => $instance->getClientInstancePoolClassName(),
-            'instance' => $instance->getData(),
-        ];
+        $class_name = $instance->getClientInstancePoolClassName();
+        $instance_id = $instance->id;
+        $this->instances->read->$class_name->$instance_id = $instance->getData();
     }
     
     /**
@@ -250,10 +248,9 @@ class RequestHandler
     private
     function addUpdateInstance( Instance $instance )
     {
-        $this->instances->update[] = [
-            'class_name' => $instance->getClientInstancePoolClassName(),
-            'instance' => $instance->getData(),
-        ];
+        $class_name = $instance->getClientInstancePoolClassName();
+        $instance_id = $instance->id;
+        $this->instances->update->$class_name->$instance_id = $instance->getData();
     }
     
     /**
@@ -263,12 +260,9 @@ class RequestHandler
     private
     function addDeleteInstance( Instance $instance )
     {
-        $this->instances->delete[] = [
-            'class_name' => $instance->getClientInstancePoolClassName(),
-            'instance' => [
-                'id' => $instance->id,
-            ],
-        ];;
+        $class_name = $instance->getClientInstancePoolClassName();
+        $instance_id = $instance->id;
+        $this->instances->delete->$class_name->$instance_id = $instance_id;
     }
     
     private

@@ -10,12 +10,14 @@
 
 namespace UmbServer\SwooleFramework\COMPONENT\CLIENT;
 
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
+
 /**
  * tcp客户端类
  * Class TCPClient
  * @package UmbServer\SwooleFramework\COMPONENT\CLIENT
  */
-class TCPClient implements Client
+class TCPClient extends Instance implements Client
 {
     public
     function connect(): bool

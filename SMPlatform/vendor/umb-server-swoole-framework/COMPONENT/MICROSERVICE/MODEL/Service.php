@@ -10,12 +10,14 @@
 
 namespace UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\MODEL;
 
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
+
 /**
  * 微服务基础类
  * Class Service
  * @package UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\MODEL
  */
-class Service
+class Service extends Instance
 {
     private $_server; //内置服务器对象
     private $_config;
