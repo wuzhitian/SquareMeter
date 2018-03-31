@@ -22,6 +22,7 @@ use UmbServer\SwooleFramework\LIBRARY\HTTP\RESPONSE\Response;
 use swoole_http_server;
 use swoole_http_request;
 use swoole_http_response;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\System;
 
 /**
  * http(s)api服务器基础类
@@ -33,17 +34,17 @@ class HttpApiServer implements HttpServer
     //构建单例
     /************************************************************/
     private static $_instance;
-
+    
     private
     function __construct()
     {
     }
-
+    
     private
     function __clone()
     {
     }
-
+    
     public static
     function getInstance(): self
     {
@@ -52,9 +53,9 @@ class HttpApiServer implements HttpServer
         }
         return self::$_instance;
     }
-
+    
     /************************************************************/
-
+    
     const DEFAULT_CONFIG
         = [
             'name'        => 'HttpApiServer',
@@ -64,17 +65,17 @@ class HttpApiServer implements HttpServer
             'is_ssl'      => false,
             'is_http2'    => false,
         ]; //默认配置
-
+    
     private $_server; //swoole_http_server对象
     private $_config; //配置
-
+    
     private $_extra_data; //附加数据
-
-    private $_request         = NULL; //当次请求的对象暂存
-    private $_request_target  = NULL; //当次请求解析后的目标对象暂存
+    
+    private $_request = NULL; //当次请求的对象暂存
+    private $_request_target = NULL; //当次请求解析后的目标对象暂存
     private $_request_handler = NULL; //当次请求的处理器对象暂存
-    private $_response        = NULL; //当次响应的对象暂存
-
+    private $_response = NULL; //当次响应的对象暂存
+    
     /**
      * 设置配置
      * @param array $config
@@ -86,7 +87,7 @@ class HttpApiServer implements HttpServer
         $this->_config = new HttpServerConfig();
         $this->getConfig()->setByConfig( $config, $config_file_type );
     }
-
+    
     /**
      * 获取config
      * @return HttpServerConfig
@@ -96,7 +97,7 @@ class HttpApiServer implements HttpServer
     {
         return $this->_config;
     }
-
+    
     /**
      * 初始化服务器
      */
@@ -108,7 +109,7 @@ class HttpApiServer implements HttpServer
         $this->set(); //根据config中的set来完成set事务
         $this->bindCallback(); //绑定回调事件
     }
-
+    
     /**
      * 获取当次请求
      * @return Request
@@ -118,7 +119,7 @@ class HttpApiServer implements HttpServer
     {
         return $this->_request;
     }
-
+    
     /**
      * 获取当次响应
      * @return Response
@@ -128,7 +129,7 @@ class HttpApiServer implements HttpServer
     {
         return $this->_response;
     }
-
+    
     /**
      * 获取当次请求处理器对象
      * @return RequestHandler
@@ -138,7 +139,7 @@ class HttpApiServer implements HttpServer
     {
         return $this->_request_handler;
     }
-
+    
     /**
      * 获取解析后的请求目标对象
      * @return RequestTarget
@@ -148,7 +149,7 @@ class HttpApiServer implements HttpServer
     {
         return $this->_request_target;
     }
-
+    
     /**
      * 设置当次请求
      * @param swoole_http_request $request
@@ -158,7 +159,7 @@ class HttpApiServer implements HttpServer
     {
         $this->_request = new Request( $request, $this );
     }
-
+    
     /**
      * 设置当次响应
      * @param swoole_http_response $response
@@ -168,7 +169,7 @@ class HttpApiServer implements HttpServer
     {
         $this->_response = new Response( $response, $this );
     }
-
+    
     /**
      * 设置解析后当次请求的目标
      * @param RequestTarget $request_target
@@ -178,7 +179,7 @@ class HttpApiServer implements HttpServer
     {
         $this->_request_target = $request_target;
     }
-
+    
     /**
      * 设置请求处理器
      */
@@ -187,7 +188,7 @@ class HttpApiServer implements HttpServer
     {
         $this->_request_handler = new RequestHandler( $this );
     }
-
+    
     /**
      * 获取内置server对象
      * @return \swoole_http_server
@@ -197,7 +198,7 @@ class HttpApiServer implements HttpServer
     {
         return $this->_server;
     }
-
+    
     /**
      * 获取extra_data
      * @return mixed
@@ -207,7 +208,7 @@ class HttpApiServer implements HttpServer
     {
         return $this->_extra_data;
     }
-
+    
     /**
      * 设置额外的数据
      * @param null $extra_data
@@ -217,7 +218,7 @@ class HttpApiServer implements HttpServer
     {
         $this->_extra_data = $extra_data;
     }
-
+    
     /**
      * 根据配置中is_ssl设置服务器对象
      */
@@ -230,7 +231,7 @@ class HttpApiServer implements HttpServer
             $this->setHttpServer();
         }
     }
-
+    
     /**
      * 生成http服务器对象
      */
@@ -239,7 +240,7 @@ class HttpApiServer implements HttpServer
     {
         $this->_server = new swoole_http_server( $this->getConfig()->listen_ip, $this->getConfig()->listen_port, SWOOLE_BASE, SWOOLE_SOCK_TCP );
     }
-
+    
     /**
      * 生成https服务器对象
      */
@@ -248,7 +249,7 @@ class HttpApiServer implements HttpServer
     {
         $this->_server = new swoole_http_server( $this->getConfig()->listen_ip, $this->getConfig()->listen_port, SWOOLE_BASE, SWOOLE_SOCK_TCP | SWOOLE_SSL );
     }
-
+    
     /**
      * 设置https
      */
@@ -260,7 +261,7 @@ class HttpApiServer implements HttpServer
             $this->setHttp2();
         }
     }
-
+    
     /**
      * 设置ssl文件
      */
@@ -270,7 +271,7 @@ class HttpApiServer implements HttpServer
         $this->getConfig()->set[ 'ssl_cert_file' ] = $this->getConfig()->ssl_cert_file;
         $this->getConfig()->set[ 'ssl_key_file' ]  = $this->getConfig()->ssl_key_file;
     }
-
+    
     /**
      * 设置http2
      */
@@ -281,7 +282,7 @@ class HttpApiServer implements HttpServer
             $this->getConfig()->set[ 'open_http2_protocol' ] = true;
         }
     }
-
+    
     /**
      * 执行设置
      */
@@ -290,7 +291,7 @@ class HttpApiServer implements HttpServer
     {
         $this->getServer()->set( $this->getConfig()->set );
     }
-
+    
     /**
      * 绑定回调事件
      */
@@ -302,16 +303,16 @@ class HttpApiServer implements HttpServer
         $this->getServer()->on( 'Request', [ $this, 'onRequest' ] );
         $this->getServer()->on( 'WorkerStart', [ $this, 'onWorkerStart' ] );
     }
-
+    
     /**
      * worker进程启动后的回调
      */
     public
     function onWorkerStart()
     {
-
+    
     }
-
+    
     /**
      * server主进程启动后的回调
      */
@@ -320,7 +321,7 @@ class HttpApiServer implements HttpServer
     {
         echo "onStart:: " . $this->getConfig()->name . " Server started successfully.\n";
     }
-
+    
     /**
      * server主进程关闭后的回调
      */
@@ -329,7 +330,7 @@ class HttpApiServer implements HttpServer
     {
         echo "onShutdown:: " . $this->getConfig()->name . " Server stopped successfully.\n";
     }
-
+    
     /**
      * 收到请求后的回调
      * @param swoole_http_request $request
@@ -352,7 +353,7 @@ class HttpApiServer implements HttpServer
         $this->clean(); //清理请求缓存对象
         return true;
     }
-
+    
     /**
      * 拒绝不允许访问的请求
      * @return bool
@@ -361,12 +362,12 @@ class HttpApiServer implements HttpServer
     function refuseNotAllowedRequest()
     {
         $res = $this->refuseFavicon();
-
+        
         // TODO 加入配置文件的支持，拦截掉一些扫描请求，加入黑/白名单机制
-
+        
         return $res;
     }
-
+    
     /**
      * api服务器拒绝部分浏览器自动发起的favicon请求
      * @return bool
@@ -381,7 +382,7 @@ class HttpApiServer implements HttpServer
         }
         return $res;
     }
-
+    
     /**
      * 清理request和response相关缓存对象
      */
@@ -393,13 +394,14 @@ class HttpApiServer implements HttpServer
         $this->_request_handler = NULL;
         $this->_response        = NULL;
     }
-
+    
     /**
      * 启动server
      */
     public
     function start()
     {
+        System::clearScreen();
         $this->getServer()->start();
     }
 }

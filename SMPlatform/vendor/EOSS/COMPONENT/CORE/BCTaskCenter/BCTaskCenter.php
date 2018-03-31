@@ -1,23 +1,23 @@
 <?php declare( strict_types = 1 );
 /**
- * Project: UmbServerSwooleFramework
- * File: Registry.php
- * Create: 2018/3/12
+ * Project: EOSS
+ * File: BCTaskCenter.php
+ * Create: 2018/3/31
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\Registry;;
+namespace EOSS\COMPONENT\CORE\BCTaskCenter;
 
 use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\MODEL\Service;
 
 /**
- * 微服务注册
- * Class Registry
- * @package UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\Registry;
+ * 区块链上任务系统
+ * Class BCTaskCenter
+ * @package EOSS\COMPONENT\CORE\BCTaskCenter
  */
-class Registry extends Service
+class BCTaskCenter extends Service
 {
     //构建单例
     /************************************************************/
@@ -41,6 +41,5 @@ class Registry extends Service
         }
         return self::$_instance;
     }
-    
     /************************************************************/
 }

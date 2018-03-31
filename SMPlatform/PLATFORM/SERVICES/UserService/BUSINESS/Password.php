@@ -25,6 +25,7 @@ abstract class Password
      * 判断密码是否符合规则
      * @param string $password
      * @return bool
+     * @throws UserError
      */
     public function checkPasswordFormat( string $password ): bool
     {
@@ -43,7 +44,7 @@ abstract class Password
         }
         
         //检查是否包含必须字符
-        if ( $format_rule->is_must_figure = true ) {
+        if ( $format_rule->is_must_figure === true ) {
             preg_match( '/[0-9]+/', $password, $figure_array );
             if ( sizeof( $figure_array ) < 1 ) {
                 throw new UserError( UserError::PASSWORD_NEED_FIGURE );
@@ -52,7 +53,7 @@ abstract class Password
         if ( $format_rule->is_must_uppercase === true ) {
             throw new UserError( UserError::PASSWORD_NEED_UPPERCASE );
         }
-        if ( $format_rule->is_must_lowercase = true ) {
+        if ( $format_rule->is_must_lowercase === true ) {
             throw new UserError( UserError::PASSWORD_NEED_LOWERCASE );
         }
         if ( $format_rule->is_must_special_character === true ) {

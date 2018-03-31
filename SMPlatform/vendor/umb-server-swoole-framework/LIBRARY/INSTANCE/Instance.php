@@ -11,6 +11,7 @@
 namespace UmbServer\SwooleFramework\LIBRARY\INSTANCE;
 
 use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpApiServer;
+use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\DataCenter\DataCenter;
 use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\VISITOR\DataCenterVisitor;
 use UmbServer\SwooleFramework\LIBRARY\DATA\LocalDataCenter;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_ID;
@@ -20,7 +21,6 @@ use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Console;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Time;
-use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\BASE\DataCenter;
 
 /**
  * 实例基础类
