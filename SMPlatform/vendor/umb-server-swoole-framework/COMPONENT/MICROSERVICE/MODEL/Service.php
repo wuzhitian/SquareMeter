@@ -10,6 +10,9 @@
 
 namespace UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\MODEL;
 
+use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpApiServer;
+use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\ENUM\_ServiceMode;
+use UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG\ServerConfig;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
 
 /**
@@ -19,9 +22,11 @@ use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
  */
 class Service extends Instance
 {
+    const SERVICE_MODE = _ServiceMode::HTTP_API_SERVICE; //service模式
+    
     private $_server; //内置服务器对象
     private $_config;
-
+    
     /**
      * 设置
      * @param $config
@@ -31,94 +36,61 @@ class Service extends Instance
     {
         $this->_config = $config;
     }
-
+    
     /**
-     * 与Engine的连接验证
-     * @var
+     * 获取config对象
      */
-    public $access_token;
-
-    /**
-     * service的AsyncTcpClient对象
-     * @var
-     */
-    public $service_async_tcp_client;
-
-    /**
-     * service的server对象
-     * @var
-     */
-    public $service_server;
-
-    /**
-     * 已经发出但没有响应的队列
-     * @var array
-     */
-    public $wait_queues = [];
-
-    /**
-     * 初始化server
-     * @return bool
-     */
-    private
-    function initServer()
+    private function getConfig(): ServerConfig
     {
-        $this->apiServer();
-        return true;
+        return $this->_config;
     }
-
+    
     /**
-     * 启动api server
+     * 获取服务类型
+     * @return string
      */
-    private
-    function apiServer()
+    private function getServiceMode(): string
     {
-        $this->service_server = new \swoole_http_server( $this->server_listen_ip, $this->server_listen_port, SWOOLE_BASE, SWOOLE_SOCK_TCP );
-        $this->service_server->set( [
-            'react_num'          => 128,
-            'worker_num'         => 128,    //开启两个worker进程
-            'package_max_length' => 500 * 1024 * 1024,
-            'upload_tmp_dir'     => '/data/uploadfiles',
-            'buffer_output_size' => 500 * 1024 * 1024,
-        ] );
-        $this->bindCallback();
+        $classpath = get_class( $this );
+        $res       = $classpath::SERVICE_MODE;
+        return $res;
     }
-
+    
     /**
-     * 获取对应的host_data对象
-     * @return \SLFramework\DATA\HostData
+     * 初始化服务
      */
-    public
-    function getHostData(): HostData
+    private function initial()
     {
-        $host_data = HostData::_getById( $this->host_id );
-        return $host_data;
+        //根据service_mode初始化内置server对象
+        $service_mode = $this->getServiceMode();
+        switch ( $service_mode ) {
+            case _ServiceMode::TCP_RPC_SERVICE:
+                $this->initialTcpRpcServer();
+                break;
+            case _ServiceMode::HTTP_RESOURCE_SERVICE:
+                $this->initialHttpResourceServer();
+                break;
+            case _ServiceMode::HTTP_API_SERVICE:
+            default:
+                $this->initialHttpApiServer();
+        }
     }
-
-    /**
-     * http_api_server绑定回调事件
-     */
-    public
-    function bindCallback()
+    
+    private function initialHttpApiServer()
     {
-        $this->service_server->on( 'Start', [
-            $this,
-            'onStart',
-        ] );
-        $this->service_server->on( 'Shutdown', [
-            $this,
-            'onShutdown',
-        ] );
-        $this->service_server->on( 'Request', [
-            $this,
-            'onRequest',
-        ] );
-        $this->service_server->on( 'WorkerStart', [
-            $this,
-            'onWorkerStart',
-        ] );
+        $this->_server = HttpApiServer::getInstance();
     }
-
+    
+    private function initialHttpResourceServer()
+    {
+        $this->_server =
+    }
+    
+    private function initialTcpRpcServer()
+    {
+    }
+  
+    
     /**
      * http_api_server开启完成，并启动了worker时的回调
      */
@@ -127,7 +99,7 @@ class Service extends Instance
     {
         $this->connect();
     }
-
+    
     /**
      * 根据is_http_api_server来启动service
      */
@@ -141,73 +113,7 @@ class Service extends Instance
             $this->connect();
         }
     }
-
-    /**
-     * server开启时的回调
-     */
-    public
-    function onStart()
-    {
-        echo 'onStart:: ' . GRManager::getInstance()->BI[ 'company_name' ] . ' ' . GRManager::getInstance()->BI[ 'project_name' ] . ' ' . $this->type . ' ' . $this->server_protocol . ' ' . $this->server_type . ' Server started successfully.' . PHP_EOL;
-        echo $this->getHostData()->WAN_ip . ':' . $this->server_listen_port . PHP_EOL;
-    }
-
-    /**
-     * server关闭时的回调
-     */
-    public
-    function onShutdown()
-    {
-        echo 'onShutdown:: ' . GRManager::getInstance()->BI[ 'company_name' ] . ' ' . GRManager::getInstance()->BI[ 'project_name' ] . ' ' . $this->type . ' ' . $this->server_protocol . ' ' . $this->server_type . ' Server stopped successfully.' . PHP_EOL;
-    }
-
-    /**
-     * 解析uri
-     *
-     * @param $uri
-     * @param $server_type
-     *
-     * @return array
-     */
-    private
-    function parseUri( $uri, $server_type = 'api' )
-    {
-        if ( $server_type == 'api' ) {
-            // 把请求的path字符串拆分为数组，用array_filter去空
-            $path_array = explode( '/', $uri );
-
-            // 如果没有写控制器名称，默认为index
-            $controller_name = $path_array[ sizeof( $path_array ) - 2 ] ?? '/index';
-            $function_name   = $path_array[ sizeof( $path_array ) - 1 ];
-
-            // 遍历controller和function的路径深度，组成$path
-            $path = '/';
-            foreach ( $path_array as $key => $dir ) {
-                if ( $key > sizeof( $path_array ) - 3 ) {
-                    break;
-                }
-                if ( $dir == '' ) {
-                    continue;
-                }
-                $path .= ( $dir . '/' );
-            }
-            $file_path = $this->getHostData()->deploy_root . $this->path . $path . $controller_name . '.php';
-            $res       = [
-                'controller' => $controller_name,
-                'function'   => $function_name,
-                'file_path'  => $file_path,
-            ];
-        } else {
-            $file_path = $this->getHostData()->deploy_root . $this->path . $uri;
-            $res       = [
-                'file_path' => $file_path,
-            ];
-        }
-
-        // var_dump( $res );
-        return $res;
-    }
-
+    
     /**
      * parsePhp
      * 用于解析php页面，以字符串形式返回结果
@@ -225,14 +131,14 @@ class Service extends Instance
         flush();
         ob_start();
         $_REQUEST = $request;
-        $_POST    = $request->post ?? null;
-        $_GET     = $request->get ?? null;
+        $_POST    = $request->post ?? NULL;
+        $_GET     = $request->get ?? NULL;
         include( $url );
         $contents = ob_get_contents();
         ob_end_clean();
         return $contents;
     }
-
+    
     /**
      * 非server模式下，发起TcpClient对Engine的连接
      */
@@ -243,7 +149,7 @@ class Service extends Instance
         $client->setHandler( $this );
         $client->connect();
     }
-
+    
     /**
      * 设置service中的TcpClient对象
      * @return \SLFramework\COMPONENT\ServiceAsyncTcpClient
@@ -259,7 +165,7 @@ class Service extends Instance
         $this->service_async_tcp_client->setEOF( "\r\n" );
         return $this->service_async_tcp_client;
     }
-
+    
     /**
      * 获取service中的AsyncTcpClient对象
      * @return \SLFramework\COMPONENT\ServiceAsyncTcpClient
@@ -269,7 +175,7 @@ class Service extends Instance
     {
         return $this->service_async_tcp_client;
     }
-
+    
     /**
      * 回复错误信息
      *
@@ -289,7 +195,7 @@ class Service extends Instance
         $response[ 'reply_timestamp' ] = Time::getNow();
         $this->send( $response );
     }
-
+    
     /**
      * 同步处理ask，并reply
      *
@@ -337,7 +243,7 @@ class Service extends Instance
         $res = $this->reply( $request, $response );
         return $res;
     }
-
+    
     /**
      * 将成功的result传给ask_uri的回调函数，并回传delivered
      *
@@ -372,7 +278,7 @@ class Service extends Instance
         }
         return $res;
     }
-
+    
     /**
      * 通过task_id找到需要reply的wait_queue
      *
@@ -391,7 +297,7 @@ class Service extends Instance
         }
         return $res;
     }
-
+    
     /**
      * 释放掉已经处理完成的wait_queue
      */
@@ -404,7 +310,7 @@ class Service extends Instance
             }
         }
     }
-
+    
     /**
      * 注册服务到DE
      */
@@ -418,7 +324,7 @@ class Service extends Instance
         ];
         $this->send( $register_msg );
     }
-
+    
     /**
      * 处理注册事务回调
      *
@@ -435,7 +341,7 @@ class Service extends Instance
             echo 'error_msg: ' . $request[ 'register_reply_error_msg' ] . '.' . PHP_EOL;
         }
     }
-
+    
     /**
      * 作为ask方，发起任务，由发起者提出task_id
      *
@@ -465,7 +371,7 @@ class Service extends Instance
         // var_dump($ask_msg['ask_need_reply']);
         return $res;
     }
-
+    
     /**
      * 作为reply方收到任务，做出回复
      *
@@ -486,7 +392,7 @@ class Service extends Instance
         $res                            = $this->send( $reply_msg );
         return $res;
     }
-
+    
     /**
      * 作为ask方发出任务，收到回复以后的已送成确认
      *
@@ -505,7 +411,7 @@ class Service extends Instance
         $res                                    = $this->send( $delivered_msg );
         return $res;
     }
-
+    
     /**
      * 封装发送数据给DE的方法，成功会返回数据长度，失败会返回false
      *

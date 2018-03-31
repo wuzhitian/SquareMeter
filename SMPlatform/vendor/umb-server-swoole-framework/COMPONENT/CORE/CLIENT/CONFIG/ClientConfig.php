@@ -8,12 +8,12 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\COMPONENT\CLIENT\CONFIG;
+namespace UmbServer\SwooleFramework\COMPONENT\CORE\CLIENT\CONFIG;
 
 /**
  * 客户端配置类
  * Class ClientConfig
- * @package UmbServer\SwooleFramework\COMPONENT\CLIENT\CONFIG
+ * @package UmbServer\SwooleFramework\COMPONENT\CORE\CLIENT\CONFIG
  */
 class ClientConfig
 {

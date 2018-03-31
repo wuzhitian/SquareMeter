@@ -8,14 +8,14 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG;
+namespace UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\CONFIG;
 
 use UmbServer\SwooleFramework\LIBRARY\UTIL\ConfigLoader;
 
 /**
  * 服务器配置类
  * Class ServerConfig
- * @package UmbServer\SwooleFramework\COMPONENT\SERVER
+ * @package UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\CONFIG
  */
 class ServerConfig
 {

@@ -1,21 +1,21 @@
 <?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
- * File: HttpServerConfigp
+ * File: HttpServerConfig.php
  * Create: 2018/3/15
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG;
+namespace UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\CONFIG;
 
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpServer;
 
 /**
  * http(s)服务器配置类
  * Class HttpServerConfig
- * @package UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG
+ * @package UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\CONFIG
  */
 class HttpServerConfig extends ServerConfig
 {

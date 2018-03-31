@@ -8,12 +8,12 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG;
+namespace UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\CONFIG;
 
 /**
  * tcp服务器的配置类
  * Class TCPServerConfig
- * @package UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG
+ * @package UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\CONFIG
  */
 class TCPServerConfig extends ServerConfig
 {

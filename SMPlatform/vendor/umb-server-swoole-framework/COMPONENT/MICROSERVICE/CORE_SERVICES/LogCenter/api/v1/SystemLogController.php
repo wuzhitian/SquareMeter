@@ -11,7 +11,7 @@
 namespace UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\LogCenter\api\v1;
 
 use UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER\AuthController;
-use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceControllerTraits;
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceControllerTrait;
 
 /**
  * SystemLog控制器
@@ -23,5 +23,5 @@ class SystemLogController extends AuthController
     const AUTH_MODE       = 1;
     const AUTH_USER_CLASS = 2;
     
-    use InstanceControllerTraits; //加载实例控制器功能
+    use InstanceControllerTrait; //加载实例控制器功能
 }

@@ -1,8 +1,8 @@
 <?php declare( strict_types = 1 );
 /**
  * Project: UmbServerSwooleFramework
- * File: HttpApiServer.php
- * Create: 2018/3/12
+ * File: HttpResourceServer.php
+ * Create: 2018/3/15
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
  * Copyright: Umbrella Inc.
@@ -11,33 +11,32 @@
 namespace UmbServer\SwooleFramework\COMPONENT\CORE\SERVER;
 
 use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\CONFIG\HttpServerConfig;
-use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpServer;
+use UmbServer\SwooleFramework\LIBRARY\HTTP\HANDLER\RequestHandler;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\Request;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\RequestTarget;
-use UmbServer\SwooleFramework\LIBRARY\HTTP\HANDLER\RequestHandler;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\RESPONSE\Response;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SinglePatternTrait;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\System;
 
 use swoole_http_server;
 use swoole_http_request;
 use swoole_http_response;
+use UmbServer\SwooleFramework\LIBRARY\UTIL\System;
 
 /**
- * http(s)api服务器基础类
- * Class HttpApiServer
+ * http(s)resource服务器基础类
+ * Class HttpResourceServer
  * @package UmbServer\SwooleFramework\COMPONENT\CORE\SERVER
  */
-class HttpApiServer implements HttpServer
+class HttpResourceServer implements HttpServer
 {
-    use SinglePatternTrait;
+    use SinglePatternTrait; //单例模式
     
     const DEFAULT_CONFIG = [
-        'name'        => 'HttpApiServer',
-        'type'        => _HttpServer::API,
+        'name'        => 'HttpResourceServer',
+        'type'        => _HttpServer::RESOURCE,
         'listen_ip'   => '0.0.0.0',
-        'listen_port' => 9527,
+        'listen_port' => 80,
         'is_ssl'      => false,
         'is_http2'    => false,
     ]; //默认配置
@@ -336,25 +335,9 @@ class HttpApiServer implements HttpServer
     private
     function refuseNotAllowedRequest()
     {
-        $this->refuseFavicon();
         
         // TODO 加入配置文件的支持，拦截掉一些扫描请求，加入黑/白名单机制
         
-    }
-    
-    /**
-     * api服务器拒绝部分浏览器自动发起的favicon请求
-     * @return bool
-     */
-    private
-    function refuseFavicon()
-    {
-        $res = false;
-        if ( $this->getRequest()->request_uri === '/favicon.ico' || $this->getRequest()->request_uri === '/123' ) {
-            $this->getResponse()->refuse();
-            $res = true;
-        }
-        return $res;
     }
     
     /**

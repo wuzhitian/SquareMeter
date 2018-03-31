@@ -8,12 +8,12 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\COMPONENT\CLIENT\CONFIG;
+namespace UmbServer\SwooleFramework\COMPONENT\CORE\CLIENT\CONFIG;
 
 /**
  * tcp客户端配置类
  * Class TCPClientConfig
- * @package UmbServer\SwooleFramework\COMPONENT\CLIENT\CONFIG
+ * @package UmbServer\SwooleFramework\COMPONENT\CORE\CLIENT\CONFIG
  */
 class TCPClientConfig extends ClientConfig
 {

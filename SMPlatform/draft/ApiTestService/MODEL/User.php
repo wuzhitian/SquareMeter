@@ -14,7 +14,7 @@ use UmbServer\SwooleFramework\LIBRARY\AUTH\AuthUser;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
 use UmbServer\SwooleFramework\LIBRARY\ERROR\HttpError;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
-use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceTraits;
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceTrait;
 
 /**
  * User类
@@ -23,7 +23,7 @@ use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceTraits;
  */
 class User extends AuthUser
 {
-    use InstanceTraits;
+    use InstanceTrait;
 
     const LOCAL_INSTANCE = true;
 

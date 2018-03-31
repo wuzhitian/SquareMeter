@@ -15,7 +15,7 @@ namespace UmbServer\SwooleFramework\LIBRARY\INSTANCE;
  * Trait InstanceTraits
  * @package UmbServer\SwooleFramework\LIBRARY\INSTANCE
  */
-trait InstanceTraits
+trait InstanceTrait
 {
     public static function getById( $id ): self
     {

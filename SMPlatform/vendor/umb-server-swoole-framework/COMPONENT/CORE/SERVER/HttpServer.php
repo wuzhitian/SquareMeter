@@ -8,11 +8,11 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\COMPONENT\SERVER;
+namespace UmbServer\SwooleFramework\COMPONENT\CORE\SERVER;
 
 use swoole_http_request;
 use swoole_http_response;
-use UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG\HttpServerConfig;
+use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\CONFIG\HttpServerConfig;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\Request;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\REQUEST\RequestTarget;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\RESPONSE\Response;
@@ -20,7 +20,7 @@ use UmbServer\SwooleFramework\LIBRARY\HTTP\RESPONSE\Response;
 /**
  * http服务器接口类
  * Interface HttpServer
- * @package UmbServer\SwooleFramework\COMPONENT\SERVER
+ * @package UmbServer\SwooleFramework\COMPONENT\CORE\SERVER
  */
 interface HttpServer extends Server
 {

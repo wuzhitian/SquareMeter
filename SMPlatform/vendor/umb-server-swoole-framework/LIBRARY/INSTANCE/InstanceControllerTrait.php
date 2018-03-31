@@ -18,7 +18,7 @@ use UmbServer\SwooleFramework\LIBRARY\EXTEND\POST;
  * Trait InstanceControllerTraits
  * @package UmbServer\SwooleFramework\LIBRARY\INSTANCE
  */
-trait InstanceControllerTraits
+trait InstanceControllerTrait
 {
     /**
      * 创建新实例
