@@ -91,4 +91,29 @@ class DataHandler
         $res           = $explode_array[ 0 ];
         return $res;
     }
+
+    /**
+     * url编码
+     * @param string $url
+     * @return string
+     */
+    public static
+    function urlEncode( string $url ): string
+    {
+        $res = urlencode( $url );
+        return $res;
+    }
+
+    /**
+     * url解码
+     * @param string $url_encode
+     * @return string
+     */
+    public static
+    function urlDecode( string $url_encode ): string
+    {
+        $res = urldecode( $url_encode );
+        return $res;
+    }
+
 }
