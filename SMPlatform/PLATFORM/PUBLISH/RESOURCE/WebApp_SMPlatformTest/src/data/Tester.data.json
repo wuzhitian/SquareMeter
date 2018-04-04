@@ -1,0 +1,79 @@
+[
+    {
+        "id": 1,
+        "path": "/user",
+        "name": "UserLifecycleTester",
+        "description": "用户生命周期测试",
+        "api_id_array": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            71
+        ]
+    },
+    {
+        "id": 2,
+        "path": "/project",
+        "name": "ProjectLifecycleTester",
+        "description": "项目生命周期测试",
+        "api_id_array": [
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15
+        ]
+    },
+    {
+        "id": 3,
+        "path": "/third_party",
+        "name": "ThirdPartyTester",
+        "description": "第三方功能测试",
+        "api_id_array": [
+
+        ]
+    },
+    {
+        "id": 4,
+        "path": "/smplatform_core",
+        "name": "SMPlatformCoreTester",
+        "description": "平方米平台核心功能测试",
+        "api_id_array": [
+            16,17,18,19,20,21,22,23
+        ]
+    },
+    {
+        "id": 5,
+        "path": "/smplatform_admin",
+        "name": "SMPlatformAdminTester",
+        "description": "平方米平台管理功能测试",
+        "api_id_array": [
+
+        ]
+    },
+    {
+        "id": 6,
+        "path": "/smbc_contract",
+        "name": "SMBCContractTester",
+        "description": "平方米私链合约调用测试",
+        "api_id_array": [
+
+        ]
+    },
+    {
+        "id": 7,
+        "path": "/auto_test",
+        "name": "AutoTest",
+        "description": "自动测试",
+        "api_id_array": [
+
+        ]
+    }
+]

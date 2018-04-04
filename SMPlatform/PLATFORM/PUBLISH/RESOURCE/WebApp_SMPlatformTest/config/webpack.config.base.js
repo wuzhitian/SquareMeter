@@ -177,9 +177,9 @@ module.exports = {
             //     loader: require.resolve('sass-loader') // compiles sass to CSS
 			// 				},
 			// 				{
-			// 					loader: require.resolve('sass-resources-loader'),
+			// 					loader: require.resolve('sass-resource-loader'),
 			// 					options: {
-			// 						resources: resolveResource('BaseTool.scss')
+			// 						resource: resolveResource('BaseTool.scss')
 			// 					}
 			// 				}
             ],

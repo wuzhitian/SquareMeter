@@ -1,12 +1,16 @@
-import { Component } from 'react';
+import { observer } from 'mobx-react';
+import { UmbBaseClass } from '../LIBRARY/BASE/UmbBaseClass';
 
 /**
  * 基础容器封装
  */
-export class UmbComponent extends Component {
+@observer
+export class UmbComponent extends UmbBaseClass {
+
     render() {
         return (
-            this.props.children()
+            this.props.children
         )
     }
+
 }

@@ -9,6 +9,9 @@ import { UmbComponent } from '../../COMPONENT/UmbComponent';
 @observer
 export class UmbImage extends UmbComponent {
 
+    @observable width;
+    @observable height;
+
     static defaultProps = {
         alt: 'image',
     };
@@ -17,17 +20,24 @@ export class UmbImage extends UmbComponent {
 
     constructor( props ) {
         super( props );
-        this.setFile( this.props.file );
+        this.setFile();
+        this.setSize();
     }
 
     @action
-    setFile( file ) {
-        this.file = file;
+    setFile() {
+        this.file = this.props.file;
+    }
+
+    @action
+    setSize() {
+        this.width = this.props.width;
+        this.height = this.props.height;
     }
 
     render() {
         return (
-            <img alt={ this.props.alt } src={ this.file }/>
+            <img width={ this.width } height={ this.height } alt={ this.props.alt } src={ this.file }/>
         )
     }
 }

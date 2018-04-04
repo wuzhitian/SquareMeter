@@ -13,4 +13,22 @@ export class DataHandler {
         let res = explode_array[ 0 ];
         return res;
     }
+
+    /**
+     * json2html
+     * @param json
+     * @param is_colorful
+     * @returns {string}
+     */
+    static jsonToHtml( json, is_colorful = true ) {
+        let res = JSON.stringify( json, null, 4 );
+        res = res.replace( /[\n\r]/g, '<br/>' );
+        res = res.replace( / /g, '&nbsp;' );
+        if ( is_colorful === true ) {
+            res = res.replace( /true/g, '<span style="color:blue">true</span>' );
+            res = res.replace( /false/g, '<span style="color:red">false</span>' );
+            res = res.replace( /null/g, '<span style="color:red">null</span>' );
+        }
+        return res;
+    }
 }

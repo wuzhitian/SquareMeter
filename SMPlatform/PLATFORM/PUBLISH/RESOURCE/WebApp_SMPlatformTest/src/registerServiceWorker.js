@@ -2,8 +2,8 @@
 
 // This lets the app load faster on subsequent visits in production, and gives
 // it offline capabilities. However, it also means that developers (and users)
-// will only see deployed updates on the "N+1" visit to a pages, since previously
-// cached resources are updated in the background.
+// will only see deployed updates on the "N+1" visit to a page, since previously
+// cached resource are updated in the background.
 
 // To learn more about the benefits of this model, read https://goo.gl/KwvDNy.
 // This link also includes instructions on opting out of this behavior.
@@ -24,7 +24,7 @@ export default function register() {
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location);
     if (publicUrl.origin !== window.location.origin) {
       // Our service worker won't work if PUBLIC_URL is on a different origin
-      // from what our pages is served on. This might happen if a CDN is used to
+      // from what our page is served on. This might happen if a CDN is used to
       // serve assets; see https://github.com/facebookincubator/create-react-app/issues/2374
       return;
     }
@@ -82,7 +82,7 @@ function registerValidSW(swUrl) {
 }
 
 function checkValidServiceWorker(swUrl) {
-  // Check if the service worker can be found. If it can't reload the pages.
+  // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl)
     .then(response => {
       // Ensure service worker exists, and that we really are getting a JS file.
@@ -90,7 +90,7 @@ function checkValidServiceWorker(swUrl) {
         response.status === 404 ||
         response.headers.get('content-type').indexOf('javascript') === -1
       ) {
-        // No service worker found. Probably a different app. Reload the pages.
+        // No service worker found. Probably a different app. Reload the page.
         navigator.serviceWorker.ready.then(registration => {
           registration.unregister().then(() => {
             window.location.reload();
