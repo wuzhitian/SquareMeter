@@ -1,0 +1,672 @@
+[
+    {
+        "id": 1,
+        "tester_id": 1,
+        "request_url": "http://develop.umbinfo.com:9527/UserService/api/v1/createInvestor",
+        "verb": "POST",
+        "name": "createInvestor",
+        "description": "投资者创建",
+        "test_case_params": {
+            "cellphone": "15606683579",
+            "password": "escf1f2f3"
+        },
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": {
+                "create": [
+                    {
+                        "class_name": "User",
+                        "id": "test_user_id",
+                        "role_array": [
+                            "Investor"
+                        ],
+                        "cellphone": "15606683579",
+                        "is_login": false,
+                        "wallet_id": "3fejqi84jfek"
+                    }
+                ]
+            }
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'UserService', 'api/v1/createInvestor' ) ",
+            "[ UserService ] request",
+            "[ UserService ] handle",
+            "[ UserService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 2,
+        "tester_id": 1,
+        "request_url": "http://develop.umbinfo.com:9527/UserService/api/v1/deleteInvestor",
+        "verb": "POST",
+        "name": "deleteInvestor",
+        "description": "投资者删除",
+        "test_case_params": {
+            "id": "test_user_id_2"
+        },
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": {
+                "delete": [
+                    {
+                        "class_name": "User",
+                        "id": "test_user_id_2"
+                    }
+                ]
+            }
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'UserService', 'api/v1/deleteInvestor' ) ",
+            "[ UserService ] request",
+            "[ UserService ] handle",
+            "[ UserService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 3,
+        "tester_id": 1,
+        "request_url": "http://develop.umbinfo.com:9527/UserService/api/v1/changeInvestorPassword",
+        "verb": "POST",
+        "name": "changeInvestorPassword",
+        "description": "投资者修改登录密码",
+        "test_case_params": {
+            "id": "test_user_id_2",
+            "old_password": "escf1f2f3",
+            "new_password": "escf1f2f3f4"
+        },
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'UserService', 'api/v1/deleteInvestor' ) ",
+            "[ UserService ] request",
+            "[ UserService ] handle",
+            "[ UserService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 4,
+        "tester_id": 1,
+        "request_url": "http://develop.umbinfo.com:9527/UserService/api/v1/createInvestorPayPassword",
+        "verb": "POST",
+        "name": "createInvestorPayPassword",
+        "description": "投资者新建支付密码",
+        "test_case_params": {
+            "id": "test_user_id_2",
+            "new_pay_password": "escf1f2f3"
+        },
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'UserService', 'api/v1/createInvestorPayPassword' ) ",
+            "[ UserService ] request",
+            "[ UserService ] handle",
+            "[ UserService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 5,
+        "tester_id": 1,
+        "request_url": "http://develop.umbinfo.com:9527/UserService/api/v1/changeInvestorPayPassword",
+        "verb": "POST",
+        "name": "changeInvestorPayPassword",
+        "description": "投资者修改支付密码",
+        "test_case_params": {
+            "id": "test_user_id_2",
+            "old_pay_password": "escf1f2f3",
+            "new_pay_password": "escf1f2f3f4"
+        },
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'UserService', 'api/v1/changeInvestorPayPassword' ) ",
+            "[ UserService ] request",
+            "[ UserService ] handle",
+            "[ UserService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 6,
+        "tester_id": 1,
+        "request_url": "http://develop.umbinfo.com:9527/UserService/api/v1/investorLogin",
+        "verb": "POST",
+        "name": "investorLogin",
+        "description": "投资者登录",
+        "test_case_params": {
+            "cellphone": "15606683578",
+            "password": "escf1f2f3"
+        },
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": {
+                "read": [
+                    {
+                        "class_name": "User",
+                        "id": "test_user_id_2",
+                        "role_array": [
+                            "Investor"
+                        ],
+                        "cellphone": "15606683578",
+                        "is_login": true,
+                        "wallet_id": "3fejqi84jfek",
+                        "api_key": "1c54b3174eeb38bb",
+                        "api_secret": "3F2504E0-4F89-11D3-9A0C-0305E82C3301"
+                    }
+                ]
+            }
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'UserService', 'api/v1/changeInvestorPayPassword' ) ",
+            "[ UserService ] request",
+            "[ UserService ] handle",
+            "[ UserService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 7,
+        "tester_id": 1,
+        "request_url": "http://develop.umbinfo.com:9527/UserService/api/v1/investorLogout",
+        "verb": "POST",
+        "name": "investorLogin",
+        "description": "投资者登出",
+        "test_case_params": {
+            "id": "test_user_id_3"
+        },
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'UserService', 'api/v1/changeInvestorPayPassword' ) ",
+            "[ UserService ] request",
+            "[ UserService ] handle",
+            "[ UserService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 71,
+        "tester_id": 1,
+        "request_url": "http://develop.umbinfo.com:9527/UserService/api/v1/investorSubscribeProject",
+        "verb": "POST",
+        "name": "investorSubscribeProject",
+        "description": "投资者认购项目",
+        "test_case_params": {
+            "id": "test_user_id_3",
+            "project_id": "test_project_id",
+            "amount": 6
+        },
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": {
+                "update": [
+                    {
+                        "class_name": "UserWallet",
+                        "id": "3fejqi84jfek",
+                        "user_id": "test_user_id_3",
+                        "CNYT": 994
+                    }
+                ],
+                "create": [
+                    {
+                        "class_name": "SubscribeRecord",
+                        "id": "3F2504E0-4F89-11D3-9A0C-0305E82C3301",
+                        "user_id": "test_user_id_3",
+                        "project_id": "test_project_id",
+                        "subscribe_amount": 6
+                    }
+                ]
+            }
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'UserService', 'api/v1/investorSubscribeProject' ) ",
+            "[ UserService ] request",
+            "[ UserService ] handle",
+            "[ UserService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 8,
+        "tester_id": 2,
+        "request_url": "http://develop.umbinfo.com:9527/ProjectService/api/v1/recommendProject",
+        "name": "recommendProject",
+        "description": "项目推荐",
+        "test_case_params": {
+            "name": "测试大楼",
+            "estate_type": "IndustrialRealEstate",
+            "digital_target": 3200
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": {
+                "create": [
+                    {
+                        "class_name": "Project",
+                        "id": "test_project_id",
+                        "estate_type": "IndustrialRealEstate",
+                        "digital_target": 3200
+                    }
+                ]
+            }
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'ProjectService', 'api/v1/recommendProject' ) ",
+            "[ ProjectService ] request",
+            "[ ProjectService ] handle",
+            "[ ProjectService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 9,
+        "tester_id": 2,
+        "request_url": "http://develop.umbinfo.com:9527/ProjectService/api/v1/evaluateProject",
+        "name": "evaluateProject",
+        "description": "项目评审",
+        "test_case_params": {
+            "id": "test_project_id",
+            "evaluate_institution_id": "test_evaluate_institution_id",
+            "extra_data": 123
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'ProjectService', 'api/v1/evaluateProject' ) ",
+            "[ ProjectService ] request",
+            "[ ProjectService ] handle",
+            "[ ProjectService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 10,
+        "tester_id": 2,
+        "request_url": "http://develop.umbinfo.com:9527/ProjectService/api/v1/injectProjectOperationRule",
+        "name": "injectProjectOperationRule",
+        "description": "项目注入运营条款",
+        "test_case_params": {
+            "id": "test_project_id",
+            "operation_institution_id": "test_operation_institution_id",
+            "operation_rule": null
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'ProjectService', 'api/v1/injectProjectOperationRule' ) ",
+            "[ ProjectService ] request",
+            "[ ProjectService ] handle",
+            "[ ProjectService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 11,
+        "tester_id": 2,
+        "request_url": "http://develop.umbinfo.com:9527/ProjectService/api/v1/acceptProjectSell",
+        "name": "acceptProjectSell",
+        "description": "项目批准发售",
+        "test_case_params": {
+            "id": "test_project_id",
+            "sell_institution_id": "test_sell_institution_id"
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'ProjectService', 'api/v1/acceptProjectSell' ) ",
+            "[ ProjectService ] request",
+            "[ ProjectService ] handle",
+            "[ ProjectService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 12,
+        "tester_id": 2,
+        "request_url": "http://develop.umbinfo.com:9527/ProjectService/api/v1/chargeProjectForProfit",
+        "name": "chargeProjectForProfit",
+        "description": "项目充值收益",
+        "test_case_params": {
+            "id": "test_project_id",
+            "amount": 400000
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'ProjectService', 'api/v1/chargeProjectForProfit' ) ",
+            "[ ProjectService ] request",
+            "[ ProjectService ] handle",
+            "[ ProjectService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 13,
+        "tester_id": 2,
+        "request_url": "http://develop.umbinfo.com:9527/ProjectService/api/v1/releaseProjectProfitPerDay",
+        "name": "releaseProjectProfitPerDay",
+        "description": "项目按日发放收益",
+        "test_case_params": {
+            "id": "test_project_id",
+            "day_account": 30
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'ProjectService', 'api/v1/releaseProjectProfitPerDay' ) ",
+            "[ ProjectService ] request",
+            "[ ProjectService ] handle",
+            "[ ProjectService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 14,
+        "tester_id": 2,
+        "request_url": "http://develop.umbinfo.com:9527/ProjectService/api/v1/chargeProjectForLiquidation",
+        "name": "chargeProjectForLiquidation",
+        "description": "项目清算充值",
+        "test_case_params": {
+            "id": "test_project_id",
+            "amount": 1000000
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'ProjectService', 'api/v1/chargeProjectForLiquidation' ) ",
+            "[ ProjectService ] request",
+            "[ ProjectService ] handle",
+            "[ ProjectService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 15,
+        "tester_id": 2,
+        "request_url": "http://develop.umbinfo.com:9527/ProjectService/api/v1/liquidateProject",
+        "name": "liquidateProject",
+        "description": "项目清算",
+        "test_case_params": {
+            "id": "test_project_id"
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'ProjectService', 'api/v1/liquidateProject' ) ",
+            "[ ProjectService ] request",
+            "[ ProjectService ] handle",
+            "[ ProjectService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 16,
+        "tester_id": 4,
+        "request_url": "http://develop.umbinfo.com:9527/UserService/api/v1/isConnected",
+        "name": "UserService",
+        "description": "用户服务",
+        "test_case_params": {
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'UserService', 'api/v1/isConnected' ) ",
+            "[ UserService ] request",
+            "[ UserService ] handle",
+            "[ UserService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 17,
+        "tester_id": 4,
+        "request_url": "http://develop.umbinfo.com:9527/ProjectService/api/v1/isConnected",
+        "name": "ProjectService",
+        "description": "项目服务",
+        "test_case_params": {
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'ProjectService', 'api/v1/isConnected' ) ",
+            "[ ProjectService ] request",
+            "[ ProjectService ] handle",
+            "[ ProjectService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 18,
+        "tester_id": 4,
+        "request_url": "http://develop.umbinfo.com:9527/Dispatcher/api/v1/isConnected",
+        "name": "Dispatcher",
+        "description": "分发服务",
+        "test_case_params": {
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] handle",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 19,
+        "tester_id": 4,
+        "request_url": "http://develop.umbinfo.com:9527/DataCenter/api/v1/isConnected",
+        "name": "DataCenter",
+        "description": "数据服务",
+        "test_case_params": {
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'DataCenter', 'api/v1/isConnected' ) ",
+            "[ DataCenter ] request",
+            "[ DataCenter ] handle",
+            "[ DataCenter ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 20,
+        "tester_id": 4,
+        "request_url": "http://develop.umbinfo.com:9527/CryptoService/api/v1/isConnected",
+        "name": "CryptoService",
+        "description": "加密服务",
+        "test_case_params": {
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'CryptoService', 'api/v1/isConnected' ) ",
+            "[ CryptoService ] request",
+            "[ CryptoService ] handle",
+            "[ CryptoService ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 21,
+        "tester_id": 4,
+        "request_url": "http://develop.umbinfo.com:9527/Publisher/api/v1/isConnected",
+        "name": "Publisher",
+        "description": "发布服务",
+        "test_case_params": {
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'Publisher', 'api/v1/isConnected' ) ",
+            "[ Publisher ] request",
+            "[ Publisher ] handle",
+            "[ Publisher ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 22,
+        "tester_id": 4,
+        "request_url": "http://develop.umbinfo.com:9527/MiddleTier/api/v1/isConnected",
+        "name": "MiddleTier",
+        "description": "合约调用中间件服务",
+        "test_case_params": {
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'MiddleTier', 'api/v1/isConnected' ) ",
+            "[ MiddleTier ] request",
+            "[ MiddleTier ] handle",
+            "[ MiddleTier ] response",
+            "[ Dispatcher ] response"
+        ]
+    },
+    {
+        "id": 23,
+        "tester_id": 4,
+        "request_url": "http://develop.umbinfo.com:9527/ThirdParty/api/v1/isConnected",
+        "name": "ThirdParty",
+        "description": "第三方聚合服务",
+        "test_case_params": {
+        },
+        "verb": "POST",
+        "test_case_result": {
+            "success": true,
+            "data": null,
+            "error": null,
+            "instance": null
+        },
+        "tracker": [
+            "[ Dispatcher ] request",
+            "[ Dispatcher ] test_proxy( 'ThirdParty', 'api/v1/isConnected' ) ",
+            "[ ThirdParty ] request",
+            "[ ThirdParty ] handle",
+            "[ ThirdParty ] response",
+            "[ Dispatcher ] response"
+        ]
+    }
+]
