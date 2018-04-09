@@ -18,3 +18,4 @@ const DOUBLE_TYPE    = 'double'; //双精度浮点型
 const ARRAY_TYPE     = 'array'; //数组型，数组默认在数据库存json
 const OBJECT_TYPE    = 'object'; //对象类型
 const MD5_TYPE       = 'md5'; //md5加密类型，先json_encode，再md5，实质上是string
+const AMOUNT_TYPE    = 'amount'; //金额类型，会用字段名加_value存bigint，然后再存一个_decimal_bit存小数位

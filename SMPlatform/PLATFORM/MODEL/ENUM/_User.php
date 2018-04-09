@@ -17,6 +17,6 @@ namespace SMPlatform\PLATFORM\MODEL\ENUM;
  */
 class _User
 {
-    const PERSON  = 'person';
+    const PERSONAL  = 'personal';
     const COMPANY = 'company';
 }

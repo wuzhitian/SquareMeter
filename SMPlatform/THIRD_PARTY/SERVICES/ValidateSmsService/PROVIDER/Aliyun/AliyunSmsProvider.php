@@ -23,10 +23,10 @@ class AliyunSmsProvider implements Provider
     /**
      * 阿里云短信要求的特殊urlEncode方法
      * @param string $url
-     * @return mixed
+     * @return string
      */
     public static
-    function specialUrlEncode( string $url )
+    function specialUrlEncode( string $url ): string
     {
         $url_encode         = DataHandler::urlEncode( $url );
         $special_url_encode = str_replace( '+', '%20', $url_encode );

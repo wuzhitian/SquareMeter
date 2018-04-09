@@ -73,7 +73,7 @@ export class MainNavigation extends UmbComponent {
                     </UmbText>
 
                     <UmbText size={ 12 } color={ Base.color.grey }>
-                        Test Center
+                        ThirdParty Admin
                     </UmbText>
 
                 </UmbContainer>

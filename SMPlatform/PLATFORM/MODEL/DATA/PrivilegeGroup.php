@@ -20,12 +20,13 @@ use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SafeInstance;
 class PrivilegeGroup extends SafeInstance
 {
     const TABLE_NAME = 'privilege_group';
-    
-    const SCHEMA = [
-        'name'        => STRING_TYPE,
-        'description' => TEXT_TYPE,
-    ];
-    
-    public $name;
-    public $description;
+
+    const SCHEMA
+        = [
+            'name'        => STRING_TYPE,
+            'description' => TEXT_TYPE,
+        ];
+
+    public $name; //权限组名
+    public $description; //权限组描述
 }

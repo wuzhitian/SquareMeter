@@ -23,13 +23,24 @@ use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SafeInstance;
 class UserBankCard extends SafeInstance
 {
     use InstanceTrait;
-    
+
+    const TABLE_NAME = 'UserBankCard';
+
+    const SCHEMA
+        = [
+            'user_id'   => STRING_TYPE,
+            'type'      => STRING_TYPE,
+            'bank'      => STRING_TYPE,
+            'number'    => STRING_TYPE,
+            'is_active' => BOOL_TYPE,
+        ];
+
     public $user_id; //用户id
     public $type = _UserBankCard::DEPOSIT_CARD; //默认为储蓄卡
     public $bank; //银行
-    public $no; //银行卡号
+    public $number; //银行卡号
     public $is_active; //是否启用
-    
+
     /**
      * 是否为公司账户
      * @return bool

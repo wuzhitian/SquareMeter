@@ -63,7 +63,7 @@ class DataHandler
         }
         return $res;
     }
-    
+
     /**
      * 为string类型的字符串前后添加符号，默认为双引号
      * @param $string
@@ -83,7 +83,7 @@ class DataHandler
         }
         return $string_format;
     }
-    
+
     /**
      * 获取指定分割符的最后一个片段
      * @param string $delimiter
@@ -91,13 +91,29 @@ class DataHandler
      * @return mixed
      */
     public static
-    function lastSegment( string $delimiter, string $string )
+    function getLastSegment( string $delimiter, string $string )
     {
-        $explode_array = array_reverse( explode( $delimiter, $string ) );
-        $res           = $explode_array[ 0 ];
+        $res = end( explode( $delimiter, $string ) );
         return $res;
     }
-    
+
+    /**
+     * 获取小数位数
+     * @param float $value
+     * @return int
+     */
+    public static
+    function getDecimalBit( float $value ): int
+    {
+        $count = 0;
+        $temp  = explode( '.', (string)$value );
+        if ( sizeof( $temp ) > 0 ) {
+            $decimal = end( $temp );
+            $count   = strlen( $decimal );
+        }
+        return $count;
+    }
+
     /**
      * url编码
      * @param string $url
@@ -109,7 +125,7 @@ class DataHandler
         $res = urlencode( $url );
         return $res;
     }
-    
+
     /**
      * url解码
      * @param string $url_encode
@@ -121,5 +137,4 @@ class DataHandler
         $res = urldecode( $url_encode );
         return $res;
     }
-    
 }
