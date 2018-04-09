@@ -1,4 +1,4 @@
-<?php
+<?php declare( strict_types = 1 );
 /**
  * Project: SMPlatform
  * File: Task.php
@@ -13,7 +13,7 @@ namespace SMPlatform\MIDDLETIER\MODEL\DATA;
 use UmbServer\SwooleFramework\LIBRARY\COMMON_MODEL\Task;
 
 /**
- * 平方米私链任务类
+ * SMBC任务类
  * Class BlockChainTask
  * @package SMPlatform\MIDDLETIER\MODEL\DATA
  */

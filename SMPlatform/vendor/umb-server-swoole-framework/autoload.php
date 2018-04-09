@@ -65,7 +65,7 @@ require_once( __DIR__ . '/LIBRARY/DATA/LocalDataCenter.php' );
 
 //INSTANCE
 require_once( __DIR__ . '/LIBRARY/INSTANCE/Instance.php' );
-require_once( __DIR__ . '/LIBRARY/INSTANCE/InstanceTraits.php' );
+require_once( __DIR__ . '/LIBRARY/INSTANCE/InstanceTrait.php' );
 
 //AUTH
 require_once( __DIR__ . '/LIBRARY/AUTH/AuthUser.php' );

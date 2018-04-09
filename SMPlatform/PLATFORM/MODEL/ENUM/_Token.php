@@ -15,7 +15,7 @@ namespace SMPlatform\PLATFORM\MODEL\ENUM;
  * Class _Token
  * @package SMPlatform\PLATFORM\MODEL\ENUM
  */
-class _Token extends \SplEnum
+class _Token
 {
     const PROJT = 'ProjectToken';
     const CNYT  = 'CNYToken';

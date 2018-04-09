@@ -15,7 +15,7 @@ namespace SMPlatform\PLATFORM\MODEL\ENUM;
  * Class _VirtualWalletOwner
  * @package SMPlatform\PLATFORM\MODEL\ENUM
  */
-class _VirtualWalletOwner
+class _VirtualWalletType
 {
     const INVESTOR = 'investor';
     const EXCHANGE = 'exchange';

@@ -11,8 +11,8 @@
 namespace UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\MODEL;
 
 use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpApiServer;
+use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\CONFIG\ServerConfig;
 use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\ENUM\_ServiceMode;
-use UmbServer\SwooleFramework\COMPONENT\SERVER\CONFIG\ServerConfig;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
 
 /**
@@ -98,20 +98,6 @@ class Service extends Instance
     function onWorkerStart()
     {
         $this->connect();
-    }
-    
-    /**
-     * 根据is_http_api_server来启动service
-     */
-    public
-    function start()
-    {
-        if ( $this->is_server ) {
-            $this->initServer();
-            $this->service_server->start();
-        } else {
-            $this->connect();
-        }
     }
     
     /**

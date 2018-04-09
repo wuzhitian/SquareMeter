@@ -11,35 +11,14 @@
 namespace UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\Dispatcher;
 
 use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\MODEL\Service;
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SinglePatternTrait;
 
 /**
- * 服务治理
+ * 服务分发类
  * Class Dispatcher
  * @package UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\Dispatcher
  */
 class Dispatcher extends Service
 {
-    //构建单例
-    /************************************************************/
-    private static $_instance;
-    
-    private
-    function __construct()
-    {
-    }
-    
-    private
-    function __clone()
-    {
-    }
-    
-    public static
-    function getInstance(): self
-    {
-        if ( !( self::$_instance instanceof self ) ) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
-    /************************************************************/
+    use SinglePatternTrait; //加载单例模式
 }

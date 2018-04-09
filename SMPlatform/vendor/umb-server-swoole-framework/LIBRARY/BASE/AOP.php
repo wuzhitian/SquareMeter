@@ -45,7 +45,6 @@ class AOP
 
     /**
      * 访问切面
-     *
      * @param $function_name
      * @param $arguments
      *

@@ -13,7 +13,7 @@ namespace SMPlatform\MIDDLETIER\MODEL\DATA;
 use UmbServer\SwooleFramework\LIBRARY\COMMON_MODEL\Host;
 
 /**
- * 平方米私链业务主机类
+ * SMBC业务主机类
  * Class SMBCBusinessHost
  * @package SMPlatform\MIDDLETIER\MODEL\DATA
  */

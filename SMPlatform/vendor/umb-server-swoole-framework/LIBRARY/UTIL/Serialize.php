@@ -48,7 +48,7 @@ class Serialize
      * 反序列化
      * @param string $pack_data
      * @param string $type
-     * @return mixed|object
+     * @return mixed|\stdClass
      * @throws UtilError
      */
     public static
@@ -75,9 +75,9 @@ class Serialize
     {
         $SOF_length = strlen( _Serialize::UMB_SERIALIZE_SOF );
         $EOF_length = strlen( _Serialize::UMB_SERIALIZE_EOF );
-        $SOF = substr( $pack_data, 0, $SOF_length );
-        $EOF = substr( $pack_data, -$EOF_length );
-        $res = $SOF === _Serialize::UMB_SERIALIZE_SOF && $EOF === _Serialize::UMB_SERIALIZE_EOF;
+        $SOF        = substr( $pack_data, 0, $SOF_length );
+        $EOF        = substr( $pack_data, -$EOF_length );
+        $res        = $SOF === _Serialize::UMB_SERIALIZE_SOF && $EOF === _Serialize::UMB_SERIALIZE_EOF;
         return $res;
     }
     
@@ -87,7 +87,7 @@ class Serialize
      * @return string
      * @throws UtilError
      */
-    private static
+    public static
     function umbEncode( $un_pack_data ): string
     {
         $pack_res = swoole_serialize::pack( $un_pack_data );
@@ -104,15 +104,15 @@ class Serialize
      * @return mixed
      * @throws UtilError
      */
-    private static
+    public static
     function umbDecode( string $pack_data )
     {
         $pack_length = strlen( $pack_data );
-        $SOF_length = strlen( _Serialize::UMB_SERIALIZE_SOF );
-        $EOF_length = strlen( _Serialize::UMB_SERIALIZE_EOF );
+        $SOF_length  = strlen( _Serialize::UMB_SERIALIZE_SOF );
+        $EOF_length  = strlen( _Serialize::UMB_SERIALIZE_EOF );
         $data_length = $pack_length - $SOF_length - $EOF_length;
-        $data = substr( $pack_data, $SOF_length, $data_length );
-        $res = swoole_serialize::unpack( $data );
+        $data        = substr( $pack_data, $SOF_length, $data_length );
+        $res         = swoole_serialize::unpack( $data );
         if ( !self::isUmbEncodeData( $pack_data ) || $res === false ) {
             throw new UtilError( UtilError::UN_SUPPORT_DECODE_DATA );
         }
@@ -124,7 +124,7 @@ class Serialize
      * @param $data
      * @return string
      */
-    private static
+    public static
     function jsonEncode( $data ): string
     {
         $res = json_encode( $data, JSON_UNESCAPED_UNICODE ); // 解决中文乱码问题
@@ -134,10 +134,10 @@ class Serialize
     /**
      * json反序列化
      * @param string $data
-     * @return object
+     * @return \stdClass
      */
-    private static
-    function jsonDecode( string $data ): object
+    public static
+    function jsonDecode( string $data ): \stdClass
     {
         $res = json_decode( $data );
         return $res;

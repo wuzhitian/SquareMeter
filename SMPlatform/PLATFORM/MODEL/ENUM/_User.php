@@ -15,7 +15,7 @@ namespace SMPlatform\PLATFORM\MODEL\ENUM;
  * Class _User
  * @package SMPlatform\PLATFORM\MODEL\ENUM
  */
-class _User extends \SplEnum
+class _User
 {
     const PERSON  = 'person';
     const COMPANY = 'company';

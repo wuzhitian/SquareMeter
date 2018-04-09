@@ -10,14 +10,15 @@
 
 namespace UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\Monitor;
 
-use UmbServer\SwooleFramework\COMPONENT\RPC\RPCTCPClient;
+use UmbServer\SwooleFramework\COMPONENT\CLIENT\TCPClient;
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SinglePatternTrait;
 
 /**
  * 监视器客户端
  * Class MonitorClient
  * @package UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\Monitor
  */
-class MonitorClient extends RPCTCPClient
+class MonitorClient extends TCPClient
 {
-    
+    use SinglePatternTrait; //加载单例模式
 }

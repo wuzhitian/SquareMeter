@@ -10,6 +10,8 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\UTIL;
 
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_Serialize;
+
 /**
  * 数据处理工具类
  * Class DataHandler
@@ -50,6 +52,10 @@ class DataHandler
             case OBJECT_TYPE:
                 $res = (object)$value;
                 break;
+            case MD5_TYPE:
+                $res = Serialize::encode( $value, _Serialize::JSON );
+                $res = Algorithm::md5( $res );
+                break;
             case STRING_TYPE:
             case TEXT_TYPE:
             default:
@@ -57,7 +63,7 @@ class DataHandler
         }
         return $res;
     }
-
+    
     /**
      * 为string类型的字符串前后添加符号，默认为双引号
      * @param $string
@@ -77,7 +83,7 @@ class DataHandler
         }
         return $string_format;
     }
-
+    
     /**
      * 获取指定分割符的最后一个片段
      * @param string $delimiter
@@ -91,7 +97,7 @@ class DataHandler
         $res           = $explode_array[ 0 ];
         return $res;
     }
-
+    
     /**
      * url编码
      * @param string $url
@@ -103,7 +109,7 @@ class DataHandler
         $res = urlencode( $url );
         return $res;
     }
-
+    
     /**
      * url解码
      * @param string $url_encode
@@ -115,5 +121,5 @@ class DataHandler
         $res = urldecode( $url_encode );
         return $res;
     }
-
+    
 }

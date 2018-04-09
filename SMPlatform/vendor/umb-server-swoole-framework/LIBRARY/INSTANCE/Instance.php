@@ -11,8 +11,8 @@
 namespace UmbServer\SwooleFramework\LIBRARY\INSTANCE;
 
 use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpApiServer;
-use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\DataCenter\DataCenter;
-use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\VISITOR\DataCenterVisitor;
+use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\DataCenter\DataSharer;
+use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\VISITOR\DataSharerVisitor;
 use UmbServer\SwooleFramework\LIBRARY\DATA\LocalDataCenter;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_ID;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_InstanceBaseOperator;
@@ -34,9 +34,9 @@ class Instance
     public $update_timestamp;
     
     const MODE              = _InstanceMode::LOCAL; //实例是否为本地实例，远程实例由DataCenter管理
-    const DATA_CENTER_CLASS = DataCenter::class; //远程数据中心默认值
-    
-    const DEFAULT_SCHEMA = [
+    const DATA_CENTER_CLASS = DataSharer::class; //远程数据中心默认值
+    const TABLE_NAME        = self::class; //数据库表名
+    const DEFAULT_SCHEMA    = [
         'id'               => STRING_TYPE,
         'create_timestamp' => TIMESTAMP_TYPE,
         'update_timestamp' => TIMESTAMP_TYPE,
@@ -248,7 +248,7 @@ class Instance
     {
         //远程实例的id问题交给data_center处理
         //远程实例的缓存层与持久层问题交给data_center处理
-        $res = DataCenterVisitor::getInstance()->createInstance( $this );
+        $res = DataSharerVisitor::getInstance()->createInstance( $this );
         return $res;
     }
     
@@ -270,7 +270,7 @@ class Instance
     private
     function remoteRead()
     {
-        $res = DataCenterVisitor::getInstance()->readInstance( $this );
+        $res = DataSharerVisitor::getInstance()->readInstance( $this );
         return $res;
     }
     
@@ -292,7 +292,7 @@ class Instance
     private
     function remoteUpdate()
     {
-        $res = DataCenterVisitor::getInstance()->updateInstance( $this );
+        $res = DataSharerVisitor::getInstance()->updateInstance( $this );
         return $res;
     }
     
@@ -314,7 +314,7 @@ class Instance
     private
     function remoteDelete()
     {
-        $res = DataCenterVisitor::getInstance()->deleteInstance( $this );
+        $res = DataSharerVisitor::getInstance()->deleteInstance( $this );
         return $res;
     }
     

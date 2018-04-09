@@ -8,7 +8,7 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\VISITOR;
+namespace UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\BASE;
 
 use UmbServer\SwooleFramework\COMPONENT\CLIENT\Client;
 use UmbServer\SwooleFramework\COMPONENT\CLIENT\HttpClient;
@@ -20,7 +20,7 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\ConfigLoader;
 /**
  * 微服务框架组件访问器
  * Class Visitor
- * @package UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\VISITOR
+ * @package UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\BASE
  */
 class Visitor
 {

@@ -10,6 +10,8 @@
 
 namespace UmbServer\SwooleFramework\COMPONENT\SERVER;
 
+use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\Server;
+
 /**
  * http(s)websocket服务器基础类
  * Class HttpWebsocketServer

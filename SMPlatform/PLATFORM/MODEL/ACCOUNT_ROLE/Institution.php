@@ -10,7 +10,7 @@
 
 namespace SMPlatform\PLATFORM\MODEL\ACCOUNT_ROLE;
 
-use SMPlatform\PLATFORM\MODEL\BASE\User;
+use SMPlatform\PLATFORM\MODEL\DATA\User;
 use SMPlatform\PLATFORM\MODEL\ENUM\_User;
 
 /**
