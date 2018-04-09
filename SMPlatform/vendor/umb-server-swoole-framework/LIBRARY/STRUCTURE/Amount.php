@@ -115,7 +115,8 @@ class Amount
     public static
     function equal( self $a, self $b, bool $is_consider_prevision = false ): bool
     {
-        
+        $res = false;
+
     }
 
     /**
