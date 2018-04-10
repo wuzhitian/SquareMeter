@@ -17,6 +17,6 @@ namespace UmbServer\SwooleFramework\LIBRARY\ENUM;
  */
 class _HttpServer
 {
-    const API      = 'api';
-    const RESOURCE = 'resource';
+    const API      = 'api'; //api
+    const RESOURCE = 'resource'; //resource
 }

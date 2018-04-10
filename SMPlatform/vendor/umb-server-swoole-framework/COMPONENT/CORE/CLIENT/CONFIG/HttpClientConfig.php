@@ -17,5 +17,10 @@ namespace UmbServer\SwooleFramework\COMPONENT\CORE\CLIENT\CONFIG;
  */
 class HttpClientConfig extends ClientConfig
 {
-
+    public $host; //用户host
+    public $listen_port; //监听端口
+    public $is_ssl     = false; //是否https
+    public $is_http2   = false; //是否http2
+    public $timeout    = 5; //超时
+    public $keep_alive = true; //是否长连接
 }

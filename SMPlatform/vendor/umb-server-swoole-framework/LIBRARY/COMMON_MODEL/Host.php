@@ -10,14 +10,16 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\COMMON_MODEL;
 
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
+
 /**
  * 主机基础类
  * Class Host
  * @package UmbServer\SwooleFramework\LIBRARY\COMMON_MODEL
  */
-class Host
+class Host extends Instance
 {
-    public $name;
-    public $ip;
-    public $domain;
+    public $name; //主机名
+    public $ip; //ip地址
+    public $domain; //域名
 }

@@ -19,12 +19,12 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\ConfigLoader;
  */
 class ServerConfig
 {
-    public $name;
-    public $root;
-    public $path;
-    public $listen_ip;
-    public $listen_port;
-    public $set = [];
+    public $name; //名称
+    public $root; //root路径
+    public $path; //path路径
+    public $listen_ip; //监听ip
+    public $listen_port; //监听端口
+    public $set = []; //set集
 
     /**
      * 获取配置
