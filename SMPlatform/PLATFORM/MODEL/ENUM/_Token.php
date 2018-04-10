@@ -17,7 +17,7 @@ namespace SMPlatform\PLATFORM\MODEL\ENUM;
  */
 class _Token
 {
-    const PROJT = 'ProjectToken';
     const CNYT  = 'CNYToken';
+    const PROJT = 'ProjectToken';
     const IRET  = 'IndustrialRealEstateToken';
 }

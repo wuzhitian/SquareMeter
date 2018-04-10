@@ -11,13 +11,14 @@
 namespace SMPlatform\PLATFORM\MODEL\DEPARTMENT;
 
 use SMPlatform\PLATFORM\MODEL\DATA\Department;
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SinglePatternTrait;
 
 /**
- * 矿工委员会
+ * 矿工委员会类
  * Class MinerCommittee
  * @package SMPlatform\PLATFORM\MODEL\DEPARTMENT
  */
 class MinerCommittee extends Department
 {
-
+    use SinglePatternTrait; //加载单例模式
 }

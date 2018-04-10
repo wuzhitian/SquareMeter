@@ -17,9 +17,42 @@ namespace UmbServer\SwooleFramework\LIBRARY\INSTANCE;
  */
 trait InstanceTrait
 {
-    public static function getById( $id ): self
+    /**
+     * 通过id获取实例
+     * @param $id
+     * @return self
+     */
+    public static
+    function getById( $id ): self
     {
         $res = Instance::_getById( __CLASS__, $id );
+        return $res;
+    }
+    
+    /**
+     * 获取对象列表
+     * @return array
+     */
+    public static
+    function getList(): array
+    {
+        $res = Instance::_getList( __CLASS__ );
+        return $res;
+    }
+    
+    /**
+     * 通过id_array获取对象数组
+     * @param array $id_array
+     * @return array
+     */
+    public static
+    function getByIdArray( array $id_array ): array
+    {
+        $res = [];
+        foreach ( $id_array as $id ) {
+            $instance = self::getById( $id );
+            array_push( $res, $instance );
+        }
         return $res;
     }
 }

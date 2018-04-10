@@ -11,13 +11,14 @@
 namespace SMPlatform\PLATFORM\MODEL\DEPARTMENT;
 
 use SMPlatform\PLATFORM\MODEL\DATA\Department;
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SinglePatternTrait;
 
 /**
- * 评审委员会
+ * 评审委员会类
  * Class EstimatorCommittee
  * @package SMPlatform\PLATFORM\MODEL\DEPARTMENT
  */
 class EstimatorCommittee extends Department
 {
-
+    use SinglePatternTrait; //加载单例模式
 }

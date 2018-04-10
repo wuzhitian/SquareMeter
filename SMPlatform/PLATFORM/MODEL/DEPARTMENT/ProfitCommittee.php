@@ -1,8 +1,8 @@
 <?php declare( strict_types = 1 );
 /**
  * Project: SMPlatform
- * File: ProjectCommittee.php
- * Create: 2018/3/17
+ * File: ProfitCommittee.php
+ * Create: 2018/4/10
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
  * Copyright: SMBC Inc.
@@ -14,11 +14,11 @@ use SMPlatform\PLATFORM\MODEL\DATA\Department;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SinglePatternTrait;
 
 /**
- * 项目委员会类
- * Class ProjectCommittee
+ * 平台利润委会员类
+ * Class ProfitCommittee
  * @package SMPlatform\PLATFORM\MODEL\DEPARTMENT
  */
-class ProjectCommittee extends Department
+class ProfitCommittee extends Department
 {
     use SinglePatternTrait; //加载单例模式
 }
