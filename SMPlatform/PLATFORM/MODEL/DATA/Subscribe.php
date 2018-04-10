@@ -11,6 +11,7 @@
 namespace SMPlatform\PLATFORM\MODEL\DATA;
 
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
+use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceTrait;
 
 /**
  * 认购类
@@ -19,7 +20,9 @@ use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
  */
 class Subscribe extends Instance
 {
-    const TABLE_NAME = 'Subscribe';
+    use InstanceTrait;
+    
+    const TABLE_NAME = 'Subscribe'; //表名
     
     const SCHEMA = [
         'project_id'      => STRING_TYPE,

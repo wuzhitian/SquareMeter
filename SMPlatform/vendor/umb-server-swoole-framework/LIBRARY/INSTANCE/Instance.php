@@ -11,7 +11,7 @@
 namespace UmbServer\SwooleFramework\LIBRARY\INSTANCE;
 
 use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpApiServer;
-use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\DataCenter\DataSharer;
+use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\DataSharer\DataSharer;
 use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\VISITOR\DataSharerVisitor;
 use UmbServer\SwooleFramework\LIBRARY\DATA\LocalDataCenter;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_ID;
@@ -376,6 +376,29 @@ class Instance
      */
     public static
     function _getById( string $class, $id )
+    {
+        $instance     = new $class();
+        $id           = DataHandler::typeConversion( $instance->getTypeByKey( 'id' ), $id );
+        $instance->id = $id;
+        switch ( $class::MODE ) {
+            case _InstanceMode::LOCAL:
+                $res = $instance->localRead();
+                break;
+            case _InstanceMode::REMOTE:
+            default:
+                $res = $instance->remoteRead();
+        }
+        $instance->setData( $res );
+        return $instance;
+    }
+    
+    /**
+     * 获取对象列表
+     * @param string $class
+     * @return array
+     */
+    public static
+    function _getList( string $class ): array
     {
         $instance     = new $class();
         $id           = DataHandler::typeConversion( $instance->getTypeByKey( 'id' ), $id );

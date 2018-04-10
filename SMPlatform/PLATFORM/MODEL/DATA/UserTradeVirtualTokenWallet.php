@@ -1,8 +1,8 @@
 <?php declare( strict_types = 1 );
 /**
  * Project: SMPlatform
- * File: UserTokenWallet.php
- * Create: 2018/4/9
+ * File: UserTradeVirtualTokenWallet.php
+ * Create: 2018/4/10
  * Author: Hugh.Lee
  * Email: umbrellahughlee@gmail.com
  * Copyright: SMBC Inc.
@@ -14,15 +14,15 @@ use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceTrait;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SafeInstance;
 
 /**
- * 平方米用户token钱包类，私有
- * Class UserTokenWallet
+ * 交易基础虚拟钱包类
+ * Class UserTradeVirtualTokenWallet
  * @package SMPlatform\PLATFORM\MODEL\DATA
  */
-class UserTokenWallet extends SafeInstance
+class UserTradeVirtualTokenWallet extends SafeInstance
 {
     use InstanceTrait;
     
-    const TABLE_NAME = 'UserTokenWallet';
+    const TABLE_NAME = 'UserTradeVirtualTokenWallet'; //表名
     
     const SCHEMA = [
         'is_active'      => BOOL_TYPE,

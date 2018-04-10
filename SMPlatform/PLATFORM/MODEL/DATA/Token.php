@@ -26,12 +26,33 @@ class Token extends Instance
     const TABLE_NAME = 'Token';
     
     const SCHEMA = [
-        'name'           => STRING_TYPE,
-        'type'           => STRING_TYPE,
-        'publish_amount' => DOUBLE_TYPE,
+        'name'               => STRING_TYPE,
+        'type'               => STRING_TYPE,
+        'total_issue_amount' => DOUBLE_TYPE,
     ];
     
     public $name; //token名称
     public $type = _Token::IRET; //token类型
-    public $publish_amount; //发行量
+    public $total_issue_amount; //发行总量
+    
+    /**
+     * 通过token名称获取token
+     * @param $name
+     * @return Token
+     */
+    public static
+    function getByName( $name ): self
+    {
+    
+    }
+    
+    /**
+     * 获取CNYT
+     * @return Token
+     */
+    public static
+    function getCNYT(): self
+    {
+        return self::getByName( 'CNYT' );
+    }
 }

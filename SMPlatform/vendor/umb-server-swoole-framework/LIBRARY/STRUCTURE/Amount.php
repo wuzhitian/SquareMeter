@@ -19,13 +19,14 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
  */
 class Amount
 {
-    public $value       = 0; //整值
+    public $value = 0; //整值
     public $decimal_bit = 0; //小数位
-    public $precision   = 6; //精度
-
+    public $precision = 6; //精度
+    
     /**
      * 通过pre_value设置值
      * @param float $pre_value
+     * @param int $precision
      */
     public
     function setByRealValue( float $pre_value, int $precision = 6 )
@@ -37,11 +38,12 @@ class Amount
         $this->setPrecision( $precision );
         $this->checkDecimalBit();
     }
-
+    
     /**
      * 通过小数位数和处理后的数值设置值
      * @param int $decimal_bit
      * @param int $value
+     * @param int $precision
      */
     public
     function setByDecimalBitAndValue( int $decimal_bit, int $value, int $precision = 6 )
@@ -51,7 +53,7 @@ class Amount
         $this->setPrecision( $precision );
         $this->checkDecimalBit();
     }
-
+    
     /**
      * 获取真实值
      * @return float
@@ -62,7 +64,7 @@ class Amount
         $res = $this->value / pow( 10, $this->decimal_bit );
         return $res;
     }
-
+    
     /**
      * 设置value
      * @param int $value
@@ -72,7 +74,7 @@ class Amount
     {
         $this->value = $value;
     }
-
+    
     /**
      * 设置小数位数
      * @param int $decimal_bit
@@ -82,7 +84,7 @@ class Amount
     {
         $this->decimal_bit = $decimal_bit;
     }
-
+    
     /**
      * 设置精度
      * @param $precision
@@ -92,7 +94,7 @@ class Amount
     {
         $this->precision = $precision;
     }
-
+    
     /**
      * value为10的倍数时，将decimal_bit增加
      */
@@ -104,7 +106,7 @@ class Amount
             $this->decimal_bit++;
         }
     }
-
+    
     /**
      * 是否相等
      * @param Amount $a
@@ -116,9 +118,9 @@ class Amount
     function equal( self $a, self $b, bool $is_consider_prevision = false ): bool
     {
         $res = false;
-
+        
     }
-
+    
     /**
      * 比较两者大小，返回大的，如果相等就返回前者
      * @param Amount $a
@@ -129,12 +131,12 @@ class Amount
     function compare( self $a, self $b ): self
     {
         if ( self::equal( $a, $b ) === true ) {
-
+        
         } else {
-
+        
         }
     }
-
+    
     /**
      * 多值相加
      * @param Amount[] ...$arguments
@@ -149,7 +151,7 @@ class Amount
         }
         return $res;
     }
-
+    
     /**
      * 加法
      * @param Amount $a
@@ -166,7 +168,7 @@ class Amount
         $res->checkDecimalBit();
         return $res;
     }
-
+    
     /**
      * 减法
      * @param Amount $a
@@ -183,7 +185,7 @@ class Amount
         $res->checkDecimalBit();
         return $res;
     }
-
+    
     /**
      *
      * @param Amount $a
@@ -192,6 +194,6 @@ class Amount
     public static
     function multiply( self $a, float $b )
     {
-
+    
     }
 }
