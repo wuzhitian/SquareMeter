@@ -8,7 +8,7 @@
  * Copyright: Umbrella Inc.
  */
 
-namespace UmbServer\SwooleFramework\COMPONENT\CORE\SERVER;
+namespace UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpResourceServer;
 
 use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\CONFIG\HttpApiServerConfig;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpServer;
@@ -26,7 +26,7 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\System;
 /**
  * http(s)resource服务器基础类
  * Class HttpResourceServer
- * @package UmbServer\SwooleFramework\COMPONENT\CORE\SERVER
+ * @package UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpResourceServer
  */
 class HttpResourceServer implements HttpServer
 {

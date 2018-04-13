@@ -23,25 +23,28 @@ use UmbServer\SwooleFramework\LIBRARY\STRUCTURE\Ring;
 class RegisteredServiceGroup extends Instance
 {
     use InstanceTrait;
-    
+
     const TABLE_NAME = 'RegisteredServiceGroup'; //表名
-    
-    const SCHEMA = [
-        'name'                                     => STRING_TYPE,
-        'registered_service_target_id_array'       => ARRAY_TYPE,
-        'load_balance_strategy'                    => STRING_TYPE,
-        'last_access_registered_service_target_id' => STRING_TYPE,
-        'authorize_public_key'                     => STRING_TYPE,
-        'authorize_token_array'                    => ARRAY_TYPE,
-    ];
-    
+
+    const SCHEMA
+        = [
+            'name'                                     => STRING_TYPE,
+            'is_unique'                                => BOOL_TYPE,
+            'registered_service_target_id_array'       => ARRAY_TYPE,
+            'load_balance_strategy'                    => STRING_TYPE,
+            'last_access_registered_service_target_id' => STRING_TYPE,
+            'authorize_public_key'                     => STRING_TYPE,
+            'authorize_token_array'                    => ARRAY_TYPE,
+        ];
+
     public $name; //组名
+    public $is_unique; //是否唯一
     public $registered_service_target_id_array; //注册的service_id数组
     public $load_balance_strategy; //负载均衡策略
     public $last_access_registered_service_target_id; //最后一次访问的id
     public $authorize_public_key; //授权公钥
     public $authorize_token_array; //授权id数组
-    
+
     /**
      * 获取下一个访问服务对象
      * @return RegisteredServiceTarget
@@ -49,37 +52,43 @@ class RegisteredServiceGroup extends Instance
     public
     function getNextRegisteredServiceTarget(): RegisteredServiceTarget
     {
-        switch ( $this->load_balance_strategy ) {
-            case _LoadBalanceStrategy::POLL: //轮询模式
-                $last_access_registered_service_target_index = array_search( $this->last_access_registered_service_target_id, $this->registered_service_target_id_array );
-                $registered_service_target_id_ring           = new Ring( $this->registered_service_target_id_array );
-                $registered_service_target_id_ring->setCurrent( $last_access_registered_service_target_index );
-                $next_registered_service_target_id = $registered_service_target_id_ring->next();
-                $next_registered_service_target    = RegisteredServiceTarget::getById( $next_registered_service_target_id );
-                break;
-            case _LoadBalanceStrategy::CHALLENGE: //竞争模式，考虑is_free
-                $registered_service_target_array = $this->getRegisteredServiceTargetArray();
-                foreach ( $registered_service_target_array as $registered_service_target ) {
-                    if ( $registered_service_target->is_free === true ) {
-                        $next_registered_service_target = $registered_service_target;
-                        break;
+        $next_registered_service_target = NULL;
+        if ( $this->is_unique === true ) {
+            $next_registered_service_target_id = $this->registered_service_target_id_array[ 0 ];
+            $next_registered_service_target    = RegisteredServiceTarget::getById( $next_registered_service_target_id );
+        } else {
+            switch ( $this->load_balance_strategy ) {
+                case _LoadBalanceStrategy::POLL: //轮询模式
+                    $last_access_registered_service_target_index = array_search( $this->last_access_registered_service_target_id, $this->registered_service_target_id_array );
+                    $registered_service_target_id_ring           = new Ring( $this->registered_service_target_id_array );
+                    $registered_service_target_id_ring->setCurrent( $last_access_registered_service_target_index );
+                    $next_registered_service_target_id = $registered_service_target_id_ring->next();
+                    $next_registered_service_target    = RegisteredServiceTarget::getById( $next_registered_service_target_id );
+                    break;
+                case _LoadBalanceStrategy::CHALLENGE: //竞争模式，考虑is_free
+                    $registered_service_target_array = $this->getRegisteredServiceTargetArray();
+                    foreach ( $registered_service_target_array as $registered_service_target ) {
+                        if ( $registered_service_target->is_free === true ) {
+                            $next_registered_service_target = $registered_service_target;
+                            break;
+                        }
                     }
-                }
-                break;
-            case _LoadBalanceStrategy::SPEED:
-            default:
-                $registered_service_target_array = $this->getRegisteredServiceTargetArray();
-                $next_registered_service_target  = $registered_service_target_array[ 0 ];
-                foreach ( $registered_service_target_array as $index => $registered_service_target ) {
-                    if ( $registered_service_target->response_time_span < $next_registered_service_target->response_time_span ) {
-                        $next_registered_service_target = $registered_service_target;
+                    break;
+                case _LoadBalanceStrategy::SPEED:
+                default:
+                    $registered_service_target_array = $this->getRegisteredServiceTargetArray();
+                    $next_registered_service_target  = $registered_service_target_array[ 0 ];
+                    foreach ( $registered_service_target_array as $index => $registered_service_target ) {
+                        if ( $registered_service_target->response_time_span < $next_registered_service_target->response_time_span ) {
+                            $next_registered_service_target = $registered_service_target;
+                        }
                     }
-                }
+            }
         }
         $res = $next_registered_service_target;
         return $res;
     }
-    
+
     /**
      * 获取注册的服务对象数组
      * @return array
@@ -98,10 +107,10 @@ class RegisteredServiceGroup extends Instance
                 array_push( $res, $registered_service_target );
             }
         }
-        
+
         return $res;
     }
-    
+
     /**
      * 获取总访问次数
      * @return int
@@ -115,7 +124,7 @@ class RegisteredServiceGroup extends Instance
         }
         return $res;
     }
-    
+
     /**
      * 设置最后一个访问服务的id
      * @param RegisteredServiceTarget $registered_service_target

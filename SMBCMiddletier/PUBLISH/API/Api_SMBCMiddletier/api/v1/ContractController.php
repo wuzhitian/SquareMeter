@@ -8,7 +8,7 @@
  * Copyright: SMBC Inc.
  */
 
-namespace SMBCMiddletier\PUBLISH\API\Api_SMBCMiddletier\controller;
+namespace SMBCMiddletier\PUBLISH\API\Api_SMBCMiddletier\Controller;
 
 use UmbServer\SwooleFramework\LIBRARY\EXTEND\POST;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER\Controller;

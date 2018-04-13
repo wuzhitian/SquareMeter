@@ -1,0 +1,19 @@
+{
+    "publisher": {
+        "Api_SMBCMiddletier": {
+            "name": "Api_SMBCMiddletier",
+            "root": "/SquareMeter",
+            "path": "/SMBCMiddletier/PUBLISH/API/Api_SMBCMiddletier",
+            "registry": {
+                "host": "127.0.0.1",
+                "port": 4000
+            },
+            "server": {
+                "name": "Publisher.Api_SMBCMiddletier.HttpApiServer",
+                "controller_namespace": "SMBCMiddletier\\PUBLISH\\API\\Api_SMBCMiddletier\\Controller",
+                "listen_ip": "0.0.0.0",
+                "listen_port": 8000
+            }
+        }
+    }
+}

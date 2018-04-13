@@ -25,12 +25,6 @@ class MicroServiceConfig extends Config
     public $type; //微服务类型
     
     public $registry; //注册中心配置
-    public $authorizer; //鉴权中心配置
-    public $monitor; //监控中心配置
-    public $dispatcher; //分发中心配置
-    public $logger; //日志中心配置
-    public $data_sharer; //数据中心配置
-    public $timer_manager; //定时任务中心配置
     
     public $server; //内置服务器配置
 }

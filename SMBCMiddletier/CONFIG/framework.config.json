@@ -1,0 +1,67 @@
+{
+    "framework": {
+        "project": "SquareMeter",
+        "micro_service": "SMBCMiddletier",
+        "path": "/SquareMeter/SMPlatform/vendor/umb-server-swoole-framework/COMPONENT/MICROSERVICE",
+        "framework_service": {
+            "registry": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4000
+            },
+            "authorizer": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4001
+            },
+            "monitor": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4002
+            },
+            "dispatcher": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4003
+            },
+            "logger": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4004
+            },
+            "data_sharer": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4005,
+                "data_pool": {
+                    "mysql": {
+                        "host": "127.0.0.1",
+                        "port": 3306,
+                        "username": "root",
+                        "password": "root",
+                        "database": "SMBCMiddletier"
+                    },
+                    "redis": {
+                        "host": "r-bp10391e33abe284.redis.rds.aliyuncs.com",
+                        "port": 6379,
+                        "password": "Umbrella2017",
+                        "database": 2
+                    }
+                }
+            },
+            "timer_manager": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4006
+            }
+        },
+        "framework_datasource": {
+            "mysql": {
+                "host": "127.0.0.1",
+                "port": 3306,
+                "username": "root",
+                "password": "root",
+                "database": "SMBCMiddletierMicroServiceFramework"
+            },
+            "redis": {
+                "host": "r-bp10391e33abe284.redis.rds.aliyuncs.com",
+                "port": 6379,
+                "password": "Umbrella2017",
+                "database": 1
+            }
+        }
+    }
+}

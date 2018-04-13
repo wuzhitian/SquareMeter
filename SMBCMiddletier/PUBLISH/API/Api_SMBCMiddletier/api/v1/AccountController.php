@@ -8,7 +8,7 @@
  * Copyright: SMBC Inc.
  */
 
-namespace SMBCMiddletier\PUBLISH\API\Api_SMBCMiddletier\controller;
+namespace SMBCMiddletier\PUBLISH\API\Api_SMBCMiddletier\Controller;
 
 use EOSS\COMPONENT\VISITOR\AccountVisitor;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER\Controller;

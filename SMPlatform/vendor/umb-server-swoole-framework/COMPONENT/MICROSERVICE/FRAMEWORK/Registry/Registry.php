@@ -21,4 +21,10 @@ use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SinglePatternTrait;
 class Registry extends MicroService
 {
     use SinglePatternTrait; //加载单例模式
+
+    public
+    function register()
+    {
+        //do nothing
+    }
 }

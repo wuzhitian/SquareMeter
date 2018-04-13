@@ -10,18 +10,28 @@
 
 namespace UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\FRAMEWORK\DataSharer;
 
+use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\ENUM\_MicroServiceFrameworkService;
 use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\SERVICE\BASE\MicroService;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SinglePatternTrait;
 
 /**
- * 数据分享服务类
+ * 数据中心服务类
  * Class DataSharer
  * @package UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\FRAMEWORK\DataSharer
  */
 class DataSharer extends MicroService
 {
     use SinglePatternTrait; //加载单例模式
+
+    /**
+     * 向注册中心注册数据中心
+     */
+    public
+    function register()
+    {
+        $this->registerAsFrameworkService( _MicroServiceFrameworkService::DataSharer );
+    }
 
     /**
      * 创建实例管理器
