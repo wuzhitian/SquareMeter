@@ -10,7 +10,7 @@
 
 namespace SMPlatform\PLATFORM\SERVICES\AutoTestService;
 
-use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\ENUM\_ServiceMode;
+use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\ENUM\_Micro_Service;
 use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\MODEL\Service;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SinglePatternTrait;
 
@@ -23,5 +23,5 @@ class AutoTestService extends Service
 {
     use SinglePatternTrait; //加载为单例
 
-    const SERVICE_MODE = _ServiceMode::HTTP_API_SERVICE; //声明为api服务
+    const SERVICE_MODE = _Micro_Service::HTTP_API_SERVICE; //声明为api服务
 }

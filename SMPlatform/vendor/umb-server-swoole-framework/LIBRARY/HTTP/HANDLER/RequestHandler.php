@@ -53,9 +53,9 @@ class RequestHandler
     public
     function __construct( HttpServer $http_server )
     {
-        $this->_http_server = $http_server;
-        $this->_request = $http_server->getRequest();
-        $this->_response = $http_server->getResponse();
+        $this->_http_server    = $http_server;
+        $this->_request        = $http_server->getRequest();
+        $this->_response       = $http_server->getResponse();
         $this->_request_target = $http_server->getRequestTarget();
     }
     
@@ -141,7 +141,7 @@ class RequestHandler
                     
                     //引用控制器文件
                     include_once( $controller_file_path );
-                    $controller = new $controller_classpath( $this->getApiTarget() );
+                    $controller               = new $controller_classpath( $this->getApiTarget() );
                     $aop_controller_container = new AOP();
                     $aop_controller_container->setObject( $controller );
                     $method_name = $this->getApiTarget()->getMethodName();
@@ -152,7 +152,7 @@ class RequestHandler
                         throw new HttpError( HttpError::METHOD_NOT_FOUND, 'Method "' . $method_name . '" is not found' );
                     }
                     $this->data = $aop_controller_container->$method_name();
-                    $res = $this->getApiRequestEncodeRes();
+                    $res        = $this->getApiRequestEncodeRes();
                     if ( get_class( $controller )::CRYPTO === true ) {
                         $crypto_classpath = get_class( $controller )::CRYPTO_CLASS;
                         if ( get_class( $controller )::CRYPTO_KEY !== NULL ) {
@@ -163,8 +163,8 @@ class RequestHandler
                     }
                 } catch ( Error $e ) {
                     $this->success = false;
-                    $this->error = $e->getInfo();
-                    $res = $this->getApiRequestEncodeRes();
+                    $this->error   = $e->getInfo();
+                    $res           = $this->getApiRequestEncodeRes();
                 }
                 $this->getResponse()->setContent( $res, _ContentType::API );
                 break;
@@ -184,12 +184,12 @@ class RequestHandler
     private
     function getApiRequestEncodeRes( string $encode_type = _Serialize::JSON ): string
     {
-        $api_request_res = new \stdClass();
-        $api_request_res->success = $this->success;
-        $api_request_res->error = $this->error;
-        $api_request_res->data = $this->data;
+        $api_request_res            = new \stdClass();
+        $api_request_res->success   = $this->success;
+        $api_request_res->error     = $this->error;
+        $api_request_res->data      = $this->data;
         $api_request_res->instances = $this->instances;
-        $res = Serialize::encode( $api_request_res, $encode_type );
+        $res                        = Serialize::encode( $api_request_res, $encode_type );
         return $res;
     }
     
@@ -224,8 +224,8 @@ class RequestHandler
     private
     function addCreateInstance( Instance $instance )
     {
-        $class_name = $instance->getClientInstancePoolClassName();
-        $instance_id = $instance->id;
+        $class_name                                         = $instance->getClientInstancePoolClassName();
+        $instance_id                                        = $instance->id;
         $this->instances->create->$class_name->$instance_id = $instance->getData();
     }
     
@@ -236,8 +236,8 @@ class RequestHandler
     private
     function addReadInstance( Instance $instance )
     {
-        $class_name = $instance->getClientInstancePoolClassName();
-        $instance_id = $instance->id;
+        $class_name                                       = $instance->getClientInstancePoolClassName();
+        $instance_id                                      = $instance->id;
         $this->instances->read->$class_name->$instance_id = $instance->getData();
     }
     
@@ -248,8 +248,8 @@ class RequestHandler
     private
     function addUpdateInstance( Instance $instance )
     {
-        $class_name = $instance->getClientInstancePoolClassName();
-        $instance_id = $instance->id;
+        $class_name                                         = $instance->getClientInstancePoolClassName();
+        $instance_id                                        = $instance->id;
         $this->instances->update->$class_name->$instance_id = $instance->getData();
     }
     
@@ -260,8 +260,8 @@ class RequestHandler
     private
     function addDeleteInstance( Instance $instance )
     {
-        $class_name = $instance->getClientInstancePoolClassName();
-        $instance_id = $instance->id;
+        $class_name                                         = $instance->getClientInstancePoolClassName();
+        $instance_id                                        = $instance->id;
         $this->instances->delete->$class_name->$instance_id = $instance_id;
     }
     
@@ -275,5 +275,25 @@ class RequestHandler
     function getResourceContent()
     {
     
+    }
+    
+    /**
+     * 用于解析php页面，以字符串形式返回结果
+     * @param $url
+     * @param $request
+     * @return string   返回静态html字符串
+     */
+    public
+    function parsePhp( $url, $request )
+    {
+        flush();
+        ob_start();
+        $_REQUEST = $request;
+        $_POST    = $request->post ?? NULL;
+        $_GET     = $request->get ?? NULL;
+        include( $url );
+        $contents = ob_get_contents();
+        ob_end_clean();
+        return $contents;
     }
 }

@@ -10,7 +10,7 @@
 
 namespace SMPlatform\PLATFORM\PUBLISH\api\v1\PlatformApi;
 
-use SMPlatform\PLATFORM\SERVICES\UserService\UserServiceVisitor;
+use SMPlatform\PLATFORM\SERVICES\UserService\UserServiceMicroServiceVisitor;
 use UmbServer\SwooleFramework\LIBRARY\EXTEND\POST;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER\Controller;
 
@@ -28,7 +28,7 @@ class RegisterController extends Controller
      */
     public function registerPersonalInvestor( POST $cellphone, POST $password )
     {
-        $res = UserServiceVisitor::getInstance();
+        $res = UserServiceMicroServiceVisitor::getInstance();
     }
     
     public function registerCompanyInvestor()

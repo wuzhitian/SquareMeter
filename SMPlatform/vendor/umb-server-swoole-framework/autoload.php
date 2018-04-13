@@ -24,7 +24,6 @@ require_once( __DIR__ . '/LIBRARY/ENUM/_ContentType.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_DB.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_ID.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_InstanceBaseOperator.php' );
-require_once( __DIR__ . '/LIBRARY/ENUM/_HttpServer.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_HttpResponseStatus.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_HttpRequestVerb.php' );
 require_once( __DIR__ . '/LIBRARY/ENUM/_Server.php' );

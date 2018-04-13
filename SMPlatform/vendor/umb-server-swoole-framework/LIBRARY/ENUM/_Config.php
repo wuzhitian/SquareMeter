@@ -18,10 +18,11 @@ namespace UmbServer\SwooleFramework\LIBRARY\ENUM;
 abstract
 class _Config
 {
-    const JSON     = 'json';
-    const ARRAY    = 'array';
-    const OBJECT   = 'object';
-    const XML_FILE = 'xml_file';
-    const YML_FILE = 'yml_file';
-    const INI_FILE = 'ini_file';
+    const JSON      = 'json';
+    const ARRAY     = 'array';
+    const OBJECT    = 'object';
+    const JSON_FILE = 'json_file';
+    const XML_FILE  = 'xml_file';
+    const YML_FILE  = 'yml_file';
+    const INI_FILE  = 'ini_file';
 }

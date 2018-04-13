@@ -10,14 +10,14 @@
 
 namespace SMPlatform\PLATFORM\MODEL\VISITOR;
 
-use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\VISITOR\DataSharerVisitor;
+use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\VISITOR\DataSharerMicroServiceVisitor;
 
 /**
  * 数据中心访问器
  * Class SMPlatformDataCenterVisitor
  * @package SMPlatform\PLATFORM\MODEL\VISITOR
  */
-class SMPlatformDataSharerVisitor extends DataSharerVisitor
+class SMPlatformDataSharerVisitor extends DataSharerMicroServiceVisitor
 {
     
 }

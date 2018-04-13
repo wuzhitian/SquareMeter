@@ -21,12 +21,12 @@ use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceTrait;
 class SMBCContractTemplate extends Instance
 {
     use InstanceTrait;
-
+    
     const TABLE_NAME = 'SMBCContractTemplate';
-
-    public $name;
-    public $abstract_interface;
-    public $byte_code;
-
-    public $version;
+    
+    public $name; //合约模板名
+    public $abstract_interface; //abi
+    public $byte_code; //字节码
+    
+    public $version; //版本号
 }

@@ -10,13 +10,12 @@
 
 namespace UmbServer\SwooleFramework\LIBRARY\INSTANCE;
 
-use UmbServer\SwooleFramework\COMPONENT\CORE\SERVER\HttpApiServer;
-use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\CORE_SERVICES\DataSharer\DataSharer;
-use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\VISITOR\DataSharerVisitor;
+use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\SERVICE\HttpApiService\HttpApiService;
+use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\VISITOR\DataSharerMicroServiceVisitor;
 use UmbServer\SwooleFramework\LIBRARY\DATA\LocalDataCenter;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_ID;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_InstanceBaseOperator;
-use UmbServer\SwooleFramework\LIBRARY\ENUM\_InstanceMode;
+use UmbServer\SwooleFramework\LIBRARY\ENUM\_InstanceDatasource;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_DB;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\Console;
 use UmbServer\SwooleFramework\LIBRARY\UTIL\DataHandler;
@@ -30,13 +29,13 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\Time;
 class Instance
 {
     public $id; //所有实例都必须有id，可以是指定的、序号或是uuid
-    public $create_timestamp;
-    public $update_timestamp;
+    public $create_timestamp; //创建时间戳
+    public $update_timestamp; //更新时间戳
     
-    const MODE              = _InstanceMode::LOCAL; //实例是否为本地实例，远程实例由DataCenter管理
-    const DATA_CENTER_CLASS = DataSharer::class; //远程数据中心默认值
-    const TABLE_NAME        = self::class; //数据库表名
-    const DEFAULT_SCHEMA    = [
+    const DATASOURCE                = _InstanceDatasource::DIRECT; //实例是否为本地实例，远程实例由DataCenter管理
+    const DATA_SHARER_VISITOR_CLASS = DataSharerMicroServiceVisitor::class; //远程数据分享服务默认类
+    const TABLE_NAME                = self::class; //数据库表名
+    const DEFAULT_SCHEMA            = [
         'id'               => STRING_TYPE,
         'create_timestamp' => TIMESTAMP_TYPE,
         'update_timestamp' => TIMESTAMP_TYPE,
@@ -46,13 +45,41 @@ class Instance
     const PERSISTENCE = _DB::MYSQL; //持久化方式，目前只可以选用null或mysql
     
     /**
+     * 是否缓存
+     * @return bool
+     */
+    public
+    function isCache(): bool
+    {
+        $res = true;
+        if ( get_class( $this )::CACHE === _DB::NONE ) {
+            $res = false;
+        }
+        return $res;
+    }
+    
+    /**
+     * 是否持久化
+     * @return bool
+     */
+    public
+    function isPersistence(): bool
+    {
+        $res = true;
+        if ( get_class( $this )::PERSISTENCE === _DB::NONE ) {
+            $res = false;
+        }
+        return $res;
+    }
+    
+    /**
      * 根据操作类型向request_handler的受影响实例池赋值
      * @param $operator
      */
     public
     function push( $operator )
     {
-        HttpApiServer::getInstance()->getRequestHandler()->addInfluenceInstance( $operator, $this );
+        HttpApiService::getInstance()->getRequestHandler()->addInfluenceInstance( $operator, $this );
     }
     
     /**
@@ -147,10 +174,10 @@ class Instance
     {
         $this->create_timestamp = Time::getNow();
         switch ( get_class( $this )::MODE ) {
-            case _InstanceMode::LOCAL:
+            case _InstanceDataSource::DIRECT:
                 $res = $this->localCreate();
                 break;
-            case _InstanceMode::REMOTE:
+            case _InstanceDataSource::REMOTE:
             default:
                 $res = $this->remoteCreate();
         }
@@ -169,10 +196,10 @@ class Instance
     function read( $is_push = true )
     {
         switch ( get_class( $this )::MODE ) {
-            case _InstanceMode::LOCAL:
+            case _InstanceDataSource::DIRECT:
                 $res = $this->localRead();
                 break;
-            case _InstanceMode::REMOTE:
+            case _InstanceDataSource::REMOTE:
             default:
                 $res = $this->remoteRead();
         }
@@ -193,10 +220,10 @@ class Instance
         Console::log( $this->getDataBySchema() );
         $this->update_timestamp = Time::getNow();
         switch ( get_class( $this )::MODE ) {
-            case _InstanceMode::LOCAL:
+            case _InstanceDataSource::DIRECT:
                 $res = $this->localUpdate();
                 break;
-            case _InstanceMode::REMOTE:
+            case _InstanceDataSource::REMOTE:
             default:
                 $res = $this->remoteUpdate();
         }
@@ -215,10 +242,10 @@ class Instance
     function delete( $is_push = true )
     {
         switch ( get_class( $this )::MODE ) {
-            case _InstanceMode::LOCAL:
+            case _InstanceDataSource::DIRECT:
                 $res = $this->localDelete();
                 break;
-            case _InstanceMode::REMOTE:
+            case _InstanceDataSource::REMOTE:
             default:
                 $res = $this->remoteDelete();
         }
@@ -248,7 +275,7 @@ class Instance
     {
         //远程实例的id问题交给data_center处理
         //远程实例的缓存层与持久层问题交给data_center处理
-        $res = DataSharerVisitor::getInstance()->createInstance( $this );
+        $res = DataSharerMicroServiceVisitor::getInstance()->createInstance( $this );
         return $res;
     }
     
@@ -270,7 +297,7 @@ class Instance
     private
     function remoteRead()
     {
-        $res = DataSharerVisitor::getInstance()->readInstance( $this );
+        $res = DataSharerMicroServiceVisitor::getInstance()->readInstance( $this );
         return $res;
     }
     
@@ -292,7 +319,7 @@ class Instance
     private
     function remoteUpdate()
     {
-        $res = DataSharerVisitor::getInstance()->updateInstance( $this );
+        $res = DataSharerMicroServiceVisitor::getInstance()->updateInstance( $this );
         return $res;
     }
     
@@ -314,7 +341,7 @@ class Instance
     private
     function remoteDelete()
     {
-        $res = DataSharerVisitor::getInstance()->deleteInstance( $this );
+        $res = DataSharerMicroServiceVisitor::getInstance()->deleteInstance( $this );
         return $res;
     }
     
@@ -374,17 +401,17 @@ class Instance
      * @param $id
      * @return mixed
      */
-    public static
+    protected static
     function _getById( string $class, $id )
     {
         $instance     = new $class();
         $id           = DataHandler::typeConversion( $instance->getTypeByKey( 'id' ), $id );
         $instance->id = $id;
         switch ( $class::MODE ) {
-            case _InstanceMode::LOCAL:
+            case _InstanceDataSource::DIRECT:
                 $res = $instance->localRead();
                 break;
-            case _InstanceMode::REMOTE:
+            case _InstanceDataSource::REMOTE:
             default:
                 $res = $instance->remoteRead();
         }
@@ -397,17 +424,17 @@ class Instance
      * @param string $class
      * @return array
      */
-    public static
+    protected static
     function _getList( string $class ): array
     {
         $instance     = new $class();
         $id           = DataHandler::typeConversion( $instance->getTypeByKey( 'id' ), $id );
         $instance->id = $id;
         switch ( $class::MODE ) {
-            case _InstanceMode::LOCAL:
+            case _InstanceDataSource::DIRECT:
                 $res = $instance->localRead();
                 break;
-            case _InstanceMode::REMOTE:
+            case _InstanceDataSource::REMOTE:
             default:
                 $res = $instance->remoteRead();
         }

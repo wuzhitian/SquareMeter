@@ -49,7 +49,6 @@ class Serialize
      * @param string $pack_data
      * @param string $type
      * @return mixed|\stdClass
-     * @throws UtilError
      */
     public static
     function decode( string $pack_data, $type = _Serialize::JSON )
