@@ -13,7 +13,7 @@ use UmbServer\SwooleFramework\LIBRARY\UTIL\ConfigLoader;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
 use SMBCMiddletier\PUBLISH\API\Api_SMBCMiddletier\Api_SMBCMiddletier;
 
-$config    = ConfigLoader::parse( __DIR__ . '/../../../CONFIG/publisher.api_smbc_middletier.config.json', _Config::JSON_FILE );
+$config    = ConfigLoader::parse( __DIR__ . '/../../../CONFIG/publisher.config.json', _Config::JSON_FILE );
 $publisher = Api_SMBCMiddletier::getInstance();
 $publisher->loadConfig( $config->publisher->Api_SMBCMiddletier );
 $publisher->initial();

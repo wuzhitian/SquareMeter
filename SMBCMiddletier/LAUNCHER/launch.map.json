@@ -1,0 +1,24 @@
+{
+    "framework": {
+        "registry"     : {
+        },
+        "data_sharer"  : {
+        },
+        "monitor"      : {
+        },
+        "dispatcher"   : {
+        },
+        "logger"       : {
+        },
+        "timer_manager": {
+        },
+        "authorizer"   : {
+        }
+    },
+    "service"  : {
+    },
+    "publisher": {
+    },
+    "static_resource" : {
+    }
+}

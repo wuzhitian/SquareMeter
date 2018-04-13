@@ -7,3 +7,5 @@
  * Email: umbrellahughlee@gmail.com
  * Copyright: SMBC Inc.
  */
+$launch_type   = $argv[ 1 ];
+$launch_target = $argv[ 2 ];

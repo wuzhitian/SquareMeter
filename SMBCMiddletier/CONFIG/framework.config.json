@@ -29,16 +29,16 @@
                 "listen_port": 4005,
                 "data_pool": {
                     "mysql": {
-                        "host": "127.0.0.1",
+                        "host": "rm-uf6xlzaq3alq33j39.mysql.rds.aliyuncs.com",
                         "port": 3306,
-                        "username": "root",
-                        "password": "root",
+                        "username": "smbc_middletier",
+                        "password": "sQUAREmETER2018",
                         "database": "SMBCMiddletier"
                     },
                     "redis": {
-                        "host": "r-bp10391e33abe284.redis.rds.aliyuncs.com",
+                        "host": "r-uf6293737de4d854.redis.rds.aliyuncs.com",
                         "port": 6379,
-                        "password": "Umbrella2017",
+                        "password": "sQUAREmETER2018",
                         "database": 2
                     }
                 }
@@ -50,16 +50,16 @@
         },
         "framework_datasource": {
             "mysql": {
-                "host": "127.0.0.1",
+                "host": "rm-uf6xlzaq3alq33j39.mysql.rds.aliyuncs.com",
                 "port": 3306,
-                "username": "root",
-                "password": "root",
+                "username": "smbc_middletier",
+                "password": "sQUAREmETER2018",
                 "database": "SMBCMiddletierMicroServiceFramework"
             },
             "redis": {
-                "host": "r-bp10391e33abe284.redis.rds.aliyuncs.com",
+                "host": "r-uf6293737de4d854.redis.rds.aliyuncs.com",
                 "port": 6379,
-                "password": "Umbrella2017",
+                "password": "sQUAREmETER2018",
                 "database": 1
             }
         }

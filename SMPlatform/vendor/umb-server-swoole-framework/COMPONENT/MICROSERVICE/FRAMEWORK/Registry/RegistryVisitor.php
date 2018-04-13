@@ -20,7 +20,7 @@ use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\ENUM\_MicroServiceVisitor;
  */
 class RegistryVisitor extends MicroServiceVisitor
 {
-    private $_type = _MicroServiceVisitor::HTTP_API_SERVICE_VISITOR;
+    protected $_type = _MicroServiceVisitor::HTTP_API_SERVICE_VISITOR;
     
     public
     function getMicroServiceFrameworkConfig()

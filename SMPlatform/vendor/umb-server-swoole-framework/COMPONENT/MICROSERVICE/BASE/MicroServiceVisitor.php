@@ -10,8 +10,6 @@
 
 namespace UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\BASE;
 
-use UmbServer\SwooleFramework\COMPONENT\CORE\CLIENT\BASE\HttpClientRequest;
-use UmbServer\SwooleFramework\COMPONENT\CORE\CLIENT\ENUM\_Client;
 use UmbServer\SwooleFramework\COMPONENT\CORE\CLIENT\HttpApiClient\HttpApiClient;
 use UmbServer\SwooleFramework\COMPONENT\CORE\CLIENT\HttpApiClient\HttpApiClientConfig;
 use UmbServer\SwooleFramework\COMPONENT\CORE\CLIENT\HttpApiClient\HttpApiClientRequest;
@@ -20,7 +18,6 @@ use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\ENUM\_MicroServiceVisitor;
 use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\SERVICE\BASE\MicroServiceVisitorConfig;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_Config;
 use UmbServer\SwooleFramework\LIBRARY\ENUM\_HttpRequestVerb;
-use UmbServer\SwooleFramework\LIBRARY\UTIL\ConfigLoader;
 
 /**
  * 微服务框架组件访问器
@@ -32,7 +29,7 @@ class MicroServiceVisitor
     private $_config; //配置
     private $_client; //内置客户端对象
     private $_is_tcp_connected = false; //tcp是否连接
-    private $_type = _MicroServiceVisitor::HTTP_API_SERVICE_VISITOR; //访问器类型
+    protected $_type = _MicroServiceVisitor::HTTP_API_SERVICE_VISITOR; //访问器类型
     
     /**
      * 设置配置
