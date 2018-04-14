@@ -7,5 +7,10 @@
  * Email: umbrellahughlee@gmail.com
  * Copyright: SMBC Inc.
  */
-$launch_type   = $argv[ 1 ];
-$launch_target = $argv[ 2 ];
+
+require( '../../../umb/server/library/umb-server-swoole-framework/autoload.php' );
+require( '../../../umb/server/vendor/EOSS/autoload.php' );
+
+use UmbServer\SwooleFramework\COMPONENT\MICRO_SERVICE\BASE\MicroServiceLauncher;
+
+MicroServiceLauncher::getInstance()->launch( $argv, __DIR__ );

@@ -1,24 +1,18 @@
 {
     "framework": {
-        "registry"     : {
-        },
-        "data_sharer"  : {
-        },
-        "monitor"      : {
-        },
-        "dispatcher"   : {
-        },
-        "logger"       : {
-        },
-        "timer_manager": {
-        },
-        "authorizer"   : {
-        }
+        "registry": "/Registry/launcher.php",
+        "data_sharer": "/DataSharer/launcher.php",
+        "monitor": "Monitor/launcher.php",
+        "dispatcher": "Dispatcher/launcher.php",
+        "logger": "Logger/launcher.php",
+        "timer_manager": "TimerManager/launcher.php",
+        "authorizer": "Authorize/launcher.php"
     },
-    "service"  : {
+    "service": {
     },
     "publisher": {
+        "SMBCMiddletierApi": "/SMBCMiddletierApi/launcher.php"
     },
-    "static_resource" : {
+    "static_resource": {
     }
 }
