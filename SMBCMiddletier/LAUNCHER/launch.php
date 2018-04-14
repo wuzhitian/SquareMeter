@@ -8,9 +8,11 @@
  * Copyright: SMBC Inc.
  */
 
-require( '../../../umb/server/library/umb-server-swoole-framework/autoload.php' );
-require( '../../../umb/server/vendor/EOSS/autoload.php' );
+require( '/umb/loader/umb-server-swoole-framework.php' );
+require( '/umb/loader/EOSS.php' );
 
 use UmbServer\SwooleFramework\COMPONENT\MICRO_SERVICE\BASE\MicroServiceLauncher;
 
-MicroServiceLauncher::getInstance()->launch( $argv, __DIR__ );
+$launch_map_path = __DIR__ . '/launch.map.json';
+
+MicroServiceLauncher::getInstance()->launch( $argv, $launch_map_path );
