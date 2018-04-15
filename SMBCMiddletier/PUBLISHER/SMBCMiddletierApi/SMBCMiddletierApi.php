@@ -8,15 +8,15 @@
  * Copyright: SMBC Inc.
  */
 
-namespace SMBCMiddletier\PUBLISH\API\SMBCMiddletierApi;
+namespace SMBCMiddletier\PUBLISHER\SMBCMiddletierApi;
 
-use UmbServer\SwooleFramework\COMPONENT\MICROSERVICE\SERVICE\BASE\MicroServicePublisher;
+use UmbServer\SwooleFramework\COMPONENT\MICRO_SERVICE\BASE\MicroServicePublisher;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\SinglePatternTrait;
 
 /**
  * SMBC中间件Api发布器
  * Class SMBCMiddletierApi
- * @package SMBCMiddletier\PUBLISH\API\SMBCMiddletierApi
+ * @package SMBCMiddletier\PUBLISHER\SMBCMiddletierApi
  */
 class SMBCMiddletierApi extends MicroServicePublisher
 {

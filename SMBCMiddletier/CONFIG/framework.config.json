@@ -1,8 +1,6 @@
 {
     "framework": {
-        "project": "SquareMeter",
-        "micro_service": "SMBCMiddletier",
-        "path": "/SquareMeter/SMPlatform/vendor/umb-server-swoole-framework/COMPONENT/MICROSERVICE",
+        "name": "SMBCMiddletier",
         "framework_service": {
             "registry": {
                 "listen_ip": "0.0.0.0",

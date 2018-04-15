@@ -13,6 +13,6 @@ require( '/umb/loader/EOSS.php' );
 
 use UmbServer\SwooleFramework\COMPONENT\MICRO_SERVICE\BASE\MicroServiceLauncher;
 
-$launch_map_path = __DIR__ . '/launch.map.json';
+$config_folder_path = __DIR__ . '/CONFIG';
 
-MicroServiceLauncher::getInstance()->launch( $argv, $launch_map_path );
+MicroServiceLauncher::getInstance()->launch( $argv, $config_folder_path );

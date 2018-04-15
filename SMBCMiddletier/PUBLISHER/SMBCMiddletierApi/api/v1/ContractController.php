@@ -8,7 +8,7 @@
  * Copyright: SMBC Inc.
  */
 
-namespace SMBCMiddletier\PUBLISH\API\Api_SMBCMiddletier\Controller;
+namespace SMBCMiddletier\PUBLISHER\SMBCMiddletierApi\Controller;
 
 use UmbServer\SwooleFramework\LIBRARY\EXTEND\POST;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER\Controller;
@@ -16,7 +16,7 @@ use UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER\Controller;
 /**
  * 合约控制器类
  * Class ContractController
- * @package SMBCMiddletier\PUBLISH\API\Api_SMBCMiddletier\api\v1
+ * @package SMBCMiddletier\PUBLISHER\SMBCMiddletierApi\Controller
  */
 class ContractController extends Controller
 {
