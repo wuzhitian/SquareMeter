@@ -1,5 +1,17 @@
 {
-    "service":{
-
+    "service": {
+        "SMBCBusinessHostDispatcher": {
+            "type": "http_api_service",
+            "server": {
+                "root": "/SquareMeter/SMBCMiddletier",
+                "path": "/SERVICE/SMBCBusinessHostDispatcher",
+                "listen_ip": "0.0.0.0",
+                "listen_port": 9888,
+                "controller_namespace": "SMBCMiddletier\\SERVICE\\SMBCBusinessHostDispatcher\\Controller"
+            },
+            "extra": {
+                "load_balance_strategy": "customize"
+            }
+        }
     }
 }

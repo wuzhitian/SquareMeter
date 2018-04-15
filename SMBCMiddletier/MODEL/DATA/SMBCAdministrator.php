@@ -1,6 +1,6 @@
 <?php declare( strict_types = 1 );
 /**
- * Project: SMPlatform
+ * Project: SMBCMiddletier
  * File: SMBCAdministrator.php
  * Create: 2018/4/10
  * Author: Hugh.Lee
@@ -8,7 +8,7 @@
  * Copyright: SMBC Inc.
  */
 
-namespace SMPlatform\MIDDLETIER\MODEL\DATA;
+namespace SMBCMiddletier\MODEL\DATA;
 
 
 class SMBCAdministrator

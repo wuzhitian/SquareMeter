@@ -1,6 +1,6 @@
 <?php declare( strict_types = 1 );
 /**
- * Project: SMPlatform
+ * Project: SMBCMiddletier
  * File: SMBCContractTemplate.php
  * Create: 2018/4/10
  * Author: Hugh.Lee
@@ -8,7 +8,7 @@
  * Copyright: SMBC Inc.
  */
 
-namespace SMPlatform\MIDDLETIER\MODEL\DATA;
+namespace SMBCMiddletier\MODEL\DATA;
 
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceTrait;
@@ -16,7 +16,7 @@ use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceTrait;
 /**
  * SMBC合约模版类
  * Class SMBCContractTemplate
- * @package SMPlatform\MIDDLETIER\MODEL\DATA
+ * @package SMBCMiddletier\MODEL\DATA
  */
 class SMBCContractTemplate extends Instance
 {

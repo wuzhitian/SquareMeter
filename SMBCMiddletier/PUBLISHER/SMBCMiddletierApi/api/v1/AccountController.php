@@ -1,6 +1,6 @@
 <?php declare( strict_types = 1 );
 /**
- * Project: SMPlatform
+ * Project: SMBCMiddletier
  * File: AccountController.php
  * Create: 2018/4/10
  * Author: Hugh.Lee
@@ -10,7 +10,6 @@
 
 namespace SMBCMiddletier\PUBLISHER\SMBCMiddletierApi\Controller;
 
-use EOSS\COMPONENT\VISITOR\AccountVisitor;
 use UmbServer\SwooleFramework\LIBRARY\HTTP\CONTROLLER\Controller;
 
 /**
@@ -23,7 +22,6 @@ class AccountController extends Controller
     public
     function getNewAccount()
     {
-        $res = AccountVisitor::getInstance()->createNewAccount();
-        return $res;
+
     }
 }

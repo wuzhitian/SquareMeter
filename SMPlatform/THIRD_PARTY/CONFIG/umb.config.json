@@ -1,0 +1,64 @@
+{
+    "project": {
+        "project_name": "SMPlatform",
+        "vcs": "github"
+    },
+    "dev_mode": {
+        "is_enable": true
+    },
+    "dependencies": {
+        "umb-server": "^1.0.1",
+        "umb-server-swoole-library": "^1.0.1"
+    },
+    "services": [
+        {
+            "name": "AccountService",
+            "path": "./BUSINESS/AccountService",
+            "listen_port": 2001
+        },
+        {
+            "name": "CommonService",
+            "path": "./BUSINESS/CommonService",
+            "listen_port": 2002
+        },
+        {
+            "name": "EstateService",
+            "path": "./BUSINESS/EstateService",
+            "listen_port": 2003
+        },
+        {
+            "name": "InstitutionService",
+            "path": "./BUSINESS/InstitutionService",
+            "listen_port": 2004
+        },
+        {
+            "name": "ToolService",
+            "path": "./BUSINESS/ToolService",
+            "listen_port": 2005
+        },
+        {
+            "name": "TradeService",
+            "path": "./BUSINESS/TradeService",
+            "listen_port": 2006
+        },
+        {
+            "name": "DataService",
+            "path": "./COMMON/DataService",
+            "listen_port": 3001
+        },
+        {
+            "name": "WebService",
+            "path": "./PUBLISH/WebService",
+            "listen_port": 4001
+        }
+    ],
+    "dispatcher_service": {
+        "name": "WebApiDispatcherService",
+        "path": "./DISPATCHER/WebApiDispatcherService",
+        "listen_port": 10000
+    },
+    "deployment": {
+        "host": {
+        }
+    }
+}

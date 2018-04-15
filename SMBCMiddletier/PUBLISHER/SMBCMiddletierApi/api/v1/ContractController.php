@@ -1,6 +1,6 @@
 <?php declare( strict_types = 1 );
 /**
- * Project: SMPlatform
+ * Project: SMBCMiddletier
  * File: ContractController.php
  * Create: 2018/4/10
  * Author: Hugh.Lee
@@ -33,7 +33,7 @@ class ContractController extends Controller
     }
 
     public
-    function transfer( POST $account_a_id, POST $account_b_id )
+    function transfer( POST $account_a_id, POST $account_b_id, POST $token_id, POST $amount_real_values )
     {
 
     }

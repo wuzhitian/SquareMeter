@@ -1,6 +1,6 @@
 <?php declare( strict_types = 1 );
 /**
- * Project: SMBCMiddletier
+ * Project: SMPlatform
  * File: launcher.php
  * Create: 2018/4/12
  * Author: Hugh.Lee

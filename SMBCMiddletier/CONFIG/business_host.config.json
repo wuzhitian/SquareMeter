@@ -1,0 +1,11 @@
+{
+    "business_host": {
+        "ip_list": [
+            "172.19.33.113",
+            "172.19.33.114",
+            "172.19.33.115"
+        ],
+        "node_server_listen_port": 9090,
+        "health_limit": 100
+    }
+}

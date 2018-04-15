@@ -1,0 +1,65 @@
+{
+    "framework": {
+        "name": "SMBCMiddletier",
+        "framework_service": {
+            "registry": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4000
+            },
+            "authorizer": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4001
+            },
+            "monitor": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4002
+            },
+            "dispatcher": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4003
+            },
+            "logger": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4004
+            },
+            "data_sharer": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4005,
+                "data_pool": {
+                    "mysql": {
+                        "host": "rm-uf6xlzaq3alq33j39.mysql.rds.aliyuncs.com",
+                        "port": 3306,
+                        "username": "smbc_middletier",
+                        "password": "sQUAREmETER2018",
+                        "database": "SMBCMiddletier"
+                    },
+                    "redis": {
+                        "host": "r-uf6293737de4d854.redis.rds.aliyuncs.com",
+                        "port": 6379,
+                        "password": "sQUAREmETER2018",
+                        "database": 2
+                    }
+                }
+            },
+            "timer_manager": {
+                "listen_ip": "0.0.0.0",
+                "listen_port": 4006
+            }
+        },
+        "framework_datasource": {
+            "mysql": {
+                "host": "rm-uf6xlzaq3alq33j39.mysql.rds.aliyuncs.com",
+                "port": 3306,
+                "username": "smbc_middletier",
+                "password": "sQUAREmETER2018",
+                "database": "SMBCMiddletierMicroServiceFramework"
+            },
+            "redis": {
+                "host": "r-uf6293737de4d854.redis.rds.aliyuncs.com",
+                "port": 6379,
+                "password": "sQUAREmETER2018",
+                "database": 1
+            }
+        }
+    }
+}

@@ -10,7 +10,7 @@
 
 namespace SMPlatform\PLATFORM\MODEL\DATA;
 
-use SMPlatform\PLATFORM\MODEL\ENUM\_DigitalEstateLiquidateMode;
+use SMPlatform\PLATFORM\MODEL\ENUM\_TokenLiquidateMode;
 use SMPlatform\PLATFORM\MODEL\ENUM\_DigitalEstateIssueMode;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\Instance;
 use UmbServer\SwooleFramework\LIBRARY\INSTANCE\InstanceTrait;
@@ -38,7 +38,7 @@ class DigitalEstate extends Instance
     public $token_id; //token id
     public $position_id; //头寸_id
     public $publish_mode = _DigitalEstateIssueMode::DYNAMIC; //发行模式
-    public $liquidate_mode = _DigitalEstateLiquidateMode::VOTE; //清算模式
+    public $liquidate_mode = _TokenLiquidateMode::VOTE; //清算模式
     
     /**
      * 发行
